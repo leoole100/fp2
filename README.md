@@ -7,6 +7,7 @@ Required software stack to interact with the files:
   With diverse extensions. On debian you can install them with `sudo apt install texlive texlive-fonts-extra`.
 - [Python](https://www.python.org/)\
 `sudo apt install python python-pip`
+- Roboto font is used for plots. You can install it with `sudo apt install fonts-roboto`.
 
 To run the python scripts create a virtual environment and install the requirements:
 ```bash
