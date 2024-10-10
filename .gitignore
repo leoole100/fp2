@@ -11,3 +11,11 @@
 *.bbl
 *.bcf
 *.run.xml
+
+# python files
+**/__pycache__
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.egg-info
