@@ -1,2 +1,13 @@
 .vscode
 .venv
+
+# latex files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.bbl
+*.bcf
+*.run.xml

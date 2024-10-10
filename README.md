@@ -14,3 +14,7 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+Then to install the local `src` folder:
+```bash
+pip install -e src
+```
