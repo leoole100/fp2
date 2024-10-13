@@ -53,18 +53,24 @@ plt.rcParams.update({
 plt.rcParams.update({
     'xtick.direction': 'in',
     'ytick.direction': 'in',
-    'xtick.major.size': 5,
-    'ytick.major.size': 5,
-    'xtick.minor.size': 2.5,
-    'ytick.minor.size': 2.5,
+    'xtick.major.size': 3,
+    'ytick.major.size': 3,
+    'xtick.minor.size': 1.5,
+    'ytick.minor.size': 1.5,
     'xtick.major.width': 0.5,
     'ytick.major.width': 0.5,
     'xtick.minor.width': 0.5,
     'ytick.minor.width': 0.5,
     'xtick.minor.visible': True,
     'ytick.minor.visible': True,
-    'xtick.top': True,
-    'ytick.right': True,
+    'xtick.top':    True,
+    'ytick.right':  True,
+})
+
+# disable the offset notation
+plt.rcParams.update({
+	'axes.formatter.useoffset': False,
+    'axes.formatter.use_mathtext': True,
 })
 
 # change the color of the box and the ticks

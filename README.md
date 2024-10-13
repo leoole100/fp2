@@ -17,5 +17,5 @@ pip install -r requirements.txt
 ```
 Then to install the local `src` package for shared code:
 ```bash
-pip install -e src
+pip install -e .
 ```
