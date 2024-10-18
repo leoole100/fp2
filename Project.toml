@@ -1,0 +1,16 @@
+name = "fp2"
+uuid = "2b75f452-0ca0-4fcc-a0f4-c4ac4a0d2c15"
+authors = ["Leon Oleschko <22222725+leoole100@users.noreply.github.com>"]
+version = "0.1.0"
+
+[deps]
+AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
+
+[compat]
+AlgebraOfGraphics = "0.8.12"
+CairoMakie = "0.12.14"
+DataFrames = "1.7.0"
+Turing = "0.34.1"

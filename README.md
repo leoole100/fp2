@@ -1,6 +1,8 @@
 # Physikalischen Fortgeschrittenenpraktikum 2
 Notes for the [advanced physics lab course 2 at the University of Konstanz](https://fp.physik.uni-konstanz.de).
 
+## Installing the necessary requirements
+
 Required software stack to interact with the files:
 - [Git](https://git-scm.com/)
 - [LaTeX](https://www.latex-project.org/)\
@@ -8,8 +10,18 @@ Required software stack to interact with the files:
 - [Python](https://www.python.org/)\
 `sudo apt install python python-pip`
 - Roboto font is used for plots. You can install it with `sudo apt install fonts-roboto`.
+- [Julia](https://julialang.org/)\
+  For the Julia scripts.
 
-To run the python scripts create a virtual environment and install the requirements:
+## Activating environments
+
+To activate the **julia** environment run in the julia shell:
+```julia
+]
+activate .
+```
+
+To run the **python** scripts create a virtual environment and install the requirements:
 ```bash
 python -m venv .venv
 source .venv/bin/activate

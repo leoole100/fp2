@@ -20,3 +20,6 @@
 *.pyc
 *.pyo
 *.egg-info
+
+# julia files
+Manifest.toml
