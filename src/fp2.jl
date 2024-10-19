@@ -1,5 +1,5 @@
 module fp2
 
-greet() = print("Hello World!")
+include("plot_theme.jl")
 
 end # module fp2

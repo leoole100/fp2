@@ -2,3 +2,5 @@
 *.png binary
 *.jpg binary
 *.svg binary
+
+**/data/** binary
