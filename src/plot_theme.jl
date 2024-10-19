@@ -1,8 +1,10 @@
 using CairoMakie, Colors
 
+export figsize, size_small, size_large, savefig, savelarge, savesmall, seegrau, seeblau, seeblau_list
+
 # setup how figures are saved
 figsize(width) = (width, width/1.618).*72
-size_small = figsize(3)
+size_small = figsize(2.8)
 size_large = figsize(5)
 savefig(path::String, fig::Figure; kwargs...) = save(path, fig, pt_per_unit=1; kwargs...)
 savelarge(path::String, fig::Figure; kwargs...) = save(path, fig, size=size_large, pt_per_unit=1; kwargs...)
@@ -23,6 +25,7 @@ colors = [RGB(t...) for t in colors]
 
 theme = Theme(
 	fontsize=10,
+	figure_padding=5,
 	size=size_large,
 	fonts = (;
 		regular="Roboto"

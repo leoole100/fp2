@@ -1,11 +1,10 @@
 using AlgebraOfGraphics, CairoMakie, DataFrames
-using Revise
+cd(@__DIR__)
+using Revise # updates the fp2 automatically on changes
 using fp2
 
 # %%
 set_theme!(fp2.theme)
-cd(@__DIR__)
-
 
 fig = Figure()
 ax = Axis(fig[1,1])
