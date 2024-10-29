@@ -23,3 +23,5 @@
 
 # julia files
 Manifest.toml
+
+**/literature
