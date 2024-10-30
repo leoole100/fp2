@@ -1,4 +1,5 @@
-using Images, ImageDraw, ImageFeatures, DataFrames, CairoMakie
+using Images, ImageDraw, ImageFeatures, DataFrames
+import CairoMakie
 using Revise
 includet("functions.jl")
 
@@ -83,18 +84,18 @@ blobs
 
 # %%
 # plot the results
-f = Figure()
+f = CairoMakie.Figure()
 
-image(f[1, 1], img,
-	axis = (aspect = DataAspect(), yreversed = true,)
+CairoMakie.image(f[1, 1], img,
+	axis = (aspect = CairoMakie.DataAspect(), yreversed = true,)
 )
 
-scatter!(f[1, 1], last.(particles.c), first.(particles.c), color = :red, label = "Hough transform")
-scatter!(f[1, 1], last.(particles.c_opt), first.(particles.c_opt), color = :yellow, label = "Center of mass")
-scatter!(f[1, 1], last.(minima.c), first.(minima.c), color = :green, label = "Local minima")
-scatter!(f[1, 1], last.(blobs.c), first.(blobs.c), color = :blue, label = "LoG")
+CairoMakie.scatter!(f[1, 1], last.(particles.c), first.(particles.c), color = :red, label = "Hough transform")
+CairoMakie.scatter!(f[1, 1], last.(particles.c_opt), first.(particles.c_opt), color = :yellow, label = "Center of mass")
+CairoMakie.scatter!(f[1, 1], last.(minima.c), first.(minima.c), color = :green, label = "Local minima")
+CairoMakie.scatter!(f[1, 1], last.(blobs.c), first.(blobs.c), color = :blue, label = "LoG")
 
-axislegend()
+CairoMakie.axislegend()
 
 cd(@__DIR__)
 save("../figures/single frame.pdf", f)
