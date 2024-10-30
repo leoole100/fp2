@@ -22,6 +22,6 @@
 *.egg-info
 
 # julia files
-Manifest.toml
+# Manifest.toml
 
 **/literature
