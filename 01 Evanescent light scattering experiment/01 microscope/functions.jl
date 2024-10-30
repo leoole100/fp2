@@ -8,6 +8,9 @@ function draw_line!(img::AbstractArray, p1::Point, p2::Point)
 	draw!(img, LineSegment(p1, p2), Gray(0.1))
 end
 
+"""
+returns the centers and radii of circles found in the image, in integer pixel precision
+"""
 function find_circles(
 	img::AbstractArray, 
 	radii::UnitRange;
@@ -22,4 +25,38 @@ function find_circles(
 	centers, radii = hough_circle_gradient(img_edges, img_phase, radii, min_dist = min_dist, vote_threshold=vote_threshold)
 	centers = [(center[2], center[1]) for center in centers]
 	return centers, radii
+end
+
+function crop_image(
+	img::AbstractArray, 
+	center::Tuple{Integer, Integer},
+	radius::Integer, 
+	padding::Integer
+)
+	x, y = center
+	r = radius
+	x1, x2 = max(1, x-r-padding), min(size(img, 2), x+r+padding)
+	y1, y2 = max(1, y-r-padding), min(size(img, 1), y+r+padding)
+	return @view img[y1:y2, x1:x2]
+end
+
+function center_of_mass(
+	img_cropped::AbstractArray,
+	x_coords::AbstractArray{Int, 2},
+	y_coords::AbstractArray{Int, 2},
+	c::Tuple{Int, Int},
+	r::Int,
+	padding::Int=0
+)
+	x_cropped = crop_image(x_coords, c, r, padding)
+	y_cropped = crop_image(y_coords, c, r, padding)
+
+	# find the center of mass
+	tot = sum(img_cropped)
+	x = sum(x_cropped .* img_cropped) / tot
+	y = sum(y_cropped .* img_cropped) / tot
+
+	x, y = Float64(x), Float64(y)
+
+	return x, y
 end
