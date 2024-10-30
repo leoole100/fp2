@@ -10,9 +10,9 @@ end
 
 function find_circles(
 	img::AbstractArray, 
-	radii::UnitRange, 
+	radii::UnitRange;
 	min_dist::Number=minimum(radii), 
-	vote_threshold::Number=minimum(radii);
+	vote_threshold::Number=minimum(radii),
 	canny_threshold::Tuple{Number, Number}=(Percentile(99), Percentile(80))
 )
 	img = Gray.(img)
@@ -20,5 +20,6 @@ function find_circles(
 	dx, dy = imgradients(img, KernelFactors.ando5)
 	img_phase = phase(dx, dy)
 	centers, radii = hough_circle_gradient(img_edges, img_phase, radii, min_dist = min_dist, vote_threshold=vote_threshold)
+	centers = [(center[2], center[1]) for center in centers]
 	return centers, radii
 end

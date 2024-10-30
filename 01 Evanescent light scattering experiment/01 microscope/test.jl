@@ -1,4 +1,4 @@
-using Images, ImageDraw, ImageFeatures
+using Images, ImageDraw, ImageFeatures, DataFrames
 using Revise
 includet("functions.jl")
 
@@ -15,3 +15,9 @@ img
 #%%
 # find circles in the image
 centers, radii = find_circles(img, 40:60)
+
+circles = DataFrame(x=Int[], y=Int[], r=Int[])
+for (center, radius) in zip(centers, radii)
+	push!(circles, (center[1], center[2], radius))
+end
+circles
