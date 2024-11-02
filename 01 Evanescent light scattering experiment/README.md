@@ -3,7 +3,7 @@
 ## Preparation
 `01` normal microscopy:
 - ~~generate test images~~
-- tracking of particles
+- ~~tracking of particles~~
 - calculate the square displacement
 - calculate the potential
 
