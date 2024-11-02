@@ -1,16 +1,16 @@
 # generate test images
 
-using ImageDraw, Colors, Images, DataFrames
-import VideoIO, CSV
+using Colors, Images, DataFrames
+import VideoIO, CSV, ImageDraw
 
 #%%
 # functions for generating test images
-function draw_particle!(img::AbstractArray, center::Point, radius::Int, color::Colorant = Gray(0.1))
-	draw!(img, Ellipse(CirclePointRadius(center, radius)), color)
+function draw_particle!(img::AbstractArray, center::ImageDraw.Point, radius::Int, color::Colorant = Gray(0.1))
+	ImageDraw.draw!(img, ImageDraw.Ellipse(ImageDraw.CirclePointRadius(center, radius)), color)
 end
 
-function draw_scratch!(img::AbstractArray, p1::Point, p2::Point)
-	draw!(img, LineSegment(p1, p2), Gray(0.0))
+function draw_scratch!(img::AbstractArray, p1::ImageDraw.Point, p2::ImageDraw.Point)
+	ImageDraw.draw!(img, ImageDraw.LineSegment(p1, p2), Gray(0.0))
 end
 
 function test_img(
@@ -31,31 +31,33 @@ function test_img(
 	# add poison noise
 	image = image .+ .2 .* image .* randn(size(image)...)
 
-	draw_scratch!(image, Point(20, 20), Point(170, 170))
+	draw_scratch!(image, ImageDraw.Point(20, 20), ImageDraw.Point(170, 170))
 
 	# blur the image
 	image = imfilter(image, Kernel.gaussian(1))
+
+	image = clamp01.(image)
 
 	return image
 end
 
 test_img([
-	(Point(100, 100), 10),
-	(Point(50, 100), 12)
+	(ImageDraw.Point(100, 100), 5),
+	(ImageDraw.Point(50, 100), 6)
 ])
 
 #%%
 # create a image sequence with particles moving
 # make two particles move linearly
 
-radii = [10, 12]
+radii = [5, 6]
 frames = 100
-positions = Vector{Vector{Point}}(undef, frames)
+positions = Vector{Vector{ImageDraw.Point}}(undef, frames)
 
 for i in 1:frames
 	positions[i] = [
-		Point(100 + round(50*i/frames), 100),
-		Point(50, 100 + round(50*i/frames))
+		ImageDraw.Point(100 + round(50*i/frames), 100),
+		ImageDraw.Point(50, 100 + round(50*i/frames))
 	]
 end
 
