@@ -97,9 +97,8 @@ meanImg = Gray{Float64}.(transformed)
 while !eof(video)
 	img = read(video)
 	transformed = transform(img)
-	pos = update_positions(last_positions, radii, transformed)
-	push!(positions, pos)
-	last_positions = pos
+	update_positions!(last_positions, radii, transformed)
+	push!(positions, last_positions)
 	meanImg = meanImg .+ img
 end
 
@@ -119,7 +118,7 @@ df
 
 basepath = join(split(path, '.')[1:end-1], ".")
 CSV.write(basepath * ".trajectory.csv", df)
-save(basepath * ".mean.png", meanImg)
+save(basepath * ".mean.png", clamp01.(Gray.(meanImg)))
 for i in 1:length(radii)
 	save(basepath * ".particle$i.png", crop(img, last_positions[i, :], radii[i] .+ 5))
 end
