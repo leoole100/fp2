@@ -8,6 +8,27 @@ function draw_line!(img::AbstractArray, p1::Point, p2::Point)
 	draw!(img, LineSegment(p1, p2), Gray(0.1))
 end
 
+function test_image(points::Vector{Point}, radii::Vector{Int64})
+	# make the background
+	img = fill(Gray(0.7), 200, 200)
+	img .= clamp01.(img .+ 0.1*randn(200, 200))
+
+	# draw the circles
+	for (center, radius) in zip(points, radii)
+		draw_circle!(img, center, radius)
+	end
+
+	# draw scratches
+	draw_line!(img, Point(20, 20), Point(170, 170))
+
+	# add noise
+	img .= clamp01.(img .+ 0.1*randn(200, 200))
+	img = imfilter(img, Kernel.gaussian(1))
+
+	return img
+end
+
+
 """
 returns the centers and radii of circles found in the image, in integer pixel precision
 """

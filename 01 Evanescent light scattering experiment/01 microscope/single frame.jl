@@ -5,21 +5,24 @@ includet("functions.jl")
 
 #%%
 # generate a test image
-img = fill(Gray(0.7), 200, 200)
-img .= clamp01.(img .+ 0.1*randn(200, 200))
-draw_circle!(img, Point(150, 150), 30)
-draw_circle!(img, Point(100, 30), 20)
-draw_line!(img, Point(20, 20), Point(170, 170))
-img = imfilter(img, Kernel.gaussian(1))
-img .= clamp01.(img .+ 0.1*randn(200, 200))
+particles = DataFrame(
+	c = [
+		Point(100, 100),
+		Point(50, 50),
+	],
+	r = [
+		30,
+		20
+	]
+)
 
-img
+img = test_image(particles.c, particles.r)
 
 #%%
 # find circles in the image using the Hough transform
 centers, radii = find_circles(img, 7:60;
 	min_dist=20,
-	vote_threshold=35,
+	vote_threshold=32,
 )
 
 particles = DataFrame(c=Tuple{Int, Int}[], r=Int[])
