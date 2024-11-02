@@ -33,6 +33,15 @@
 
 \setkomafont{disposition}{\normalfont\sffamily}
 
+% set margins
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	left=2.5cm,
+	right=2.5cm,
+	top=2.5cm,
+	bottom=2.5cm
+}
 
 % not recommended with KOMA-script
 % make table of contents sans-serif
@@ -105,6 +114,10 @@
 \setlength{\textfloatsep}{0.25cm}
 \setlength{\floatsep}{0.25cm}
 
+% decrease space after disposition
+\RedeclareSectionCommands[
+	afterskip=1px
+]{section, subsection, subsubsection}
 
 \usepackage{adjustbox}
 
