@@ -1,7 +1,7 @@
 # find particles in images and track them
 
 using DataFrames, Statistics, LsqFit, LinearAlgebra
-using WGLMakie
+using CairoMakie
 import CSV, Images
 
 path = "../data/test/particles"
@@ -46,9 +46,10 @@ df[!, :linear_model] = [curve_fit(linear_model, p.frames, p.msd, [0.0, 0.0, 1.0]
 exp_model(x, p) = p[1] .- p[1] .* exp.(-p[2] .* x ./ p[1]);
 df[!, :exp_model] = [curve_fit(exp_model, p.frames, p.msd, [50.,1.]) for p in eachrow(df)];
 
+#%%
 
-f = Figure()
-a = Axis(f[1, 1], xlabel="time", ylabel="mean squared displacement")
+f = Figure();
+a = Axis(f[1, 1], xlabel="time", ylabel="mean squared displacement");
 for i in eachrow(df)
 	plot!(a, 1:size(i.trajectory,1), i.msd)
 	if i.linear_model.converged
@@ -59,9 +60,9 @@ for i in eachrow(df)
 	end
 end
 # try models
-lines!(0:100, x->linear_model(x, [0, 100., 1000.]), label="linear")
-lines!(0:100, x->exp_model(x, [1000., 100.]), label="exp")
-axislegend(a)
+lines!(0:100, x->linear_model(x, [0, 100., 1500.]), label="linear");
+lines!(0:100, x->exp_model(x, [1000., 100.]), label="exp");
+axislegend(a);
 f
 
 # %%
@@ -82,3 +83,22 @@ f
 
 # %%
 # calculate the probability distribution for a given potential
+using StatsBase
+function histogram(data)
+	h = fit(Histogram, data)
+	x = h.edges[1][1:end-1] .+ diff(h.edges[1]) ./ 2
+	y = h.weights
+	return [x, y]
+end
+df[!, :histogram] = [histogram(p.distance) for p in eachrow(df)]
+potential(hist) = [hist[1], -log.(hist[2])]
+df[!, :potential] = [potential(p.histogram) for p in eachrow(df)]
+
+f = Figure()
+a = Axis(f[1, 1], xlabel="distance from center", ylabel="potential in kT")
+for i in 1:nrow(df)
+	p = df[i, :]
+	offset = i
+	plot!(a, p.potential...)
+end
+f
