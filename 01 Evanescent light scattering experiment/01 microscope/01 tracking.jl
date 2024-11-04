@@ -1,41 +1,38 @@
 # find particles in images and track them
 
-using Images, ImageFeatures, DataFrames, Statistics
+using DataFrames: DataFrame, sort!
+using Statistics: mean
+using ImageFeatures: blob_LoG
+using Colors: Gray
+using Images: clamp01
 using WGLMakie
 import CSV, VideoIO
 
 path = "../data/test/particles.avi"
 
-# %%
+#%%
 # open video file
 cd(@__DIR__)
 video = VideoIO.openvideo(path)
 img = read(video)
 # image(img',axis=(aspect=DataAspect(),yreversed = true,))
 
-#%%
 # make normalization images
 white = fill(maximum(Gray{Float64}.(img)), size(img))
 black = fill(minimum(Gray{Float64}.(img)), size(img))
 
 normalize(img) = (clamp01.(Gray.(img)) .- black) ./ (white .- black)
-# normalize(img)
+normalize(img)
 
-# %%
 # transform the images
 trans(x) = x^4
 transform(img) = Gray.(trans.(1 .- normalize(img)))
-# transform(img)
+transform(img)
 
-# f = Figure()
-# image(f[1:2,1], transform(img)', axis=(aspect=DataAspect(), yreversed=true,), interpolate=false);
-# lines(f[1,2], 0:0.05:1, trans);
-# hist(f[2,2], reduce(vcat, Float64.(transform(img))), normalization=:probability, axis=(yscale=log10,));
-# f
+image(transform(img)', axis=(aspect=DataAspect(), yreversed=true,), interpolate=false)
 
 # %%
-# find particles in the images
-# using Laplacian of Gaussian blob detection
+# find particles in the images using Laplacian of Gaussian blob detection
 blobs = blob_LoG(transform(img),  range(2,10, length=10));
 blobs = DataFrame(
 	c = [(blob.location[2], blob.location[1]) for blob in blobs],
@@ -48,12 +45,12 @@ blobs = blobs[1:2, :]
 blobs.r = blobs.σ .* 2;
 # blobs
 
-# image(img', axis=(aspect=DataAspect(), yreversed=true,), interpolate=false)
-# scatter!(blobs.c, markersize=blobs.r.*2, color=:red, marker=:x, markerspace=:data)
-# current_figure()
+image(img', axis=(aspect=DataAspect(), yreversed=true,), interpolate=false)
+scatter!(blobs.c, markersize=blobs.r.*2, color=:red, marker=:x, markerspace=:data)
+current_figure()
 
 # %%
-# last positions
+# track the particles
 last_positions = hcat([Float64.([first(i), last(i)]) for i in blobs.c]...)'
 radii = blobs.r
 
@@ -76,13 +73,8 @@ function update_positions!(last_positions, radii, img)
 	end
 end
 
-function update_positions(last_positions, radii, img)
-	new_positions = copy(last_positions)
-	update_positions!(new_positions, radii, img)
-	return new_positions	
-end
+# @time update_positions!(last_positions, radii, transform(img)) # <1 ms
 
-# @time update_positions(last_positions, radii, transform(img)) # <1 ms
 
 # %%
 # track the particles
