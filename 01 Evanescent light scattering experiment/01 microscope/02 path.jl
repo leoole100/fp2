@@ -73,25 +73,30 @@ radius(t, c=center(t)) = [norm(t[j,:]' .- c) for j in 1:size(t,1)]
 σ(t) = std(radius(t))
 σ(df[1,:t]) # = dV/dx^2 / kT
 
-potential(p) = -log.(p)
-histogram(data) = normalize(fit(Histogram, data), mode=:probability)
+potential(p) = -log.(p) .+ log(maximum(p))
+function histogram(data)
+	h = normalize(fit(Histogram, data), mode=:pdf)
+	x = h.edges[1][1:end-1] .+ diff(h.edges[1]) ./ 2
+	return (x=x[1:end-1], density=h.weights[1:end-1], bins=h.edges[1][1:end-1])
+end
 
 f = Figure()
-a = Axis(f[1, 1], ylabel="probability")
-b = Axis(f[2, 1], xlabel="distance from center", ylabel="Potential in kT")
+a = Axis(f[1, 1], ylabel="pdf(x)")
+ylims!(a, 0, nothing)
+b = Axis(f[2, 1], xlabel="distance from center x", ylabel= "V(x) in kT")
 linkxaxes!(a, b)
-hidexdecorations!(a, ticks = false)
+hidexdecorations!(a, grid=false)
 for i in eachrow(df)
 	r = radius(i.t)
 	h = histogram(r)
 	k = kde(r, boundary=(minimum(r), maximum(r)))
 
-	l = stairs!(a, h.edges[1][1:end-1], h.weights, linestyle=:dash)
-	scatter!(b, h.edges[1][1:end-1], potential(h.weights), color=l.color)
+	l = stairs!(a, h.x, h.density, step=:center)
+	scatter!(b, h.x, potential(h.density), color=l.color)
 
 	lines!(a, k.x, k.density, color=l.color)
 	lines!(b, k.x, potential(k.density), color=l.color, label=i.n)
 end
-axislegend()
+axislegend(position=:lt)
 save("../figures/01_potential.png", f)
 f

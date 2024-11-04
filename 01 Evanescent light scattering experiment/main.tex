@@ -51,11 +51,17 @@
 \subsection{Physical Principles}
 kompakten Zusammenstellung der physikalischen Grundlagen
 
-The maxwell boltzmann relations (from script) with a potential $V(x) = k x^2$ are given by
+Mean square deviation and velocity autocorrelation:
+\url{https://de.wikipedia.org/wiki/Mittlere_quadratische_Verschiebung#Verbindung_zur_Geschwindigkeitsautokorrelation}
+\begin{align}
+    &&\left<v(t)\cdot v(t+\tau)\right> &= - \frac{d}{d\tau} \frac{\left<r^2(\tau)\right>}{6\tau}\\
+    \Rightarrow&&\left<r^2(\tau)\right> &= 6 \int_0^\tau (\tau - s) \left<v(0) \cdot v(s)\right> ds
+\end{align}
+
+The maxwell boltzmann relations (from script) are given by
 \begin{align}
     P(x) &\propto \exp\left(- \frac{V(x)}{k_B T}\right)\\
-    &= \exp\left(-\frac{k}{k_B T} x^2\right)\\
-    x &\sim \mathcal{N}\left(\mu, \frac{k}{k_B T}\right)
+    V(x) &\propto - \frac{\log{P(x)}}{k_B T}
 \end{align}
 
 
