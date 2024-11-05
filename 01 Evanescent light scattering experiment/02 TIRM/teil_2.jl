@@ -1,8 +1,11 @@
 # programm funktioniert möglicherweise, aber es fehlt noch an brauchbaren test-daten
 # aktuell wirft es einen fehler, weil die zu optimierende fehlerfunktion im suchintervall kein minimum hat
 
-using Roots, ForwardDiff
+using Roots: fzero
+using ForwardDiff: derivative
+using WGLMakie
 
+# %%
 k_B = 1
 eta = 1
 beta = 1
@@ -35,19 +38,30 @@ function calc_D_z(sigmaq,delta_t)
     sigmaq/(2*delta_t)
 end 
 
-function procedure(I_z,range_for_I_0,delta_t,R,T)
+function estimate_I0(I_z,guessI0,delta_t,R,T)
     D_0 = calc_D_0(R,T)
     t_steps = [n*delta_t for n in range(1,round(Int,(length(I_z)-1)/delta_t)-1)]
     err_func(I_0) = sum((calc_D_z.(sigmaq.(slice_dz.(t_steps,delta_t,Ref(delta_z(find_z.(beta,I_z,I_0))))),delta_t).-D_orth.(D_0,R,sum.(slice_dz.(t_steps,delta_t,Ref(find_z.(beta,I_z,I_0))))./delta_t)).^2)
-    D(f)=x -> ForwardDiff.derivative(err_func,float(x))
-    find_zero(D(err_func),range_for_I_0)
+    D(f)=x -> derivative(err_func,float(x))
+    fzero(D(err_func), guessI0)
 end
 
 
-I_z = exp.(randn(50))
-range_for_I_0 = (1,20)
+I_z = exp.(beta * randn(50))
+guessI0 = 10
 delta_t = 10
 R = 1
 T = 100
 
-procedure(I_z,range_for_I_0,delta_t,R,T)
+I0 = estimate_I0(I_z,guessI0,delta_t,R,T)
+
+
+f = Figure()
+a = Axis(f[1,1], ylabel="intensity")
+b = Axis(f[2,1], xlabel="time", ylabel="distance")
+linkxaxes!(a, b)
+hidexdecorations!(a, grid=false)
+lines!(a, I_z)
+lines!(b, find_z.(beta,I_z,I0))
+
+f
