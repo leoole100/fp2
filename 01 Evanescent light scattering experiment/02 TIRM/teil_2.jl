@@ -5,6 +5,8 @@ using Roots: fzero
 using ForwardDiff: derivative
 using WGLMakie
 
+cd(@__DIR__)
+
 # %%
 k_B = 1
 eta = 1
@@ -47,7 +49,7 @@ function estimate_I0(I_z,guessI0,delta_t,R,T)
 end
 
 
-I_z = exp.(beta * randn(500))
+I_z = exp.(beta * randn(Integer(1e6)))
 guessI0 = 10
 delta_t = 10
 R = 1
@@ -74,6 +76,5 @@ lines!(i, I_z)
 density!(ih, I_z, direction=:y)
 lines!(z, find_z.(beta,I_z,I0))
 density!(zh, find_z.(beta,I_z,I0), direction=:y)
-cd(@__DIR__)
 save("../figures/02_path.png", f)
 f
