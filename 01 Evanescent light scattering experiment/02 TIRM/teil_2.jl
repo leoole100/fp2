@@ -47,21 +47,33 @@ function estimate_I0(I_z,guessI0,delta_t,R,T)
 end
 
 
-I_z = exp.(beta * randn(50))
+I_z = exp.(beta * randn(500))
 guessI0 = 10
 delta_t = 10
 R = 1
 T = 100
 
-I0 = estimate_I0(I_z,guessI0,delta_t,R,T)
+# I0 = estimate_I0(I_z,guessI0,delta_t,R,T)
+I0 = maximum(I_z)
 
 
 f = Figure()
-a = Axis(f[1,1], ylabel="intensity")
-b = Axis(f[2,1], xlabel="time", ylabel="distance")
-linkxaxes!(a, b)
-hidexdecorations!(a, grid=false)
-lines!(a, I_z)
-lines!(b, find_z.(beta,I_z,I0))
-
+i = Axis(f[1,1], ylabel="intensity")
+ih = Axis(f[1,2])
+z = Axis(f[2,1], xlabel="time", ylabel="z")
+zh = Axis(f[2,2])
+linkxaxes!(i, z)
+linkyaxes!(z, zh)
+linkyaxes!(i, ih)
+hidexdecorations!(i, grid=false)
+hidedecorations!(ih, grid=false)
+hidedecorations!(zh, grid=false)
+colsize!(f.layout, 1, Auto(3))
+xlims!(zh, 0, nothing)
+lines!(i, I_z)
+density!(ih, I_z, direction=:y)
+lines!(z, find_z.(beta,I_z,I0))
+density!(zh, find_z.(beta,I_z,I0), direction=:y)
+cd(@__DIR__)
+save("../figures/02_path.png", f)
 f
