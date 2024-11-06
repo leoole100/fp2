@@ -9,7 +9,6 @@ import CSV, Images
 
 cd(@__DIR__)
 
-# %%
 # generate some random data
 df = DataFrame(I=[
 	exp.(randn(10000000)),
@@ -72,4 +71,5 @@ for i in eachrow(df)
 end
 # lines!(aV, 0:.1:8, x -> model(x, [10, 1.0, 1.0, 1.0]), color=:black)
 axislegend(aV)
+save("../figures/02_potential.png", f)
 f
