@@ -5,6 +5,7 @@ Notes for the [advanced physics lab course 2 at the University of Konstanz](http
 
 Required software stack to interact with the files:
 - [Git](https://git-scm.com/)
+  also `git-lfs`
 - [LaTeX](https://www.latex-project.org/)\
   With diverse extensions. On debian you can install them with `sudo apt install texlive texlive-fonts-extra`.
 - [Python](https://www.python.org/)\
