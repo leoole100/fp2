@@ -6,37 +6,50 @@ using WGLMakie
 using StatsBase: fit, Histogram
 using KernelDensity: kde
 import CSV, Images
+using Glob: glob
 
 cd(@__DIR__)
 
-# generate some random data
-df = DataFrame(I=[
-	exp.(randn(10000000)),
-	exp.(-exp.(randn(10000000)))
-], l = ["A", "B"])
-
 # read all CSV files in the directory
-# path = "../data/02/"
-# files = filter(x -> occursin(".csv", x), readdir(path))
-# df = DataFrame(I=[])
-# for file in files
-# 	I = DataFrame(CSV.File(path * file))[:, :I]
-# 	push!(df[:, :I], I)
-#   push!(df[:, :l], split(file, "/")[1])
-# end
+path = "../data/TIRM/"
+paths = glob(path * "*/*.dat")
+paths = filter(p -> occursin("failed", lowercase(p)) == false, paths)
+Ia = []
+pa = []
+for p in paths
+	I = DataFrame(CSV.File(p, header=["t", "I"])).I
+	push!(Ia, I)
+  push!(pa, split(p, "/")[end-1])
+end
+df = DataFrame(I=Ia, p=pa)
+df.l = map(p -> split(p, " ")[3]*" "*split(p, " ")[2], df[:,:p])
+df.ot = map(p -> parse(Float64, split(p, " ")[3][3:end]), df[:,:p])
+df
+#%%
 
 # plot the data
-# f = Figure()
-# a = Axis(f[1, 1], xlabel="time", ylabel="intensity")
-# for i in eachrow(df)
-# 	lines!(i.I, label=i.l)
-# end
-# axislegend()
-# f
+f = Figure()
+a = Axis(f[1, 1], xlabel="intensity")
+for i in eachrow(df)
+	k = kde(i.I, boundary=(minimum(i.I), maximum(i.I)))
+	lines!(a, k.x, k.density, label=i.p)
+end
+axislegend()
+f
+#%%
+# plot the time series downsampled
+f = Figure()
+a = Axis(f[1, 1], xlabel="time downsampled in s", ylabel="intensity")
+for i in eachrow(filter(d -> d.ot<.85, sort(df, :l)))
+	I = i.I
+	lines!(I[1:1000:end], label=i.l)
+end
+axislegend()
+f
 
 # %%
-background(I) = 0
-estimate_I0(I) = maximum(I)-background(I)
+background(I) = -.1
+estimate_I0(I) = 2*maximum(I)-background(I)
 calc_z(I, I0=estimate_I0(I), beta=1, b=background(I)) = log.(I0 ./ (I.-b)) ./ beta
 potential(p) = -log.(p) .+ log(maximum(p))
 function dist(data; cutoff=0)
@@ -47,7 +60,10 @@ function dist(data; cutoff=0)
 end
 
 model(x, p) = p[1] .* exp.(-x .* p[2]) .+ p[3] .* x .- p[4]
-fit_model(x, y) = curve_fit(model, x, y, [10, 1.0, 1.0, 1.0])
+fit_model(x, y) = curve_fit(model, x, y, [10, 1.0, 1.0, 1.0]).param
+
+# model_ot(x, p) = p[1] .* exp.(-x .* p[2]) .+ p[3] .* x .- p[4] .+ p[5] .* (x.-p[6]).^2
+# fit_model_ot(x, y) = curve_fit(model, x, y, [10, 1.0, 1.0, 1.0, .1, 1.5]).param
 
 f = Figure()
 aV = Axis(f[1, 1], ylabel="V in kT")
@@ -58,18 +74,19 @@ aV = Axis(f[1, 1], ylabel="V in kT")
 # ylims!(az, 0, nothing)
 # hidexdecorations!(aV, grid=false)
 # hideydecorations!(aI, grid=false)
-for i in eachrow(df)
+# for i in eachrow(filter(d -> d.ot==1.5, sort(df, :l)))
+for i in eachrow(filter(d -> d.ot<1, sort(df, :l)))
 	# pI = dist(i.I; cutoff=0.1)
 	# lines!(aI, pI.x, pI.y, label=i.l)
 	z = calc_z(i.I)
-	pZ = dist(z; cutoff=0.01)
+	pZ = dist(z; cutoff=0.1)
 	# lines!(az, pZ.x, pZ.y, label=i.l)
 	v = potential(pZ.y)
 	l = lines!(aV, pZ.x, v, label=i.l)
-	fit = fit_model(pZ.x, v)
-	lines!(aV, pZ.x, model(pZ.x, fit.param), color=l.color, linestyle=:dash)
+	lines!(aV, pZ.x, model(pZ.x, fit_model(pZ.x, v)), color=l.color, linestyle=:dash)
 end
 # lines!(aV, 0:.1:8, x -> model(x, [10, 1.0, 1.0, 1.0]), color=:black)
-axislegend(aV)
-save("../figures/02_potential.png", f)
+# lines!(aV, .5:.1:3, x -> model_ot(x, [10, 1.0, 1.0, 1.0, .1, 1.5]), color=:black)
+axislegend(aV, position=:rb)
+# save("../figures/02_potential.png", f)
 f
