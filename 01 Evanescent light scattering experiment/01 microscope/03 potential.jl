@@ -118,7 +118,7 @@ f
 
 # %% plot the measured spring constants
 f = Figure()
-a = Axis(f[1, 1], xlabel="Trap Stiffness", ylabel="k in N/μm")
+a = Axis(f[1, 1], xlabel="Trap Stiffness", ylabel="k in N/m")
 
 function er(a, x, y, label)
 	# errorbars!(a, x, value.(y), uncertainty.(y))
@@ -130,12 +130,12 @@ kB = 1.38064852e-23
 kT = kB * T
 
 # plot fit results
-er(a, df.ot[2:end], kT.*df.Vkx[2:end].*1e6, "V fit x")
-er(a, df.ot[2:end], kT.*df.Vky[2:end].*1e6, "V fit y")
+er(a, df.ot[2:end], kT.*df.Vkx[2:end]*1e12, "V fit x")
+er(a, df.ot[2:end], kT.*df.Vky[2:end]*1e12, "V fit y")
 
 
 # plot the msd_inf
-er(a, df.ot[3:end], kT./df.msd_inf[3:end] * 1e6, "MSD fit")
+er(a, df.ot[3:end], kT./df.msd_inf[3:end] * 1e12, "MSD fit")
 
 axislegend(position=:lt)
 save("../figures/01_03_4_spring_constants.pdf", f)
