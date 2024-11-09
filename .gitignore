@@ -25,3 +25,6 @@
 # Manifest.toml
 
 **/literature
+
+# large measurements
+*.avi
