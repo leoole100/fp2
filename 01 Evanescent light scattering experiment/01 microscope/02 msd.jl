@@ -10,35 +10,14 @@ using MeanSquaredDisplacement: imsd
 using Interpolations: interpolate, linear_interpolation
 using Format: format
 
+include("functions.jl")
+include("../functions.jl")
+
 # %% load the trajectories
-path = "../data/TLM/"
 cd(@__DIR__)
-
-function load_trajectory!(df, path)
-	path = join(split(path, ".")[1:end-1], ".")
-	f = DataFrame(CSV.File(path * ".csv"))
-	for i in 1:ncol(f)÷2
-		push!(df[!, :t], hcat(f[:,2*i-1], f[:,2*i]))
-		n = split(path, "/")[end]
-		n = join(split(n, ".")[1:end-1], ".")
-		n = split(n, " ")[3]
-		ot = parse(Float64, n[3:end])
-		push!(df[!, :n], n)
-		push!(df[!, :ot], ot)
-	end
-end
-
-df = DataFrame(t=[], n=[], ot=[])
-paths = glob(path * "*.trajectory.csv")
-for p in paths
-	load_trajectory!(df, p)
-end
-
 scale(t, s=0.13319672) = t .* s # px to μm
 times(t) = 0:length(t)-1 ./ 10
-
-sort!(df, :ot)
-df
+df = load_trajectories()
 
 #%% plot the trajectories
 f = Figure()
@@ -46,25 +25,15 @@ a = Axis(f[1,1], xlabel="x in μm", ylabel="y in μm")
 for p in eachrow(df)
 	t = scale(p.t)
 	t = t .- mean(t, dims=1)
-	lines!(t, label=p.n, alpha=0.5)
+	lines!(t, label=p.n, alpha=0.5, color=p.ot, colorrange=extrema(df.ot))
 	# points = [Point2f(p.trajectory[j,:]...) for j in p.frames]
 	# datashader!(points)
 end
 axislegend(position=:lt)
-save("../figures/01_trajectories.pdf", f)
+save("../figures/01_11_trajectories.pdf", f)
 f
 
 # %% calculate the mean squared displacement
-function remove_drift(t)
-	t = copy(t)
-	t = t .- t[1,:]'
-	s = t[end,:] ./ (size(t,1)-1)
-	for i in 0:(size(t,1)-1)
-		t[i+1,:] = t[i+1,:] .- i .* s
-	end
-	return t
-end
-
 function msd(t)
 	t = scale(t)
 	t = remove_drift(t)
@@ -113,5 +82,5 @@ axislegend(a, plots_f, [p.label for p in plots_f], "Fits", position=:rb)
 
 # Colorbar(f[1, 2], limits=extrema(df.ot), label="Optical trap strength")
 ylims!(a, 1e-2, 1e2)
-save("../figures/01_msd.pdf", f)
+save("../figures/01_12_msd.pdf", f)
 f
