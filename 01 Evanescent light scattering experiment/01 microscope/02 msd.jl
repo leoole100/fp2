@@ -9,6 +9,7 @@ using Glob: glob
 using MeanSquaredDisplacement: imsd
 using Interpolations: interpolate, linear_interpolation
 using Format: format
+using Measurements: measurement
 
 include("functions.jl")
 include("../functions.jl")
@@ -56,6 +57,7 @@ function diffusion_label(p)
 	return format(p[1]*1e3, precision=0)*" nm²/s, "*format(p[2], precision=2)*" nm²"
 end
 
+
 #%% plot the mean squared displacement
 f = Figure()
 a = Axis(f[1, 1], 
@@ -68,7 +70,10 @@ a = Axis(f[1, 1],
 # measurements
 plots_s = []
 plots_f = []
-for i in eachrow(filter(d -> d.ot<2, df))
+df.msd_inf = fill(measurement(0., 0.), size(df, 1))
+df.msd_D0 = fill(measurement(0., 0.), size(df, 1))
+for j in 1:size(df, 1)
+	i = df[j, :]
 	m = msd(i.t)
 	s = scatter!(times(m), m, label=format(i.ot, precision=2), color=i.ot, colorrange=extrema(df.ot))
 	mf = curve_fit(diffusion_model, times(m), m, [1e-2, 1])
@@ -77,13 +82,17 @@ for i in eachrow(filter(d -> d.ot<2, df))
 		color=s.color, linestyle=:dash, colorrange=extrema(df.ot),
 		label=diffusion_label(mf.param)
 	)
+	df.msd_inf[j] = measurement(mf.param[2], sqrt(mf.jacobian[2,2]))
+	df.msd_D0[j] = measurement(mf.param[1], sqrt(mf.jacobian[1,1])) * 1e3
 	push!(plots_s, s)
 	push!(plots_f, ml)
 end
 axislegend(a, plots_s, [p.label for p in plots_s], "Trap Strength", position=:lt)
 axislegend(a, plots_f, [p.label for p in plots_f], "Fits", position=:rb)
-
-# Colorbar(f[1, 2], limits=extrema(df.ot), label="Optical trap strength")
 ylims!(a, 1e-2, 1e2)
 save("../figures/01_02_2_msd.pdf", f)
 f
+
+#%% save the data
+using JLD2 
+save("../data/TLM/02.jld2", "df", df)

@@ -1,5 +1,5 @@
-function dist(data; cutoff=0)
-	k = kde(data, boundary=(minimum(data), maximum(data)))
+function dist(data; cutoff=0, boundary=(minimum(data), maximum(data)))
+	k = kde(data, boundary=boundary)
 	x, y = k.x, k.density
 	x, y = x[y .> cutoff], y[y .> cutoff]
 	return (x=x, y=y)
