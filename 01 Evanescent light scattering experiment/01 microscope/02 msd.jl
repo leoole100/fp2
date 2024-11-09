@@ -74,15 +74,15 @@ function msd(t)
 	return m[1:1000]
 end
 
-interp_msd = linear_interpolation(
-	df.ot,
-	msd.(df.t)
-)
-
 # model
-# nΓ, clip
-diffusion_model(x, p) = clamp.(p[1] * x, 0, p[2])
-diffusion_label(p)= "min("*format(mf.param[1]*1e3, precision=0)*" nm²/s ⋅ τ, "*format(mf.param[2], precision=2)*")"
+# D₀, clip
+diffusion_model(x, p) = 1 ./(1 ./p[1] .* x.^-1 .+ 1 ./p[2])
+function diffusion_label(p)
+	if p[2] > 100
+		return format(p[1]*1e3, precision=0)*" nm²/s"
+	end
+	return format(p[1]*1e3, precision=0)*" nm²/s, "*format(p[2], precision=2)*" nm²"
+end
 
 #%% plot the mean squared displacement
 f = Figure()
@@ -92,12 +92,6 @@ a = Axis(f[1, 1],
 	xscale=log10, 
 	yscale=log10,
 )
-
-# interpolated values
-# for ot in range(0.7, 1.0, 10)
-# 	m = interp_msd(ot)
-# 	s = lines!(times(m), m, color=ot, colorrange=extrema(df.ot))
-# end
 
 # measurements
 plots_s = []
@@ -116,18 +110,6 @@ for i in eachrow(filter(d -> d.ot<2, df))
 end
 axislegend(a, plots_s, [p.label for p in plots_s], "Trap Strength", position=:lt)
 axislegend(a, plots_f, [p.label for p in plots_f], "Fits", position=:rb)
-
-# # free diffusion model
-# m = msd(df.t[1])
-# t = times(m)
-# mf = curve_fit(diffusion_model, t, m, [1e-2, 1, 100])
-# ml = lines!(a, t, diffusion_model(t, mf.param), 
-# 	color=:black, linestyle=:dash,
-# )
-# axislegend(a, [ml], 
-# 	[diffusion_label_free(mf.param)],
-# 	position=:rb,
-# )
 
 # Colorbar(f[1, 2], limits=extrema(df.ot), label="Optical trap strength")
 ylims!(a, 1e-2, 1e2)
