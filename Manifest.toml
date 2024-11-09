@@ -2,7 +2,7 @@
 
 julia_version = "1.11.1"
 manifest_format = "2.0"
-project_hash = "2d65dfaae052104e9ece7725510eb33e9b21917a"
+project_hash = "f47bd0eaf16b0f9276fa0d56f16ee99b748ee636"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "eea5d80188827b35333801ef97a40c2ed653b081"
@@ -212,6 +212,12 @@ version = "1.11.0"
 deps = ["UnsafeAtomics"]
 git-tree-sha1 = "c06a868224ecba914baa6942988e2f2aade419be"
 uuid = "a9b6321e-bd34-4604-b9c9-b65b8de01458"
+version = "0.1.0"
+
+[[deps.Autocorrelations]]
+deps = ["DSP", "LinearAlgebra", "Statistics"]
+git-tree-sha1 = "9cf35e6bec3c65951e3f04b11f90c58df0f25da6"
+uuid = "b9118d5e-f165-4cbd-b2ae-b030566b7b26"
 version = "0.1.0"
 
 [[deps.Automa]]
@@ -1895,6 +1901,12 @@ version = "1.1.9"
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
 version = "2.28.6+0"
+
+[[deps.MeanSquaredDisplacement]]
+deps = ["Autocorrelations", "AxisArrays", "LinearAlgebra", "OffsetArrays", "Statistics"]
+git-tree-sha1 = "69f24ad09c1501d0795f518d9355168a262e2dc0"
+uuid = "13c93d70-909c-440c-af92-39d48ffa2ba2"
+version = "0.2.1"
 
 [[deps.MetaGraphs]]
 deps = ["Graphs", "JLD2", "Random"]
