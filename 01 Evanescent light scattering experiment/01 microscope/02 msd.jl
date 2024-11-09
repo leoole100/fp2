@@ -4,7 +4,6 @@ using LsqFit: curve_fit
 using LinearAlgebra: norm, normalize
 using CairoMakie
 import CSV, Images
-using StatsBase: fit, Histogram
 using KernelDensity: kde
 using Glob: glob
 using MeanSquaredDisplacement: imsd
@@ -72,7 +71,7 @@ function msd(t)
 	m = imsd(t)
 	m = mean(m, dims=2)[:,1] # mean over x and y	
 	m = abs.(m)
-	return m
+	return m[1:1000]
 end
 
 interp_msd = linear_interpolation(
@@ -80,11 +79,15 @@ interp_msd = linear_interpolation(
 	msd.(df.t)
 )
 
-#%%
+# model
+# nΓ, clip
+diffusion_model(x, p) = clamp.(p[1] * x, 0, p[2])
+diffusion_label(p)= "min("*format(mf.param[1]*1e3, precision=0)*" nm²/s ⋅ τ, "*format(mf.param[2], precision=2)*")"
 
+#%% plot the mean squared displacement
 f = Figure()
 a = Axis(f[1, 1], 
-	xlabel="time in s", 
+	xlabel="τ in s", 
 	ylabel=rich("msd in μm", superscript("2")),
 	xscale=log10, 
 	yscale=log10,
@@ -97,13 +100,36 @@ a = Axis(f[1, 1],
 # end
 
 # measurements
+plots_s = []
+plots_f = []
 for i in eachrow(filter(d -> d.ot<2, df))
 	m = msd(i.t)
 	s = scatter!(times(m), m, label=format(i.ot, precision=2), color=i.ot, colorrange=extrema(df.ot))
+	mf = curve_fit(diffusion_model, times(m), m, [1e-2, 1])
+	ml = lines!(
+		a, times(m), diffusion_model(times(m), mf.param), 
+		color=s.color, linestyle=:dash, colorrange=extrema(df.ot),
+		label=diffusion_label(mf.param)
+	)
+	push!(plots_s, s)
+	push!(plots_f, ml)
 end
+axislegend(a, plots_s, [p.label for p in plots_s], "Trap Strength", position=:lt)
+axislegend(a, plots_f, [p.label for p in plots_f], "Fits", position=:rb)
+
+# # free diffusion model
+# m = msd(df.t[1])
+# t = times(m)
+# mf = curve_fit(diffusion_model, t, m, [1e-2, 1, 100])
+# ml = lines!(a, t, diffusion_model(t, mf.param), 
+# 	color=:black, linestyle=:dash,
+# )
+# axislegend(a, [ml], 
+# 	[diffusion_label_free(mf.param)],
+# 	position=:rb,
+# )
 
 # Colorbar(f[1, 2], limits=extrema(df.ot), label="Optical trap strength")
-axislegend(a, "Trap Strength", position=:lt)
 ylims!(a, 1e-2, 1e2)
 save("../figures/01_msd.pdf", f)
 f
