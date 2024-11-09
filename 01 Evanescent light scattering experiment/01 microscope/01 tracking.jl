@@ -5,7 +5,7 @@ using Statistics: mean
 using ImageFeatures: blob_LoG
 using Colors: Gray
 using Images: clamp01
-using WGLMakie
+using CairoMakie
 import CSV, VideoIO
 using FileIO: load
 
@@ -65,6 +65,19 @@ update_positions!(last_positions, radii, transform(img))
 @time update_positions!(last_positions, radii, transform(img)) # <1 ms
 
 crop(normalize(img), last_positions[1, :], radii[1]) # show the particle
+
+# make a figure of the particle
+f = Figure()
+a = Axis(f[1, 1], aspect=DataAspect(), yreversed=true)
+image!(
+	a, [-radii[1],  radii[1]], [-radii[1], radii[1]],
+	clamp01.(crop(normalize(img), last_positions[1,:], radii[1])),
+	interpolate=false
+)
+hidedecorations!(a)
+resize_to_layout!(f)
+save("../figures/01_01_1_particle.pdf", f)
+f
 
 # %%
 # track the particles

@@ -19,11 +19,12 @@ cd(@__DIR__)
 scale(t, s=0.13319672) = t .* s # px to μm
 times(t) = 0:length(t)-1 ./ 10
 df = load_trajectories()
+c = mean(df.t[end], dims=1)
+df
 
 # %%
 # calculate the probability distribution of the displacements
 # center(t) = mean(t, dims=1)
-c = mean(mean(df.t), dims=1)'
 radius(t, c=c) = [norm(t[j,:]' .- c) for j in 1:size(t,1)]
 σ(t) = std(radius(t))
 
@@ -32,7 +33,7 @@ model(x, p) = p[1] .+ p[2] .* (x .- p[3]).^2
 model_string(p) = format(p[2], precision=2)*" ⋅ r²"
 
 
-# %% plot the potential
+# %% plot the potential as a radial distribution
 f = Figure()
 a = Axis(f[1, 1], ylabel="pdf(x)")
 ylims!(a, 0, nothing)
@@ -40,9 +41,9 @@ b = Axis(f[2, 1], xlabel="r in μm", ylabel= "V(x) in kT")
 linkxaxes!(a, b)
 hidexdecorations!(a, grid=false)
 for i in eachrow(filter(x-> x.ot>0, df))
-	r = radius(scale(i.t))
-	k = dist(r, cutoff=0.04)
-	x = k.x .- mean(k.x)
+	r = scale(radius(i.t))
+	k = dist(r, cutoff=0.1)
+	x = k.x
 	lines!(a, x, k.y, color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2))
 	lines!(b, x, potential(k.y), color=i.ot, colorrange=extrema(df.ot))
 
@@ -51,7 +52,7 @@ for i in eachrow(filter(x-> x.ot>0, df))
 end
 axislegend(a, "Trap", position=:lt)
 axislegend(b, "Fit", position=:lt)
-save("../figures/01_21_potential.pdf", f)
+save("../figures/01_03_1_potential.pdf", f)
 f
 
 # %% plot the measured spring constants

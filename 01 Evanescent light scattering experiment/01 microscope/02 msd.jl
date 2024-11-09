@@ -18,19 +18,22 @@ cd(@__DIR__)
 scale(t, s=0.13319672) = t .* s # px to μm
 times(t) = 0:length(t)-1 ./ 10
 df = load_trajectories()
+c = mean(df.t[end], dims=1)
+df
 
-#%% plot the trajectories
+#%% plot the trajectorie
 f = Figure()
-a = Axis(f[1,1], xlabel="x in μm", ylabel="y in μm")
+a = Axis(f[1,1], xlabel="x in μm", ylabel="y in μm", aspect = DataAspect())
 for p in eachrow(df)
-	t = scale(p.t)
-	t = t .- mean(t, dims=1)
-	lines!(t, label=p.n, alpha=0.5, color=p.ot, colorrange=extrema(df.ot))
-	# points = [Point2f(p.trajectory[j,:]...) for j in p.frames]
-	# datashader!(points)
+	t = p.t .- c
+	t = scale(t)
+	# t = t .- mean(t, dims=1)
+	# t = t .- t[1,:]'
+	lines!(t, label=format(p.ot, precision=2), alpha=.75, color=p.ot, colorrange=extrema(df.ot))
 end
-axislegend(position=:lt)
-save("../figures/01_11_trajectories.pdf", f)
+axislegend(position=:lt, "Trap Strength")
+resize_to_layout!(f)
+save("../figures/01_02_1_trajectories.pdf", f)
 f
 
 # %% calculate the mean squared displacement
@@ -82,5 +85,5 @@ axislegend(a, plots_f, [p.label for p in plots_f], "Fits", position=:rb)
 
 # Colorbar(f[1, 2], limits=extrema(df.ot), label="Optical trap strength")
 ylims!(a, 1e-2, 1e2)
-save("../figures/01_12_msd.pdf", f)
+save("../figures/01_02_2_msd.pdf", f)
 f

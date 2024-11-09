@@ -6,3 +6,15 @@ function dist(data; cutoff=0)
 end
 
 potential(p) = -log.(p)
+
+# make plots consistent
+# will be moved to a top level file
+inch = 96
+pt = 4/3
+cm = inch/2.54
+update_theme!(
+	# fontsize=10,
+	# fonts = (;
+	# 	regular="Roboto"
+	# ),
+)
