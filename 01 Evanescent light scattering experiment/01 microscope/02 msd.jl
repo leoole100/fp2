@@ -37,6 +37,10 @@ resize_to_layout!(f)
 save("../figures/01_02_1_trajectories.pdf", f)
 f
 
+# %% plot the timeseries
+i = df[2, :]
+norm(i.t .- c)
+
 # %% calculate the mean squared displacement
 function msd(t)
 	t = scale(t)

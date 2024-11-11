@@ -23,12 +23,12 @@ white = load("../data/TLM/white.bmp")
 black = load("../data/TLM/black.bmp")
 white, black = float.(Gray.(white)), float.(Gray.(black))
 
-normalize(img) = (clamp01.(Gray.(float(img))) .- black) ./ (white .- black)
-normalize(img)
+normalize_img(img) = (clamp01.(Gray.(float(img))) .- black) ./ (white .- black)
+normalize_img(img)
 
 # transform the images
 trans(x) = x^4
-transform(img) = Gray.(trans.(1 .- normalize(img)))
+transform(img) = Gray.(trans.(1 .- normalize_img(img)))
 transform(img)
 
 image(transform(img)'./maximum(transform(img)), axis=(aspect=DataAspect(), yreversed=true,), interpolate=false)
@@ -64,19 +64,20 @@ end
 update_positions!(last_positions, radii, transform(img))
 @time update_positions!(last_positions, radii, transform(img)) # <1 ms
 
-crop(normalize(img), last_positions[1, :], radii[1]) # show the particle
+crop(normalize_img(img), last_positions[1, :], radii[1]) # show the particle
 
 # make a figure of the particle
 f = Figure()
 a = Axis(f[1, 1], aspect=DataAspect(), yreversed=true)
+radii[1]=14
 image!(
 	a, [-radii[1],  radii[1]], [-radii[1], radii[1]],
-	clamp01.(crop(normalize(img), last_positions[1,:], radii[1])),
+	clamp01.(crop(normalize_img(img), last_positions[1,:], radii[1])),
 	interpolate=false
 )
-hidedecorations!(a)
+# hidedecorations!(a)
 resize_to_layout!(f)
-save("../figures/01_01_1_particle.pdf", f)
+# save("../figures/01_01_1_particle.pdf", f)
 f
 
 # %%
@@ -118,4 +119,4 @@ df
 basepath = join(split(path, '.')[1:end-1], ".")
 CSV.write(basepath * ".trajectory.csv", df)
 save(basepath * ".png", clamp01.(Gray.(img)))
-save(basepath * ".particle.png", clamp01.(crop(normalize(img), last_positions[1, :], radii[1])))
+save(basepath * ".particle.png", clamp01.(crop(normalize_img(img), last_positions[1, :], radii[1])))

@@ -72,10 +72,11 @@ Mit einer Skizze des Versuchsaufbaus
 
 \pagebreak
 \section{Results}
-
 All recorded data and the analysis is available at \url{www.github.com/leoole100/fp2}.
 
 \subsection{Transmission Light Microscopy}
+The recorded images have a shape of $600\times 800$\si{px}.
+The observed particle has a radius of \SI{14(2)}{px} equivalent to \SI{1.86(27)}{\micro m}. 
 \begin{figure*}[h]
     \centering
     \includegraphics{figures/01_01_1_particle.pdf}
@@ -88,10 +89,17 @@ All recorded data and the analysis is available at \url{www.github.com/leoole100
     \caption{Tracked trajectories relative to trap center.}
 \end{figure*}
 
+Model for the MSD with $k=\alpha P \cdot\nicefrac{k_B T}{\text{MSD}(\infty)}$ with the optical tweezer power $P$ in arbitrary units:
+\begin{align}
+    \frac{1}{\text{MSD}(\tau, k)}
+    &= \frac{1}{D_0 \tau} + \frac{1}{\text{MSD}(\infty)}\\
+    &= \frac{1}{D_0 \tau} + \frac{k}{k_b T \cdot \alpha P}
+    \label{eq:01_mdl_msd} 
+\end{align}
 \begin{figure*}[h]
     \centering
     \includegraphics{figures/01_02_2_msd.pdf}
-    \caption{Mean Square Displacement, Linear Drift removed, fit: $\text{MSD}(\tau) = \frac{1}{\frac{1}{D_0 x} + \frac{1}{\text{MSD}(\inf)}} $}
+    \caption{Mean Square Displacement, Linear Drift removed, fit: \autoref{eq:01_mdl_msd}}
 \end{figure*}
 
 \begin{figure*}[h]
