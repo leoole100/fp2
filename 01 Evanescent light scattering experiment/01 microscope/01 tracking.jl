@@ -69,15 +69,14 @@ crop(normalize_img(img), last_positions[1, :], radii[1]) # show the particle
 # make a figure of the particle
 f = Figure()
 a = Axis(f[1, 1], aspect=DataAspect(), yreversed=true)
-radii[1]=14
 image!(
 	a, [-radii[1],  radii[1]], [-radii[1], radii[1]],
 	clamp01.(crop(normalize_img(img), last_positions[1,:], radii[1])),
 	interpolate=false
 )
-# hidedecorations!(a)
+hidedecorations!(a)
 resize_to_layout!(f)
-# save("../figures/01_01_1_particle.pdf", f)
+save("../figures/01_01_1_particle.pdf", f)
 f
 
 # %%

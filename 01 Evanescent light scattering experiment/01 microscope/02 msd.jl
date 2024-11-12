@@ -17,11 +17,24 @@ include("../functions.jl")
 # %% load the trajectories
 cd(@__DIR__)
 scale(t, s=0.13319672) = t .* s # px to μm
-times(t) = 0:length(t)-1 ./ 10
+times(t) = (0:size(t,1)-1) ./ 10
 df = load_trajectories()
 c = mean(df.t[end], dims=1)
 df
 
+#%% plot the trajectories in different plots
+f = Figure()
+axs = [Axis(f[i,j]) for i in [1,2] for j in [1,2]]
+l = Nothing
+for (a, p) in zip(axs, eachrow(df))
+	t = p.t .- c
+	t = scale(t)
+	l = lines!(a, t, color=times(t)./60, alpha=.5)
+	a.title = format(p.ot, precision=2)
+end
+Colorbar(f[1:2,3], l, label="Time in min")
+save("../figures/01_02_11_trajectories_time.pdf", f)
+f
 #%% plot the trajectorie
 f = Figure()
 a = Axis(f[1,1], xlabel="x in μm", ylabel="y in μm", aspect = DataAspect())
@@ -37,7 +50,23 @@ resize_to_layout!(f)
 save("../figures/01_02_1_trajectories.pdf", f)
 f
 
-# %% plot the timeseries
+# %% plot the time series
+f = Figure()
+a = Axis(f[1,1], 
+	yscale=log10, 
+	ylabel="Center distance μm", 
+	xlabel="time s"
+)
+for p in eachrow(reverse(df))
+	t = p.t .- c
+	t = scale(t)
+	lines!([norm(t[i,:]) for i in 1:size(t,1)], color=p.ot, colorrange=extrema(df.ot), label=format(p.ot, precision=2))
+end
+axislegend()
+ylims!(.1, nothing)
+f
+
+# %% define msd function
 i = df[2, :]
 norm(i.t .- c)
 
@@ -94,6 +123,7 @@ end
 axislegend(a, plots_s, [p.label for p in plots_s], "Trap Strength", position=:lt)
 axislegend(a, plots_f, [p.label for p in plots_f], "Fits", position=:rb)
 ylims!(a, 1e-2, 1e2)
+xlims!(1, 1e2)
 save("../figures/01_02_2_msd.pdf", f)
 f
 
