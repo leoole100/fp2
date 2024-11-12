@@ -1,3 +1,5 @@
+include("../functions.jl")
+
 function load_trajectory!(df, path)
 	path = join(split(path, ".")[1:end-1], ".")
 	f = DataFrame(CSV.File(path * ".csv"))
@@ -20,14 +22,4 @@ function load_trajectories(path = "../data/TLM/")
 	end
 	sort!(df, :ot)
 	return df
-end
-
-function remove_drift(t)
-	t = copy(t)
-	t = t .- t[1,:]'
-	s = t[end,:] ./ (size(t,1)-1)
-	for i in 0:(size(t,1)-1)
-		t[i+1,:] = t[i+1,:] .- i .* s
-	end
-	return t
 end

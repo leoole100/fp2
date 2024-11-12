@@ -93,9 +93,11 @@ Model for the MSD with $k=\alpha P \cdot\nicefrac{k_B T}{\text{MSD}(\infty)}$ wi
 \begin{align}
     \frac{1}{\text{MSD}(\tau, k)}
     &= \frac{1}{D_0 \tau} + \frac{1}{\text{MSD}(\infty)}\\
-    &= \frac{1}{D_0 \tau} + \frac{k}{k_b T \cdot \alpha P}
+    &= \frac{1}{D_0 \tau} + \frac{1}{(k_B T \cdot P)_i}
     \label{eq:01_mdl_msd} 
 \end{align}
+For the $i$-th measurement.
+
 \begin{figure*}[h]
     \centering
     \includegraphics{figures/01_02_2_msd.pdf}
@@ -108,25 +110,34 @@ Model for the MSD with $k=\alpha P \cdot\nicefrac{k_B T}{\text{MSD}(\infty)}$ wi
     \caption{Bivariate histogram for different trap strengths, relative to mean position, different scale in um.}
 \end{figure*}
 
-\begin{figure*}
+\begin{figure*}[h]
     \centering
     \includegraphics{figures/01_03_2_radial.pdf}
     \caption{Distance to center of trap. Qualitatively, the same if center is mean per track or "real" center.}
 \end{figure*}
 
-\begin{figure*}
+\begin{figure*}[h]
     \centering
     \includegraphics{figures/01_03_3_axis.pdf}
     \caption{Grouped by axis, relative to mean.}
 \end{figure*}
 
-\begin{figure*}
+\begin{figure*}[h]
     \centering
     \includegraphics{figures/01_03_4_spring_constants.pdf}
     \caption{Differently measured spring constants.}
 \end{figure*}
 
-\pagebreak
+\clearpage
+\subsection{Total Internal Reflection Microscopy}
+\begin{align}
+    P(\Delta z) &= N(0, \sigma^2) = N\left(0, \frac{\Delta T}{\left<T_s\right>} \sigma_s^2\right)\\
+    \Delta I &= - I_0 \beta \exp\left(-\frac{z}{\beta}\right) \Delta z \\
+    P(\Delta I) &= P(\Delta z) \left|\frac{d \Delta z}{d \Delta I}\right|\\
+    &= N(0, \sigma^2) \;\frac{1}{I_0\beta} \exp\left(\frac{z}{\beta}\right)
+\end{align}
+
+\clearpage
 \section{Discussion}
 
 

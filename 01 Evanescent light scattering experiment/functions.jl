@@ -7,6 +7,16 @@ end
 
 potential(p) = -log.(p)
 
+function remove_drift(t)
+	t = copy(t)
+	t = t .- t[1,:]'
+	s = t[end,:] ./ (size(t,1)-1)
+	for i in 0:(size(t,1)-1)
+		t[i+1,:] = t[i+1,:] .- i .* s
+	end
+	return t
+end
+
 # make plots consistent
 # will be moved to a top level file
 inch = 96
