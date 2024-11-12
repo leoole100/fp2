@@ -78,11 +78,9 @@ end
 #%%
 
 data = read_data()
-#%%
 #data.I[1]
 data.ot
 
-#%%
 I_z = data.I[1]
 #I_z = exp.(beta * randn(Integer(1e6)))
 guessI0 = 10
@@ -90,7 +88,6 @@ delta_t = 1000
 R = 1.86e-6
 T = 273+22
 
-#%%
 estimate_I0(I_z,guessI0, delta_t, R, T)
 
 #%%
@@ -98,33 +95,22 @@ D_0 = calc_D_0(R,T)
 t_steps = [n*delta_t for n in range(1,round(Int,(length(I_z)-1)/delta_t)-1)]
 model(p) = sum((calc_D_z.(sigmaq.(slice_dz.(t_steps,delta_t,Ref(delta_z(find_z.(p[1],I_z,p[2]))))),delta_t).-D_orth.(D_0,R,sum.(slice_dz.(t_steps,delta_t,Ref(find_z.(p[1],I_z,p[2]))))./delta_t)).^2)
 #%%
-
-function hist(traj,vrange)
-    traj_hist = zeros(length(vrange))
-    traj_hist[1] = sum(traj[traj.<vrange[1]])
-    for i in range(2,length(vrange))
-        traj_hist[i] = sum(traj[vrange[i-1].<traj.<=vrange[i]])
-    end
-    traj_hist/length(traj)
-end
 (vrange,trahi) = dist(I_z)
 model(v,p) = p[4]/(sqrt(2*pi)*p[1]).*exp.(-p[3]^2*(log.(abs.(1 .-v)).-log.(abs(p[2]))).^2 ./(2*p[1]^2))
 lb = [1e-9,minimum(I_z),10e-9,0]
 ub = [1e-7,maximum(I_z),1e-1,10000]
-p0 = [2.35e-8,0.53,1e-7,1.83e-7]
-#pf = curve_fit(model,vrange,trahi,p0,g_tol=0,x_tol=0,show_trace=true,iterations=10000)#,upper=ub,lower=lb)
-function err_func(p)
-    sum((model(vrange,p).-trahi).^2)
-end
-pf = optimize(err_func,p0,LBFGS(),Optim.Options(iterations=10000))
+# p0 = [2.35e-8,0.53,1e-7,1.83e-7]
+p0 = [2.35e-8,0.53,1e-7,2e-7]
+err_func(p) = sum((model(vrange,p).-trahi).^2)
+pf = optimize(err_func,p0, Optim.BFGS(),Optim.Options(
+    iterations=100, 
+    time_limit=1,
+))
 f = Figure()
 i = Axis(f[1,1])
-#i2 = Axis(f[2,1])
 lines!(vrange,trahi,label="trahi")
 lines!(vrange,model(vrange,p0),label="p0")
-if pf.converged
-    lines!(vrange,model(vrange,pf.param),label="pf",linestyle=:dot)
-end
+lines!(vrange,model(vrange,Optim.minimizer(pf)),label="pf",linestyle=:dot)
 axislegend()
 f
 
