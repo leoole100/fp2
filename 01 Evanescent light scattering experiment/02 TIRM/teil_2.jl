@@ -112,6 +112,7 @@ lines!(vrange,trahi,label="trahi")
 lines!(vrange,model(vrange,p0),label="p0")
 lines!(vrange,model(vrange,Optim.minimizer(pf)),label="pf",linestyle=:dot)
 axislegend()
+save("../figures/02_teil2_01_fit.pdf", f)
 f
 
 #%%
