@@ -100,12 +100,13 @@ model(v,p) = p[4]/(sqrt(2*pi)*p[1]).*exp.(-p[3]^2*(log.(abs.(1 .-v)).-log.(abs(p
 lb = [1e-9,minimum(I_z),10e-9,0]
 ub = [1e-7,maximum(I_z),1e-1,10000]
 # p0 = [2.35e-8,0.53,1e-7,1.83e-7]
-p0 = [2.35e-8,0.53,1e-7,2e-7]
+p0 = [2.35e-8,0.53,1e-7,2e-7] # sigma, I(z_0), beta, Normierungskonstante
 err_func(p) = sum((model(vrange,p).-trahi).^2)
 pf = optimize(err_func,p0, Optim.BFGS(),Optim.Options(
     iterations=100, 
     time_limit=1,
 ))
+I_z0 = Optim.minimizer(pf)[2]
 f = Figure()
 i = Axis(f[1,1])
 lines!(vrange,trahi,label="trahi")
@@ -114,6 +115,57 @@ lines!(vrange,model(vrange,Optim.minimizer(pf)),label="pf",linestyle=:dot)
 axislegend()
 save("../figures/02_teil2_01_fit.pdf", f)
 f
+
+#%%
+#copy of part above, to fit parts of trajectory
+
+beta = sum(beta_f)/length(beta_f)
+z = (log.(I_z).-log(I_z0)).*-beta
+
+num_steps=Int(3e4)
+sigma_f = zeros(Int(9e5/num_steps))
+I_z0_f = zeros(Int(9e5/num_steps))
+beta_f = zeros(Int(9e5/num_steps))
+amp = zeros(Int(9e5/num_steps))
+z_loc = zeros(Int(9e5/num_steps))
+
+for i in range(1,Int(9e5/num_steps))
+    z_loc[i] = sum(z[(i-1)*num_steps+1:i*num_steps])/num_steps
+    (vrange,trahi) = dist(I_z[(i-1)*num_steps+1:i*num_steps])
+    model(v,p) = p[4]/(sqrt(2*pi)*p[1]).*exp.(-p[3]^2*(log.(abs.(1 .-v)).-log.(abs(p[2]))).^2 ./(2*p[1]^2))
+    lb = [1e-9,minimum(I_z),10e-9,0]
+    ub = [1e-7,maximum(I_z),1e-1,10000]
+    # p0 = [2.35e-8,0.53,1e-7,1.83e-7]
+    #p0 = [2.35e-8,0.53,1e-7,2e-7] # sigma, I(z_0), beta, Normierungskonstante
+    mask = (maximum(trahi).-trahi).<0.1
+    fak = 1+1e-3*log(num_steps/9e5)
+    p0 = [fak*2.35e-8,1-sum(vrange[mask])/sum(mask),1e-7,fak*2e-7]
+    err_func(p) = sum((model(vrange,p).-trahi).^2)
+    pf = optimize(err_func,p0, Optim.BFGS(),Optim.Options(
+        iterations=100, 
+        time_limit=1,
+    ))
+    params = Optim.minimizer(pf)
+    (sigma_f[i],I_z0_f[i],beta_f[i],amp[i]) = params
+    println("Step ", i, ", σ=", params[1], " beta=", params[3], " Converged: ", pf.iteration_converged, " Residual: ", pf.g_residual)
+end
+D_f = sigma_f.^2/(2*num_steps*TIMESTEP)
+D_0 = calc_D_0(R,T)
+
+f = Figure()
+i = Axis(f[1,1])
+i2 = Axis(f[2,1])
+scatter!(z_loc,D_f,label="D über z")
+#lines!(z_loc,D_orth.(D_0,R,z_loc),linestyle=:dot)
+lines!(i,sigma_f,label="σ")
+#lines!(i2,z,label="z")
+#lines!(vrange,trahi,label="trahi")
+#lines!(vrange,model(vrange,p0),label="p0")
+#lines!(vrange,model(vrange,Optim.minimizer(pf)),label="pf",linestyle=:dot)
+axislegend()
+save("../figures/02_teil2_01_fit.pdf", f)
+f
+
 
 #%%
 f = Figure()
