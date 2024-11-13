@@ -86,22 +86,10 @@ end
 diffusion_model(x, p) = 1 ./(1 ./p[1] .* x.^-1 .+ 1 ./p[2])
 function diffusion_label(p)
 	if p[2] > 100
-		return format(p[1]*1e3, precision=0)*" nm²/s"
+		return format(p[1], precision=2)*" μm²/s"
 	end
-	return format(p[1]*1e3, precision=0)*" nm²/s, "*format(p[2], precision=2)*" nm²"
+	return format(p[1], precision=2)*" μm²/s, "*format(p[2], precision=2)*" nm²"
 end
-
-# make a combined model for all measurements
-# create a structure for the fit parameters
-# function combined_model(τ, p)
-# 	D₀ = p[1]
-# 	P  = p[1:end]
-# 	m = 1/(D₀.*τ)
-# 	m = [i.+j for (i,j) in zip(m, 1/P)]
-# 	m = 1/m
-# 	return m
-# end
-# f = curve_fit(combined_model, times.(df.t), df.t, vcat(1e-2, fill(1, size(df,1))...))
 
 #%% plot the mean squared displacement
 f = Figure()
@@ -136,7 +124,7 @@ axislegend(a, plots_s, [p.label for p in plots_s], "Trap Strength", position=:lt
 axislegend(a, plots_f, [p.label for p in plots_f], "Fits", position=:rb)
 ylims!(a, 1e-2, 1e2)
 xlims!(1e-1, 1e2)
-# save("../figures/01_02_2_msd.pdf", f)
+save("../figures/01_02_2_msd.pdf", f)
 f
 
 #%% save the data

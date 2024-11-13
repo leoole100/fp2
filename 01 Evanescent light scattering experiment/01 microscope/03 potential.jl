@@ -1,6 +1,7 @@
 using DataFrames: DataFrame, nrow, eachrow, ncol
 using Statistics: mean, std
 using LsqFit: curve_fit
+import LsqFit
 using LinearAlgebra: norm, normalize
 using CairoMakie
 import CSV, Images
@@ -16,7 +17,7 @@ using JLD2
 include("functions.jl")
 include("../functions.jl")
 
-# %% load the trajectories
+# load the trajectories
 cd(@__DIR__)
 scale(t, s=0.13319672) = t .* s # px to μm
 times(t) = 0:length(t)-1 ./ 10
@@ -44,8 +45,8 @@ for i in 1:size(df, 1)
 	a.title = format(df.ot[i], precision=2)
 	# linkaxes!(a, axs[1,1])
 	a.aspect = DataAspect()
-	# t = scale(df.t[i].-c)
-	t = scale(df.t[i].-mean(df.t[i], dims=1))
+	t = scale(df.t[i].-c)
+	# t = scale(df.t[i].-mean(df.t[i], dims=1))
 	k = kde(t)
 	h = heatmap!(a, k.x, k.y, k.density)
 	# h = heatmap!(a, k.x, k.y, potential(k.density))
@@ -59,9 +60,9 @@ aV = Axis(f[1, 1], xlabel="r in μm", ylabel="V(x) in kT")
 aP = Axis(f[2, 1], xlabel="r in μm", ylabel="pdf(x)")
 linkxaxes!(aV, aP)
 hidexdecorations!(aV, grid=false)
-for i in eachrow(df)
-	r = scale(radius(i.t .-mean(i.t, dims=1)))
-	# r = scale(radius(i.t .-c))
+for i in eachrow(filter(d -> d.ot>0, sort(df, :ot)))
+	# r = scale(radius(i.t .-mean(i.t, dims=1)))
+	r = scale(radius(i.t .-c))
 	k = dist(r, cutoff=0.01, boundary=(0, maximum(r)))
 	lines!(aP, k.x, k.y, color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2))
 	l = lines!(aV, k.x, potential(k.y), color=i.ot, colorrange=extrema(df.ot))
@@ -92,10 +93,10 @@ for m in 2:size(df, 1)
 			k.x .-offset, model(k.x, mdl.param), 
 			color=i.ot, colorrange=extrema(df.ot), 
 			linestyle=:dash,
-			label=model_string(mdl.param)
+			# label=model_string(mdl.param)
 		)
 
-		k = measurement(mdl.param[2], sqrt(mdl.jacobian[2,2]))
+		k = measurement(mdl.param[2], 0)
 		println(k)
 		if j == 1
 			df[m ,:Vkx] = k
@@ -110,7 +111,17 @@ for j in 1:2
 	k = dist(t[:,j], cutoff=0.01)
 	lines!(a, k.x, potential(k.y), color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2))
 end
-xlims!(a, -3, 3)
+i = df[2,:]
+t = scale(i.t .-mean(i.t, dims=1))
+for j in 1:2
+	k = dist(t[:,j], cutoff=0.05)
+	mdl = curve_fit(model, k.x, potential(k.y), [0., 1., 0.])
+	offset = mdl.param[3]
+	k = dist(t[:,j], cutoff=0)
+	lines!(a, k.x .-offset, potential(k.y), color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2)) 	
+end
+xlims!(a, -7, 7)
+ylims!(a, 0, 5)
 axislegend("Trap Stiffness", position=:lb, unique=true)
 save("../figures/01_03_3_axis.pdf", f)
 f
@@ -120,8 +131,8 @@ f
 f = Figure()
 a = Axis(f[1, 1], xlabel="Trap Stiffness", ylabel="k in N/m")
 
-function er(a, x, y, label)
-	# errorbars!(a, x, value.(y), uncertainty.(y))
+function er(a, x, y, label, color=Nothing)
+	errorbars!(a, x, value.(y), uncertainty.(y))
 	scatter!(a, x, value.(y), label=label)
 end
 
@@ -130,7 +141,7 @@ kB = 1.38064852e-23
 kT = kB * T
 
 # plot fit results
-er(a, df.ot[2:end], kT.*df.Vkx[2:end]*1e12, "V fit x")
+p = er(a, df.ot[2:end], kT.*df.Vkx[2:end]*1e12, "V fit x")
 er(a, df.ot[2:end], kT.*df.Vky[2:end]*1e12, "V fit y")
 
 
