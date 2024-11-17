@@ -24,6 +24,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{tikz}
+\usepackage{parskip}
 
 \usepackage{libertinus, libertinust1math}
 \usepackage[sfdefault]{biolinum}
@@ -84,15 +85,6 @@
 	url=true,
 	maxbibnames=100
 ]{biblatex}
-\DefineBibliographyStrings{english}{%
-    backrefpage  = {see p.}, % for single page number
-    backrefpages = {see pp.} % for multiple page numbers
-}
-
-% remove issue
-\AtEveryBibitem{%
-  \clearfield{number}
-}
 
 \usepackage{float}
 % \floatplacement{figure}{h}
@@ -141,8 +133,8 @@
 
 \usepackage{ifthen}
 \newcommand{\markieren}[4]{
-    \ifthenelse{\equal{#1}{}}{}{\adjustbox{padding=3pt, bgcolor=seeblau1, margin=-1pt}{\strut{\sffamily\robotoMedium{#1}}}\\}
-    \ifthenelse{\equal{#2}{}}{}{\adjustbox{padding=3pt, bgcolor=seeblau2, margin=-1pt}{\strut{\sffamily\robotoMedium{#2}}}\\}
+	\ifthenelse{\equal{#1}{}}{}{\adjustbox{padding=3pt, bgcolor=seeblau1, margin=-1pt}{\strut{\sffamily\robotoMedium{#1}}}\\}
+  \ifthenelse{\equal{#2}{}}{}{\adjustbox{padding=3pt, bgcolor=seeblau2, margin=-1pt}{\strut{\sffamily\robotoMedium{#2}}}\\}
 	\ifthenelse{\equal{#3}{}}{}{\adjustbox{padding=3pt, bgcolor=seeblau3, margin=-1pt}{\strut{\sffamily\robotoMedium{#3}}}\\}
 	\ifthenelse{\equal{#4}{}}{}{\adjustbox{padding=3pt, bgcolor=seeblau4, margin=-1pt}{\strut{\sffamily\robotoMedium{#4}}}}
 }

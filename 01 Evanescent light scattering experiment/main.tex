@@ -1,5 +1,4 @@
 \documentclass[
-    parskip=half, 
     twoside=false,
     twocolumn=true,
     fontsize=11pt,
@@ -21,7 +20,7 @@
     \vspace*{3cm}
     {
         \fontsize{32}{32}
-        \markieren{}{}{Evanescent light scattering}{Optical Tweezers}
+        \markieren{}{Evanescent light scattering}{Optical Tweezers}{Random Walk}
     }
     \vspace{.25cm}\\
     {
@@ -48,6 +47,9 @@
 \end{titlepage}
 
 \section{Introduction}
+Using the statistics of the random walk small forces can be measured.
+This is demonstrated on colloidal particles in a aqueous solution.
+Forces are applied using optical tweezers and the position is measured with different microscopy techniques.
 
 
 % \subsection{Physical Principles}
@@ -62,7 +64,7 @@
     \label{fig:setup}
 \end{figure}
 This experiment operates with light on small particles (in the range of \SI{1}{\micro m} \cite{instructions}) in a aqueous solution.
-This is shown in \autoref{fig:setup} as the gray circle in the blue box.
+This is shown in \autoref{fig:setup} as the gray circle in the blue box. 
 
 Using a optical tweezers setup the particle can be trapped in the center of the experiment.
 This results on a 3 dimensional harmonic potential, with a spring constant that is roughly proportional to the trap strength.
@@ -118,9 +120,9 @@ This happened multiple times during the shown measurement.
 \end{figure}
 \subsection*{Mean Square Displacement}
 A method to describe the trajectory of a random walk is the mean square displacement (MSD) \cite{wiki:msd}.
-This is defined as the average of the squared distance of the particle from the starting point:
+This is defined as the average of the squared distance of the particle from the starting point \cite{wiki:msd}:
 \begin{equation}
-    \text{MSD}(t) = \left<\Delta r^2(t)\right> = \frac{1}{N} \sum_i^N \left(x_i(t) - x_i(0) \right)^2 
+    \text{MSD}(t) = \frac{1}{N} \sum_i^N \left( x_i\left(t\right) - x_i\left(0\right) \right)^2 
 \end{equation}
 Here a different implementation using the autocorrelation of the velocity was used, to achieve a more stable result.
 This was implemented by \cite{jl:msd}.
@@ -133,11 +135,11 @@ The MSD can be described by the following model:
 \end{equation}
 
 For a free particle the $\text{MSD}(\infty)=\infty$ and the MSD grows linearly with $D_0$ over time \cite{wiki:msd,instructions}.\\
-The linear fit for the free particles, works as described with a $D_0 = \SI{0.9357(25)}{\micro m^2/s}$.
-This is roughly equivalent with the expected value of $D_0 = \frac{k_B T}{6 \pi \eta r} = \SI{1.22(18)}{\micro m ^2 / s}$ \cite{instructions}, with $r = \SI{1.86(27)}{\micro m}$ and $\eta = \SI{0.955}{mPa\cdot s}$.
+The linear fit for the free particles, works as described with a $D_0 = \SI{1.013(29)}{\micro m^2/s}$.
+This is equivalent with the expected value of $D_0 = \frac{k_B T}{6 \pi \eta r} = \SI{1.22(18)}{\micro m ^2 / s}$ \cite{instructions}, with $r = \SI{1.86(27)}{\micro m}$ and $\eta = \SI{0.955}{mPa\cdot s}$\cite{n:water}.
 
 For a confined particle the MSD reaches a plateau at $\text{MSD}(\infty)$ \cite{instructions}.
-For the higher spring stiffnesses (\SI{0.90}{}, \SI{1.01}{}), the MSD reaches a plateau and the spring stiffness are shown in \autoref{fig:01spring}.\\
+For the higher spring stiffnesses (\SI{0.90}{}, \SI{1.01}{}), this happens and the spring stiffness are shown in \autoref{fig:01spring}.\\
 For the lower measured spring stiffness (\SI{0.75}{}), the MSD does not reach a plateau, as it partially escapes the trap and wanders around (see \autoref{fig:01bivariate}).
 Therefore this procedure is not adequate for such low spring stiffnesses.
 
@@ -174,13 +176,9 @@ This is due to the limited size of the trap, but the spring constant can still b
 This method allows for the measurement of a spring constant as low as \SI{0.9011(45)}{\nano N /m}, which means over the used length scales that forces in the order of \SI{1}{\femto N} can be measured.
 
 
-
-\clearpage
 \subsection{Total Internal Reflection Microscopy}
 
-\clearpage
 \section{Discussion}
-\blindtext
 
 \addcontentsline{toc}{section}{Literature}
 \nocite{*}
