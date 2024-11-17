@@ -49,16 +49,34 @@
 
 \section{Introduction}
 
-\subsection{Physical Principles}
-kompakten Zusammenstellung der physikalischen Grundlagen
+
+% \subsection{Physical Principles}
+% kompakten Zusammenstellung der physikalischen Grundlagen
 
 
 \section{Methods}
-Mit einer Skizze des Versuchsaufbaus
+\begin{figure}
+    \centering
+    \includegraphics{figures/setup.pdf}
+    \caption{Schematic of the experimental setup. Optical tweezers in green, transmission light microscopy in blue and total internal reflection microscopy in red.}
+    \label{fig:setup}
+\end{figure}
+This experiment operates with light on small particles (in the range of \SI{1}{\micro m} \cite{instructions}) in a aqueous solution.
+This is shown in \autoref{fig:setup} as the gray circle in the blue box.
 
-\section{Procedure}
+Using a optical tweezers setup the particle can be trapped in the center of the experiment.
+This results on a 3 dimensional harmonic potential, with a spring constant that is roughly proportional to the trap strength.
 
-\clearpage
+To directly observe the particle transmission light microscopy is used.
+For this a blue led is used to illuminate the particle from below.
+This allows the particle position to measured in $x$ and $y$ direction.
+
+To measure the position in $z$ direction, total internal reflection microscopy is used.
+For this a red laser is bounced off a prism to create a evanescent wave in the aqueous solution.
+This wave scatters off the particle into a sensitive photo detector.
+
+% \section{Procedure}
+
 \section{Results}
 All recorded data and the analysis is available at \url{www.github.com/leoole100/fp2}.
 
