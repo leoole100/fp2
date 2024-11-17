@@ -52,19 +52,6 @@
 \subsection{Physical Principles}
 kompakten Zusammenstellung der physikalischen Grundlagen
 
-Mean square deviation and velocity autocorrelation:
-\url{https://de.wikipedia.org/wiki/Mittlere_quadratische_Verschiebung#Verbindung_zur_Geschwindigkeitsautokorrelation}
-\begin{align}
-    &&\left<v(t)\cdot v(t+\tau)\right> &= - \frac{d}{d\tau} \frac{\left<r^2(\tau)\right>}{6\tau}\\
-    \Rightarrow&&\left<r^2(\tau)\right> &= 6 \int_0^\tau (\tau - s) \left<v(0) \cdot v(s)\right> ds
-\end{align}
-
-The maxwell boltzmann relations (from script) are given by
-\begin{align}
-    P(x) &\propto \exp\left(- \frac{V(x)}{k_B T}\right)\\
-    V(x) &\propto - \frac{\log{P(x)}}{k_B T}
-\end{align}
-
 
 \section{Methods}
 Mit einer Skizze des Versuchsaufbaus
@@ -84,10 +71,10 @@ All recorded data and the analysis is available at \url{www.github.com/leoole100
 \end{figure}
 In the first section of the experiment, the particles were observed using a transmission light microscope setup.
 For this images with a resolution of $600\times 800$\si{px} were recorded with a frequency of \SI{10}{Hz} for \SI{10}{min}.
+The magnification of the microscope was assumed to be \SI{0.13319672}{\micro m/px} \cite{instructions}, this is the main systematic error of this measurement procedure.
+
 The images were normalized with a black (illumination off) and white (illumination on, particle not in frame) reference image, to remove the influence of dust in the imaging elements.
 The particle that was used for this experiment is shown in \autoref{fig:01particle}, after the normalization.
-
-CONVERSION PX TO MICROMETER
 
 \begin{figure*}
     \centering
@@ -121,39 +108,42 @@ Here a different implementation using the autocorrelation of the velocity was us
 This was implemented by \cite{jl:msd}.
 The resulting MSD for different optical trap stiffnesses is shown in \autoref{fig:01msd}.
 
-This can be described as 
-
-Model for the MSD with $k=\alpha P \cdot\nicefrac{k_B T}{\text{MSD}(\infty)}$ with the optical tweezer power $P$ in arbitrary units:
-\begin{align}
-    \frac{1}{\text{MSD}(\tau, k)}
-    &= \frac{1}{D_0 \tau} + \frac{1}{\text{MSD}(\infty)}\\
-    &= \frac{1}{D_0 \tau} + \frac{1}{(k_B T \cdot P)_i}
+The MSD can be described by the following model:
+\begin{equation}
+    \text{MSD}(\tau) = \frac{1}{\frac{1}{D_0 \tau} + \frac{1}{\text{MSD}(\infty)}}
     \label{eq:01_mdl_msd} 
-\end{align}
-For the $i$-th measurement.
+\end{equation}
 
+For a free particle the $\text{MSD}(\infty)=\infty$ and the MSD grows linearly with $D_0$ over time \cite{wiki:msd,instructions}.\\
+The linear fit for the free particles, works as described with a $D_0 = \SI{0.9357(25)}{\micro m^2/s}$.
+This is roughly equivalent with the expected value of $D_0 = \frac{k_B T}{6 \pi \eta r} = \SI{1.22(18)}{\micro m ^2 / s}$ \cite{instructions}, with $r = \SI{1.86(27)}{\micro m}$ and $\eta = \SI{0.955}{mPa\cdot s}$.
+
+For a confined particle the MSD reaches a plateau at $\text{MSD}(\infty)$ \cite{instructions}.
+For the higher spring stiffnesses (\SI{0.90}{}, \SI{1.01}{}), the MSD reaches a plateau and the spring stiffness are shown in \autoref{fig:01spring}.\\
+For the lower measured spring stiffness (\SI{0.75}{}), the MSD does not reach a plateau, as it partially escapes the trap and wanders around (see \autoref{fig:01bivariate}).
+Therefore this procedure is not adequate for such low spring stiffnesses.
 
 \begin{figure}
     \centering
     \includegraphics{figures/01_03_3_axis.pdf}
     \caption{Grouped by axis, relative to mean.}
 \end{figure}
+\subsubsection*{Potential}
+The maxwell boltzmann relations \cite{instructions} are given by
+\begin{align}
+    P(x) &= \exp\left(- \frac{V(x)}{k_B T}\right)
+    \Rightarrow V(x) = - \frac{\log{P(x)}}{k_B T}
+\end{align}
 
 \begin{figure}
     \centering
     \includegraphics{figures/01_03_4_spring_constants.pdf}
     \caption{Differently measured spring constants.}
+    \label{fig:01spring}
 \end{figure}
 
 \clearpage
 \subsection{Total Internal Reflection Microscopy}
-\begin{align}
-    P(\Delta z) &= N(0, \sigma^2) = N\left(0, \frac{\Delta T}{\left<T_s\right>} \sigma_s^2\right)\\
-    \Delta I &= - I_0 \beta \exp\left(-\frac{z}{\beta}\right) \Delta z \\
-    P(\Delta I) &= P(\Delta z) \left|\frac{d \Delta z}{d \Delta I}\right|\\
-    &= N(0, \sigma^2) \;\frac{1}{I_0\beta} \exp\left(\frac{z}{\beta}\right)
-\end{align}
-
 
 \clearpage
 \section{Discussion}
