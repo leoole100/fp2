@@ -20,7 +20,7 @@ include("../functions.jl")
 # load the trajectories
 cd(@__DIR__)
 scale(t, s=0.13319672) = t .* s # px to μm
-times(t) = 0:length(t)-1 ./ 10
+times(t) = (0:size(t,1)-1) ./ 10
 # df = load_trajectories()
 df = load("../data/TLM/02.jld2")["df"]
 
@@ -44,6 +44,7 @@ axs = [Axis(f[1, i], autolimitaspect = 1) for i in 1:4]
 for i in 1:size(df, 1)
 	a = hcat(axs...)[i]
 	a.title = format(df.ot[i], precision=2)
+	a.titlesize = 12
 	t = scale(df.t[i].-c)
 	k = kde(t)
 	h = heatmap!(a, k.x, k.y, k.density, colormap=:binary)
@@ -137,9 +138,11 @@ f
 
 # %% plot the measured spring constants
 f = Figure(size=halfsize)
-a = Axis(f[1, 1], xlabel="Trap Stiffness", ylabel="k in N/m")
+a = Axis(f[1, 1], xlabel="Trap Stiffness", ylabel="k in nN/m")
 
 function er(a, x, y, label, color=Nothing)
+	y = y .* 1e12 #  μm^2 to m^2
+	y = y .* 1e9 # N to nN
 	errorbars!(a, x, value.(y), uncertainty.(y))
 	scatter!(a, x, value.(y), label=label, markersize=7)
 end
@@ -149,14 +152,15 @@ kB = 1.38064852e-23
 kT = kB * T
 
 # plot fit results
-p = er(a, df.ot[2:end], kT.*df.Vkx[2:end]*1e12, "V(x)")
-er(a, df.ot[2:end], kT.*df.Vky[2:end]*1e12, "V(y)")
+p = er(a, df.ot[2:end], kT.*df.Vkx[2:end], "V(x)")
+er(a, df.ot[2:end], kT.*df.Vky[2:end], "V(y)")
 
 # plot the msd_inf
-er(a, df.ot[3:end], kT./df.msd_inf[3:end] * 1e12, "MSD(∞)")
+er(a, df.ot[3:end], 2*kT./df.msd_inf[3:end], "MSD(∞)")
+df[:, :k_msd] = 2*kT./df.msd_inf .* 1e12
 
-axislegend(position=:lt, framevisible=false)
-# Legend(f[1, 2], a, framevisible = false)
+Legend(f[1, 2], a, framevisible = false)
+colgap!(f.layout, 0)
 
 save("../figures/01_03_4_spring_constants.pdf", f)
 f

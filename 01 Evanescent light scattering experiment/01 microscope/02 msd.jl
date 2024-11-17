@@ -1,6 +1,6 @@
 using DataFrames: DataFrame, nrow, eachrow, ncol
 using Statistics: mean, std
-using LsqFit: curve_fit, stderror
+using LsqFit: curve_fit, stderror, LsqFitResult
 using LinearAlgebra: norm, normalize
 using CairoMakie
 import CSV, Images
@@ -70,31 +70,23 @@ ylims!(.1, nothing)
 save("../figures/01_02_2_center_distances.pdf", f)
 f
 
-# %% define msd function
-i = df[2, :]
-norm(i.t .- c)
 
 # %% calculate the mean squared displacement
 function msd(t)
 	t = scale(t)
 	t = remove_drift(t)
 	m = imsd(t)
-	m = mean(m, dims=2)[:,1] # mean over x and y	
-	m = abs.(m)
-	return m[1:1000]
+	m = sqrt.(m[:,1] .^2 .+ m[:,2] .^2)
+	return m[1:100]
 end
 
 # model
 # D₀, clip
-diffusion_model(x, p) = 1 ./(1 ./p[1] .* x.^-1 .+ 1 ./p[2])
-function diffusion_label(p)
-	if p[2] > 100
-		return format(p[1], precision=2)*" μm²/s"
-	end
-	return format(p[1], precision=2)*" μm²/s, "*format(p[2], precision=2)*" nm²"
-end
+# diffusion_model(x, p) = 1 ./(1 ./p[1] .* (x ).^-1 .+ 1 ./p[2])
+diffusion_model(x, p) = 1 ./((p[1].*x).^(-p[3]) .+ p[2].^(-p[3])).^(1/p[3])
+# diffusion_model(x, p) = p[1] .* x .+ p[2]
 
-#%% plot the mean squared displacement
+# plot the mean squared displacement
 f = Figure(size=halfsize)
 a = Axis(f[1, 1], 
 	xlabel="τ in s", 
@@ -104,37 +96,40 @@ a = Axis(f[1, 1],
 )
 
 # measurements
-plots_s = []
-plots_f = []
-df.msd_inf = fill(measurement(0., 0.), size(df, 1))
-df.msd_D0 = fill(measurement(0., 0.), size(df, 1))
+msd_fit = []
 for j in 1:size(df, 1)
 	i = df[j, :]
 	m = msd(i.t)
-	s = scatter!(times(m), m, label=format(i.ot, precision=2), color=i.ot, colorrange=extrema(df.ot), markersize=5)
-	mf = curve_fit(diffusion_model, times(m), m, [1e-2, 1])
-	if mf.converged
-		ml = lines!(
-			a, times(m), diffusion_model(times(m), mf.param), 
-			color=s.color, linestyle=:dash, colorrange=extrema(df.ot),
-			label=diffusion_label(mf.param)
-		)
-		push!(plots_f, ml)
-	end
-	df.msd_inf[j] = measurement(mf.param[2], stderror(mf)[2])
-	df.msd_D0[j] = measurement(mf.param[1], stderror(mf)[1])
-	push!(plots_s, s)
+	s = scatter!(times(m), m, label=format(i.ot, precision=2), color=i.ot, colorrange=extrema(df.ot), markersize=5, alpha=.5)
+	d0 = mean(diff(m[1:5]) ./ diff(times(m)[1:5]))
+	println(d0)
+	mf = curve_fit(diffusion_model, times(m), m, [d0, 1., 1], lower=[0., 0., 0.])
+	push!(msd_fit, mf)
+	ml = lines!(
+		a, times(m), clamp.(diffusion_model(times(m), mf.param), 0, Inf), 
+		color=s.color, colorrange=extrema(df.ot),
+	)
 end
-# axislegend(a, plots_s, [p.label for p in plots_s], "Trap Strength", position=:lt)
-Legend(f[1,2], plots_s, [p.label for p in plots_s], framevisible=false)
+Legend(f[1,2], a, framevisible=false)
 colgap!(f.layout, 0)
-# Colorbar(f[1,2], limits=extrema(df.ot), label="Trap Strength")
-# axislegend(a, plots_f, [p.label for p in plots_f], "Fits", position=:rb)
-ylims!(a, 1e-2, 1e2)
-xlims!(1e-1, 1e2)
+xlims!(a, 1e-1, 1e1)
+ylims!(a, .05, 1e1)
 save("../figures/01_02_2_msd.pdf", f)
-f
 
-#%% save the data
+function fit_param(m, i)
+	try
+		return measurement(m.param[i], stderror(m)[i])
+	catch
+		return measurement(m.param[i], NaN)
+	end
+end
+
+df.msd_fit = msd_fit
+df.msd_inf = [fit_param(m, 2) for m in msd_fit]
+df.msd_D0 = [fit_param(m, 1) for m in msd_fit]
+# df.msd_exp = [fit_param(m, 4) for m in msd_fit]
+
+f
+#%%
 using JLD2 
 save("../data/TLM/02.jld2", "df", df)

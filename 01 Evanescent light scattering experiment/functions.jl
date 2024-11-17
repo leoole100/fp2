@@ -25,7 +25,8 @@ cm = inch/2.54
 update_theme!(
 	fontsize=10,
 	fonts = (;
-		regular="Roboto"
+		regular="Roboto Regular",
+		bold="Roboto Bold",
 	),
 )
 halfsize = (3inch, (3/1.618)inch)

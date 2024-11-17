@@ -135,20 +135,33 @@ The MSD can be described by the following model:
 \end{equation}
 
 For a free particle the $\text{MSD}(\infty)=\infty$ and the MSD grows linearly with $D_0$ over time \cite{wiki:msd,instructions}.\\
-The linear fit for the free particles, works as described with a $D_0 = \SI{1.013(29)}{\micro m^2/s}$.
-This is equivalent with the expected value of $D_0 = \frac{k_B T}{6 \pi \eta r} = \SI{1.22(18)}{\micro m ^2 / s}$ \cite{instructions}, with $r = \SI{1.86(27)}{\micro m}$ and $\eta = \SI{0.955}{mPa\cdot s}$\cite{n:water}.
+The through the fit estimated diffusion Coefficient $D_0$ in \autoref{tab:01spring} is equivalent with the expected value of $D_0 = \frac{k_B T}{6 \pi \eta r} = \SI{0.122(18)}{\micro m ^2 / s}$ \cite{instructions}, with $r = \SI{1.86(27)}{\micro m}$ and $\eta = \SI{0.955}{mPa\cdot s}$\cite{n:water}.
+The error in the magnification of the microscope does increase the uncertainty.
 
 For a confined particle the MSD reaches a plateau at $\text{MSD}(\infty)$ \cite{instructions}.
-For the higher spring stiffnesses (\SI{0.90}{}, \SI{1.01}{}), this happens and the spring stiffness are shown in \autoref{fig:01spring}.\\
+This happens for the higher trap stiffness (\SI{0.90}{}, \SI{1.01}{}) and the estimated values $k_{\text{MSD}(\infty)} = \frac{2 k_B T}{\text{MSD}(\infty)}$ are shown in  \autoref{tab:01spring} and \autoref{fig:01spring}.\\
 For the lower measured spring stiffness (\SI{0.75}{}), the MSD does not reach a plateau, as it partially escapes the trap and wanders around (see \autoref{fig:01bivariate}).
 Therefore this procedure is not adequate for such low spring stiffnesses.
 
+\begin{table}
+    \centering
+    \begin{tabular}{r|l|l|l}
+        Stiffness & $D_0$ in \SI{}{\micro m^2/s}& $k_{\text{MSD}(\infty)}$ & $k_V$ \\
+        \hline        
+        \SI{0}{}    & \SI{0.10728(93)}{}    & NA                & \SI{0}{} \\
+        \SI{0.75}{} & \SI{0.07793(03)}{}    & NA                & \SI{0.9011(45)}{}\\
+        \SI{0.90}{} & \SI{0.0678(24)}{}     & \SI{6.471(62)}{}  & \SI{4.7177(62)}{}\\
+        \SI{1.01}{} & \SI{0.05384(08)}{}    & \SI{8.968(23)}{}  & \SI{6.021(12)}{}\\
+    \end{tabular}
+    \caption{Estimated diffusion constant and spring constant in \SI{}{\nano N / m}.}
+    \label{tab:01spring}
+\end{table}
 \subsubsection*{Potential}
-A more detailed analysis of the Potential can be done by looking at the distribution of the particle positions.
+A more detailed analysis can be done by looking at the distribution of the particle positions.
 For this the probability density function (PDF) of the particle positions has to be estimated.
-For this the kernel density estimation (KDE) with a Gaussian kernel was used \cite{jl:kde}.
+This is done using the kernel density estimation (KDE) with a Gaussian kernel \cite{jl:kde}.
 The resulting 2 dimensional PDF is shown in \autoref{fig:01bivariate}.\\
-As the density is small for large parts of the explored 2d space, the data is reduced by aggregating into the image coordinates $x$ and $y$.
+As the density is small for large parts of the explored 2d space, the data is reduced by aggregating along the image coordinates $x$ and $y$.
 As the Potential should by rotationally symmetric, the data from the $x$ and $y$ axis should not significantly deviate.
 
 \begin{figure}
@@ -163,18 +176,18 @@ As the Potential should by rotationally symmetric, the data from the $x$ and $y$
     \caption{Differently measured spring constants.}
     \label{fig:01spring}
 \end{figure}
-Using the maxwell boltzmann relations \cite{instructions}, the potential at a position $p$ can be calculated from the PDF:
+Using the Maxwell Boltzmann relations \cite{instructions}, the potential at a position $p$ can be calculated from the PDF:
 \begin{equation}
     V(p) = - \frac{\log{\text{PDF}(p)}}{k_B T}
 \end{equation}
 The resulting potential is shown in \autoref{fig:01potential}.
-The part of the measurements with a $\text{PDF}(x)>0.05$ are used for a quadratic fit, to estimate the spring constant.
-The resulting spring constants are shown in \autoref{fig:01spring} and are in good agreement with the previous estimates. \\
+The parts of the measurements with a $\text{PDF}(x)>0.05$ are used for a quadratic fit, to estimate the spring constant.
+The resulting spring constants are shown in \autoref{fig:01spring} and \autoref{tab:01spring} and are in the same order of magnitude. 
+
 For the lower spring constant of \SI{0.75}{}, the potential begins quadratic, but flattens after approximately \SI{2.5}{\micro m}. 
 This is due to the limited size of the trap, but the spring constant can still be estimated.
 
 This method allows for the measurement of a spring constant as low as \SI{0.9011(45)}{\nano N /m}, which means over the used length scales that forces in the order of \SI{1}{\femto N} can be measured.
-
 
 \subsection{Total Internal Reflection Microscopy}
 
