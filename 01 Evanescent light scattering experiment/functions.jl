@@ -23,8 +23,10 @@ inch = 96
 pt = 4/3
 cm = inch/2.54
 update_theme!(
-	# fontsize=10,
-	# fonts = (;
-	# 	regular="Roboto"
-	# ),
+	fontsize=10,
+	fonts = (;
+		regular="Roboto"
+	),
 )
+halfsize = (3inch, (3/1.618)inch)
+fullsize = (5inch, (5/1.618)inch)

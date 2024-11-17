@@ -66,8 +66,8 @@ update_positions!(last_positions, radii, transform(img))
 
 crop(normalize_img(img), last_positions[1, :], radii[1]) # show the particle
 
-# make a figure of the particle
-f = Figure()
+#%% make a figure of the particle
+f = Figure(size=halfsize)
 a = Axis(f[1, 1], aspect=DataAspect(), yreversed=true)
 image!(
 	a, [-radii[1],  radii[1]], [-radii[1], radii[1]],

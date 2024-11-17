@@ -1,6 +1,6 @@
 using DataFrames: DataFrame, nrow, eachrow, ncol
 using Statistics: mean, std
-using LsqFit: curve_fit
+using LsqFit: curve_fit, stderror
 using LinearAlgebra: norm, normalize
 using CairoMakie
 import CSV, Images
@@ -23,7 +23,7 @@ c = mean(df.t[end], dims=1)
 df
 
 #%% plot the trajectories in different plots
-f = Figure()
+f = Figure(size=fullsize)
 axs = [Axis(f[i,j]) for i in [1,2] for j in [1,2]]
 l = Nothing
 for (a, p) in zip(axs, eachrow(df))
@@ -36,7 +36,7 @@ Colorbar(f[1:2,3], l, label="Time in min")
 save("../figures/01_02_11_trajectories_time.pdf", f)
 f
 #%% plot the trajectorie
-f = Figure()
+f = Figure(size=halfsize)
 a = Axis(f[1,1], xlabel="x in μm", ylabel="y in μm", aspect = DataAspect())
 for p in eachrow(df)
 	t = p.t .- c
@@ -45,7 +45,10 @@ for p in eachrow(df)
 	# t = t .- t[1,:]'
 	lines!(t, label=format(p.ot, precision=2), alpha=.75, color=p.ot, colorrange=extrema(df.ot))
 end
-axislegend(position=:lt, "Trap Strength")
+# axislegend(position=:lt, "Trap Strength")
+# Colorbar(f[1,2], limits=extrema(df.ot), label="Trap Strength")
+Legend(f[1,2], a, label="Trap Strength", framevisible=false)
+colgap!(f.layout, 1)
 resize_to_layout!(f)
 save("../figures/01_02_1_trajectories.pdf", f)
 f
@@ -92,10 +95,10 @@ function diffusion_label(p)
 end
 
 #%% plot the mean squared displacement
-f = Figure()
+f = Figure(size=halfsize)
 a = Axis(f[1, 1], 
 	xlabel="τ in s", 
-	ylabel=rich("msd in μm", superscript("2")),
+	ylabel=rich("MSD(τ) in μm", superscript("2")),
 	xscale=log10, 
 	yscale=log10,
 )
@@ -108,20 +111,25 @@ df.msd_D0 = fill(measurement(0., 0.), size(df, 1))
 for j in 1:size(df, 1)
 	i = df[j, :]
 	m = msd(i.t)
-	s = scatter!(times(m), m, label=format(i.ot, precision=2), color=i.ot, colorrange=extrema(df.ot))
+	s = scatter!(times(m), m, label=format(i.ot, precision=2), color=i.ot, colorrange=extrema(df.ot), markersize=5)
 	mf = curve_fit(diffusion_model, times(m), m, [1e-2, 1])
-	ml = lines!(
-		a, times(m), diffusion_model(times(m), mf.param), 
-		color=s.color, linestyle=:dash, colorrange=extrema(df.ot),
-		label=diffusion_label(mf.param)
-	)
-	df.msd_inf[j] = measurement(mf.param[2], sqrt(mf.jacobian[2,2]))
-	df.msd_D0[j] = measurement(mf.param[1], sqrt(mf.jacobian[1,1])) * 1e3
+	if mf.converged
+		ml = lines!(
+			a, times(m), diffusion_model(times(m), mf.param), 
+			color=s.color, linestyle=:dash, colorrange=extrema(df.ot),
+			label=diffusion_label(mf.param)
+		)
+		push!(plots_f, ml)
+	end
+	df.msd_inf[j] = measurement(mf.param[2], stderror(mf)[2])
+	df.msd_D0[j] = measurement(mf.param[1], stderror(mf)[1])
 	push!(plots_s, s)
-	push!(plots_f, ml)
 end
-axislegend(a, plots_s, [p.label for p in plots_s], "Trap Strength", position=:lt)
-axislegend(a, plots_f, [p.label for p in plots_f], "Fits", position=:rb)
+# axislegend(a, plots_s, [p.label for p in plots_s], "Trap Strength", position=:lt)
+Legend(f[1,2], plots_s, [p.label for p in plots_s], framevisible=false)
+colgap!(f.layout, 0)
+# Colorbar(f[1,2], limits=extrema(df.ot), label="Trap Strength")
+# axislegend(a, plots_f, [p.label for p in plots_f], "Fits", position=:rb)
 ylims!(a, 1e-2, 1e2)
 xlims!(1e-1, 1e2)
 save("../figures/01_02_2_msd.pdf", f)
