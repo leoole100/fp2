@@ -84,15 +84,6 @@ f = Figure(size=halfsize)
 a = Axis(f[1, 1], xlabel="position in μm", ylabel="V in kT")
 df.Vkx = fill(measurement(0., 0.), size(df, 1))
 df.Vky = fill(measurement(0., 0.), size(df, 1))
-i = df[2,:]
-t = scale(i.t .-mean(i.t, dims=1))
-for j in 1:2
-	k = dist(t[:,j], cutoff=0.05)
-	mdl = curve_fit(model, k.x, potential(k.y), [0., 1., 0.])
-	offset = mdl.param[3]
-	k = dist(t[:,j], cutoff=0)
-	lines!(a, k.x .-offset, potential(k.y), color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2)) 	
-end
 for m in 2:size(df, 1)
 	i = df[m,:]
 	t = scale(i.t .-mean(i.t, dims=1))
@@ -102,10 +93,9 @@ for m in 2:size(df, 1)
 		mdl = curve_fit(model, k.x, potential(k.y), [0., 1., 0.])
 		offset = mdl.param[3]
 		lines!(a, 
-		k.x .-offset, model(k.x, mdl.param), 
-		color=i.ot, colorrange=extrema(df.ot), 
-		linestyle=:dash,
-		# label=model_string(mdl.param)
+			k.x .-offset, model(k.x, mdl.param), 
+			color=i.ot, colorrange=extrema(df.ot), 
+			# linestyle=:dash,
 		)
 		
 		k = measurement(mdl.param[2], stderror(mdl)[2])
@@ -117,21 +107,21 @@ for m in 2:size(df, 1)
 		end
 
 		k = dist(t[:,j], cutoff=0)
-		lines!(a, k.x .-offset, potential(k.y), color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2))
+		lines!(a, k.x .-offset, potential(k.y), color=i.ot, colorrange=extrema(df.ot),
+		alpha=.2
+		)
 	end
 end
 i = df[1,:]
 t = scale(i.t .-mean(i.t, dims=1))
 for j in 1:2
 	k = dist(t[:,j], cutoff=0.01)
-	lines!(a, k.x, potential(k.y), color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2))
+	lines!(a, k.x, potential(k.y), color=i.ot, colorrange=extrema(df.ot), alpha=.5)
 end
 xlims!(a, -5,5)
 ylims!(a, 0, 4)
 Colorbar(f[1, 2], limits=extrema(df.ot), label="Trap Strength", width=7)
-colgap!(f.layout, 2)
-# axislegend("Trap Stiffness", position=:lb, unique=true)
-# Legend(f[1, 2], a, framevisible=false, unique=true)
+colgap!(f.layout, 5)
 save("../figures/01_03_3_axis.pdf", f)
 f
 
@@ -140,7 +130,7 @@ f
 f = Figure(size=halfsize)
 a = Axis(f[1, 1], xlabel="Trap Stiffness", ylabel="k in nN/m")
 
-function er(a, x, y, label, color=Nothing)
+function er(a, x, y, label)
 	y = y .* 1e12 #  μm^2 to m^2
 	y = y .* 1e9 # N to nN
 	errorbars!(a, x, value.(y), uncertainty.(y))
@@ -152,11 +142,23 @@ kB = 1.38064852e-23
 kT = kB * T
 
 # plot fit results
-p = er(a, df.ot[2:end], kT.*df.Vkx[2:end], "V(x)")
-er(a, df.ot[2:end], kT.*df.Vky[2:end], "V(y)")
+# er(a, df.ot[2:end], kT.*mean([df.Vkx[2:end], df.Vky[2:end]]), "V")
+# er(a, df.ot[2:end], kT.*df.Vkx[2:end], rich("V",subscript("x")))
+# er(a, df.ot[2:end], kT.*df.Vky[2:end], rich("V",subscript("y")))
+scale_potential(y) = value.(kT .* y) .* 1e12 .* 1e9
+s = scatter!(a, df.ot[2:end], 
+	scale_potential(mean([df.Vkx[2:end], df.Vky[2:end]])), 
+	label="V", markersize=7
+)
+scatter!(a, df.ot[2:end], scale_potential(df.Vkx[2:end]), label=rich("V",subscript("x")), markersize=7, color=s.color, alpha=.5, marker=:rect)
+scatter!(a, df.ot[2:end], scale_potential(df.Vky[2:end]), label=rich("V",subscript("y")), markersize=7, color=s.color, alpha=.5, marker=:diamond)
 
 # plot the msd_inf
 er(a, df.ot[3:end], 2*kT./df.msd_inf[3:end], "MSD(∞)")
+
+T = measurement(22.6, 0.1) + 273.15
+kB = 1.38064852e-23
+kT = kB * T
 df[:, :k_msd] = 2*kT./df.msd_inf .* 1e12
 
 Legend(f[1, 2], a, framevisible = false)

@@ -82,8 +82,8 @@ end
 
 # model
 # D₀, clip
-# diffusion_model(x, p) = 1 ./(1 ./p[1] .* (x ).^-1 .+ 1 ./p[2])
-diffusion_model(x, p) = 1 ./((p[1].*x).^(-p[3]) .+ p[2].^(-p[3])).^(1/p[3])
+diffusion_model(x, p) = 1 ./(1 ./p[1] .* (x ).^-1 .+ 1 ./p[2])
+# diffusion_model(x, p) = 1 ./((p[1].*x).^(-p[3]) .+ p[2].^(-p[3])).^(1/p[3])
 # diffusion_model(x, p) = p[1] .* x .+ p[2]
 
 # plot the mean squared displacement
@@ -102,13 +102,13 @@ for j in 1:size(df, 1)
 	m = msd(i.t)
 	s = scatter!(times(m), m, label=format(i.ot, precision=2), color=i.ot, colorrange=extrema(df.ot), markersize=5, alpha=.5)
 	d0 = mean(diff(m[1:5]) ./ diff(times(m)[1:5]))
-	println(d0)
 	mf = curve_fit(diffusion_model, times(m), m, [d0, 1., 1], lower=[0., 0., 0.])
 	push!(msd_fit, mf)
 	ml = lines!(
 		a, times(m), clamp.(diffusion_model(times(m), mf.param), 0, Inf), 
 		color=s.color, colorrange=extrema(df.ot),
 	)
+	println(2*kT./last(m) .* 1e12 .* 1e9)
 end
 Legend(f[1,2], a, framevisible=false)
 colgap!(f.layout, 0)
@@ -127,7 +127,11 @@ end
 df.msd_fit = msd_fit
 df.msd_inf = [fit_param(m, 2) for m in msd_fit]
 df.msd_D0 = [fit_param(m, 1) for m in msd_fit]
-# df.msd_exp = [fit_param(m, 4) for m in msd_fit]
+
+T = measurement(22.6, 0.1) + 273.15
+kB = 1.38064852e-23
+kT = kB * T
+df[:, :k_msd] = 2*kT./df.msd_inf .* 1e12 .* 1e9
 
 f
 #%%
