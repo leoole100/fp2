@@ -58,10 +58,10 @@ Mit einer Skizze des Versuchsaufbaus
 
 \section{Procedure}
 
+\clearpage
 \section{Results}
 All recorded data and the analysis is available at \url{www.github.com/leoole100/fp2}.
 
-\pagebreak
 \subsection{Transmission Light Microscopy}
 \begin{figure}
     \centering
@@ -123,24 +123,39 @@ For the higher spring stiffnesses (\SI{0.90}{}, \SI{1.01}{}), the MSD reaches a 
 For the lower measured spring stiffness (\SI{0.75}{}), the MSD does not reach a plateau, as it partially escapes the trap and wanders around (see \autoref{fig:01bivariate}).
 Therefore this procedure is not adequate for such low spring stiffnesses.
 
+\subsubsection*{Potential}
+A more detailed analysis of the Potential can be done by looking at the distribution of the particle positions.
+For this the probability density function (PDF) of the particle positions has to be estimated.
+For this the kernel density estimation (KDE) with a Gaussian kernel was used \cite{jl:kde}.
+The resulting 2 dimensional PDF is shown in \autoref{fig:01bivariate}.\\
+As the density is small for large parts of the explored 2d space, the data is reduced by aggregating into the image coordinates $x$ and $y$.
+As the Potential should by rotationally symmetric, the data from the $x$ and $y$ axis should not significantly deviate.
+
 \begin{figure}
     \centering
     \includegraphics{figures/01_03_3_axis.pdf}
-    \caption{Grouped by axis, relative to mean.}
+    \caption{Measured Potential, with quadratic fit.}
+    \label{fig:01potential}
 \end{figure}
-\subsubsection*{Potential}
-The maxwell boltzmann relations \cite{instructions} are given by
-\begin{align}
-    P(x) &= \exp\left(- \frac{V(x)}{k_B T}\right)
-    \Rightarrow V(x) = - \frac{\log{P(x)}}{k_B T}
-\end{align}
-
 \begin{figure}
     \centering
     \includegraphics{figures/01_03_4_spring_constants.pdf}
     \caption{Differently measured spring constants.}
     \label{fig:01spring}
 \end{figure}
+Using the maxwell boltzmann relations \cite{instructions}, the potential at a position $p$ can be calculated from the PDF:
+\begin{equation}
+    V(p) = - \frac{\log{\text{PDF}(p)}}{k_B T}
+\end{equation}
+The resulting potential is shown in \autoref{fig:01potential}.
+The part of the measurements with a $\text{PDF}(x)>0.05$ are used for a quadratic fit, to estimate the spring constant.
+The resulting spring constants are shown in \autoref{fig:01spring} and are in good agreement with the previous estimates. \\
+For the lower spring constant of \SI{0.75}{}, the potential begins quadratic, but flattens after approximately \SI{2.5}{\micro m}. 
+This is due to the limited size of the trap, but the spring constant can still be estimated.
+
+This method allows for the measurement of a spring constant as low as \SI{0.9011(45)}{\nano N /m}, which means over the used length scales that forces in the order of \SI{1}{\femto N} can be measured.
+
+
 
 \clearpage
 \subsection{Total Internal Reflection Microscopy}

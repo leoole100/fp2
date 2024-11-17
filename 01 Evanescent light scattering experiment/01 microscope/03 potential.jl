@@ -80,7 +80,7 @@ f
 # %% group by the coordinates
 
 f = Figure(size=halfsize)
-a = Axis(f[1, 1], xlabel="x,y in μm", ylabel="V(x,y) in kT")
+a = Axis(f[1, 1], xlabel="position in μm", ylabel="V in kT")
 df.Vkx = fill(measurement(0., 0.), size(df, 1))
 df.Vky = fill(measurement(0., 0.), size(df, 1))
 i = df[2,:]
@@ -100,14 +100,13 @@ for m in 2:size(df, 1)
 		k = dist(t[:,j], cutoff=0.05)
 		mdl = curve_fit(model, k.x, potential(k.y), [0., 1., 0.])
 		offset = mdl.param[3]
-		lines!(a, k.x .-offset, potential(k.y), color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2))
 		lines!(a, 
-			k.x .-offset, model(k.x, mdl.param), 
-			color=i.ot, colorrange=extrema(df.ot), 
-			linestyle=:dash,
-			# label=model_string(mdl.param)
+		k.x .-offset, model(k.x, mdl.param), 
+		color=i.ot, colorrange=extrema(df.ot), 
+		linestyle=:dash,
+		# label=model_string(mdl.param)
 		)
-
+		
 		k = measurement(mdl.param[2], stderror(mdl)[2])
 		println(k)
 		if j == 1
@@ -115,6 +114,9 @@ for m in 2:size(df, 1)
 		else
 			df[m ,:Vky] = k
 		end
+
+		k = dist(t[:,j], cutoff=0)
+		lines!(a, k.x .-offset, potential(k.y), color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2))
 	end
 end
 i = df[1,:]
@@ -124,9 +126,9 @@ for j in 1:2
 	lines!(a, k.x, potential(k.y), color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2))
 end
 xlims!(a, -5,5)
-ylims!(a, 0, 5)
-Colorbar(f[1, 2], limits=extrema(df.ot), label="Trap Strength")
-colgap!(f.layout, 5)
+ylims!(a, 0, 4)
+Colorbar(f[1, 2], limits=extrema(df.ot), label="Trap Strength", width=7)
+colgap!(f.layout, 2)
 # axislegend("Trap Stiffness", position=:lb, unique=true)
 # Legend(f[1, 2], a, framevisible=false, unique=true)
 save("../figures/01_03_3_axis.pdf", f)
