@@ -5,6 +5,7 @@
     fontsize=11pt,
 ]{scrarticle}
 \input{../preamble.tex}
+\addbibresource{literature.bib}
 
 \begin{document}
 
@@ -70,24 +71,57 @@ Mit einer Skizze des Versuchsaufbaus
 
 \section{Procedure}
 
-\pagebreak
 \section{Results}
 All recorded data and the analysis is available at \url{www.github.com/leoole100/fp2}.
 
+\pagebreak
 \subsection{Transmission Light Microscopy}
-The recorded images have a shape of $600\times 800$\si{px}.
-The observed particle has a radius of \SI{14(2)}{px} equivalent to \SI{1.86(27)}{\micro m}. 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics{figures/01_01_1_particle.pdf}
-    \caption{Transmission light microscopy of a single particle, after normalization.}
+    \caption{Transmission light microscopy of a observed particle. The radius of the particle is \SI{14(2)}{px}, equivalent to \SI{1.86(27)}{\micro m}.}
+    \label{fig:01particle}
 \end{figure}
+In the first section of the experiment, the particles were observed using a transmission light microscope setup.
+For this images with a resolution of $600\times 800$\si{px} were recorded with a frequency of \SI{10}{Hz} for \SI{10}{min}.
+The images were normalized with a black (illumination off) and white (illumination on, particle not in frame) reference image, to remove the influence of dust in the imaging elements.
+The particle that was used for this experiment is shown in \autoref{fig:01particle}, after the normalization.
 
-\begin{figure*}[h]
+CONVERSION PX TO MICROMETER
+
+\begin{figure*}
     \centering
     \includegraphics{figures/01_03_1_bivariate.pdf}
-    \caption{Bivariate histogram for different trap strengths, relative to center of the optical trap, different scale in um.}
+    \caption{Density of recorded particle positions, grouped by optical trap stiffness. The red circle indicates the approximate radius of the optical trap \SI{2.5}{\micro m}.}
+    \label{fig:01bivariate}
 \end{figure*}
+To determine the trajectory of the particle, a effective center of mass was calculated for each frame:
+\begin{equation}
+    \vec{r}(t) = \iint \vec{r} \cdot \left(1-I(\vec{r}, t)\right)^2 d\vec{r}    
+\end{equation}
+The density of the resulting trajectory is shown in \autoref{fig:01bivariate} for different optical trap stiffnesses.
+The approximate radius of the optical trap of \SI{2.5}{\micro m} is drawn as a red circle.
+For the trap stiffness of \SI{0}{}, the particle is free to wander around, for the higher stiffnesses like \SI{1.01}{} the particle is mostly confined to the trap.\\
+For a weak trap like \SI{0.75}{} the particle is still mostly confined to the trap, but can escape the linear trap region and randomly wander around. 
+This happened multiple times during the shown measurement.
+
+\begin{figure}
+    \centering
+    \includegraphics{figures/01_02_2_msd.pdf}
+    \caption{Mean Square Displacement for different optical trap stiffnesses, fit: \autoref{eq:01_mdl_msd}}
+    \label{fig:01msd}
+\end{figure}
+\subsection*{Mean Square Displacement}
+A method to describe the trajectory of a random walk is the mean square displacement (MSD) \cite{wiki:msd}.
+This is defined as the average of the squared distance of the particle from the starting point:
+\begin{equation}
+    \text{MSD}(t) = \left<\Delta r^2(t)\right> = \frac{1}{N} \sum_i^N \left(x_i(t) - x_i(0) \right)^2 
+\end{equation}
+Here a different implementation using the autocorrelation of the velocity was used, to achieve a more stable result.
+This was implemented by \cite{jl:msd}.
+The resulting MSD for different optical trap stiffnesses is shown in \autoref{fig:01msd}.
+
+This can be described as 
 
 Model for the MSD with $k=\alpha P \cdot\nicefrac{k_B T}{\text{MSD}(\infty)}$ with the optical tweezer power $P$ in arbitrary units:
 \begin{align}
@@ -98,25 +132,20 @@ Model for the MSD with $k=\alpha P \cdot\nicefrac{k_B T}{\text{MSD}(\infty)}$ wi
 \end{align}
 For the $i$-th measurement.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics{figures/01_02_2_msd.pdf}
-    \caption{Mean Square Displacement, Linear Drift removed, fit: \autoref{eq:01_mdl_msd}}
-\end{figure}
 
-
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics{figures/01_03_3_axis.pdf}
     \caption{Grouped by axis, relative to mean.}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics{figures/01_03_4_spring_constants.pdf}
     \caption{Differently measured spring constants.}
 \end{figure}
 
+\clearpage
 \subsection{Total Internal Reflection Microscopy}
 \begin{align}
     P(\Delta z) &= N(0, \sigma^2) = N\left(0, \frac{\Delta T}{\left<T_s\right>} \sigma_s^2\right)\\
@@ -128,6 +157,10 @@ For the $i$-th measurement.
 
 \clearpage
 \section{Discussion}
+\blindtext
 
+\addcontentsline{toc}{section}{Literature}
+\nocite{*}
+\printbibliography
 
 \end{document}

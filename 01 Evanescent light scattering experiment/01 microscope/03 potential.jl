@@ -38,22 +38,22 @@ model_string(p) = format(p[2], precision=2)*" ⋅ r²"
 
 
 # %% bivariate
-f = Figure(size=fullsize)
-axs = [Axis(f[j, i]) for i in 1:2, j in 1:2]
+f = Figure(size=(6inch,2inch))
+# axs = [Axis(f[j, i]) for i in 1:2, j in 1:2]
+axs = [Axis(f[1, i], autolimitaspect = 1) for i in 1:4]
 for i in 1:size(df, 1)
 	a = hcat(axs...)[i]
 	a.title = format(df.ot[i], precision=2)
-	# linkaxes!(a, axs[1,1])
-	a.aspect = DataAspect()
 	t = scale(df.t[i].-c)
-	# t = scale(df.t[i].-mean(df.t[i], dims=1))
 	k = kde(t)
 	h = heatmap!(a, k.x, k.y, k.density, colormap=:binary)
-	# h = heatmap!(a, k.x, k.y, potential(k.density))
-	# draw a circle
 	arc!(a, Point2f(0), 2.5, -π, π, color=:red, alpha=.5, linestyle=:dash)
+	hidedecorations!(a, ticks=false, ticklabels=false, label=false)
 end
-linkaxes!(axs[2,2], axs[1,2])
+# linkaxes!(axs[2,2], axs[1,2])
+linkaxes!(axs[3], axs[4])
+axs[1].ylabel = "position in μm"
+resize_to_layout!(f)
 save("../figures/01_03_1_bivariate.pdf", f)
 f
 
