@@ -31,3 +31,8 @@ update_theme!(
 )
 halfsize = (3inch, (3/1.618)inch)
 fullsize = (5inch, (5/1.618)inch)
+
+using Measurements: measurement, value, uncertainty
+T = measurement(22.6, 0.1) + 273.15
+kB = 1.38064852e-23
+kT = kB * T

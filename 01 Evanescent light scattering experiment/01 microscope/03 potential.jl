@@ -58,26 +58,6 @@ resize_to_layout!(f)
 save("../figures/01_03_1_bivariate.pdf", f)
 f
 
-# %% radial distribution
-f = Figure()
-aV = Axis(f[1, 1], xlabel="r in μm", ylabel="V(x) in kT")
-aP = Axis(f[2, 1], xlabel="r in μm", ylabel="pdf(x)")
-linkxaxes!(aV, aP)
-hidexdecorations!(aV, grid=false)
-for i in eachrow(filter(d -> d.ot>0, sort(df, :ot)))
-	# r = scale(radius(i.t .-mean(i.t, dims=1)))
-	r = scale(radius(i.t .-c))
-	k = dist(r, cutoff=0.01, boundary=(0, maximum(r)))
-	lines!(aP, k.x, k.y, color=i.ot, colorrange=extrema(df.ot), label=format(i.ot, precision=2))
-	l = lines!(aV, k.x, potential(k.y), color=i.ot, colorrange=extrema(df.ot))
-	# stephist!(aP, r, normalization=:pdf)
-end
-ylims!(aV, nothing, 5)
-ylims!(aP, 0, nothing)
-axislegend(position=:rt)
-save("../figures/01_03_2_radial.pdf", f)
-f
-
 # %% group by the coordinates
 
 f = Figure(size=halfsize)
@@ -131,21 +111,15 @@ f = Figure(size=halfsize)
 a = Axis(f[1, 1], xlabel="Trap Stiffness", ylabel="k in nN/m")
 
 function er(a, x, y, label)
-	y = y .* 1e12 #  μm^2 to m^2
-	y = y .* 1e9 # N to nN
 	errorbars!(a, x, value.(y), uncertainty.(y))
 	scatter!(a, x, value.(y), label=label, markersize=7)
 end
-
-T = measurement(22.6, 0.1) + 273.15
-kB = 1.38064852e-23
-kT = kB * T
 
 # plot fit results
 # er(a, df.ot[2:end], kT.*mean([df.Vkx[2:end], df.Vky[2:end]]), "V")
 # er(a, df.ot[2:end], kT.*df.Vkx[2:end], rich("V",subscript("x")))
 # er(a, df.ot[2:end], kT.*df.Vky[2:end], rich("V",subscript("y")))
-scale_potential(y) = value.(kT .* y) .* 1e12 .* 1e9
+scale_potential(y) = value.(kT .* y) .* 1e6 .* 1e9	# to nN/m
 s = scatter!(a, df.ot[2:end], 
 	scale_potential(mean([df.Vkx[2:end], df.Vky[2:end]])), 
 	label="V", markersize=7
@@ -154,15 +128,11 @@ scatter!(a, df.ot[2:end], scale_potential(df.Vkx[2:end]), label=rich("V",subscri
 scatter!(a, df.ot[2:end], scale_potential(df.Vky[2:end]), label=rich("V",subscript("y")), markersize=7, color=s.color, alpha=.5, marker=:diamond)
 
 # plot the msd_inf
-er(a, df.ot[3:end], 2*kT./df.msd_inf[3:end], "MSD(∞)")
-
-T = measurement(22.6, 0.1) + 273.15
-kB = 1.38064852e-23
-kT = kB * T
+er(a, df.ot[3:end], 2*kT./df.msd_inf[3:end] * 1e12 * 1e9, "MSD(∞)")
 df[:, :k_msd] = 2*kT./df.msd_inf .* 1e12
 
 Legend(f[1, 2], a, framevisible = false)
 colgap!(f.layout, 0)
 
-save("../figures/01_03_4_spring_constants.pdf", f)
+# save("../figures/01_03_4_spring_constants.pdf", f)
 f
