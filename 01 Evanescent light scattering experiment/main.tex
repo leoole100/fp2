@@ -207,7 +207,24 @@ The $z$ distance between particle and wall can be calculated using the formula \
  z = \frac{\log(I) - \log(I_0)}{-\beta}
 \end{equation}
 where $I$ is the scattered light intensity and $I_0$ is the maximum possible intensity, i.e. $z=0$, when the particle touches the glass surface. $\beta^{-1}$ is the characteristic length of the evanescent field.\\
-The $z$-dependent diffusion coefficient can be calculated from the position changes $\Delta z$ in a given $z$ interval.
+The $z$-dependent diffusion coefficient can be calculated from the position changes $\Delta z$ in a given $z$ interval. For Brownian motion these should be normally distributed with
+\begin{equation}
+\label{eq:D_delta_t}
+ \sigma^2 = 2 \cdot D \cdot \Delta t
+\end{equation}
+where $D$ is the diffusion coefficient \cite{instructions}. In reality there is an additional component owing to measurement uncertainty which does not depend on $\Delta t$. To eliminate it, the derivative with respect to $\Delta t$ is estimated by calculating \autoref{eq:D_delta_t} for different $\Delta t$, followed by a linear regression.\\
+Close to a wall, the diffusion coefficient can be modeled \cite{instructions} by the equation
+\begin{equation}
+ \label{eq:D_Brenner_approx}
+ D_\bot = \frac{D_0}{\left(\frac{R}{z}\right) + 0.2 \log\left(\frac{R}{z}\right) + 0.9712}
+\end{equation}
+with the radius $R$ of the particle and the free diffusion coefficient $D_0$ given by \cite{instructions}
+\begin{equation}
+ \label{eq:D_0}
+ D_0 = \frac{k_B T}{6 \pi \eta R}
+\end{equation}
+The radius $R$ is known from the first part of the experiment.
+
 
 \begin{figure*}
     \centering
