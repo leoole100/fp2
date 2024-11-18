@@ -119,7 +119,7 @@ end
 # er(a, df.ot[2:end], kT.*mean([df.Vkx[2:end], df.Vky[2:end]]), "V")
 # er(a, df.ot[2:end], kT.*df.Vkx[2:end], rich("V",subscript("x")))
 # er(a, df.ot[2:end], kT.*df.Vky[2:end], rich("V",subscript("y")))
-scale_potential(y) = value.(kT .* y) .* 1e6 .* 1e9	# to nN/m
+scale_potential(y) = value.(kT .* y) .* 1e12 .* 1e9	# to nN/m
 s = scatter!(a, df.ot[2:end], 
 	scale_potential(mean([df.Vkx[2:end], df.Vky[2:end]])), 
 	label="V", markersize=7
@@ -134,5 +134,5 @@ df[:, :k_msd] = 2*kT./df.msd_inf .* 1e12
 Legend(f[1, 2], a, framevisible = false)
 colgap!(f.layout, 0)
 
-# save("../figures/01_03_4_spring_constants.pdf", f)
+save("../figures/01_03_4_spring_constants.pdf", f)
 f
