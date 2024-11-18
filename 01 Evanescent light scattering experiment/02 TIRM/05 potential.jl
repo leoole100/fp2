@@ -4,7 +4,8 @@ import StatsBase
 using KernelDensity: kde
 using Optim
 using Format: format
-using LsqFit: curve_fit
+using LsqFit: curve_fit, stderror
+using Measurements: measurement
 
 # load and filter data
 include("functions.jl")
@@ -21,7 +22,7 @@ function dist(data; cutoff=0)
 end
 
 model(x, p) = p[1] .* exp.(-x .* p[2]) .+ p[3] .* x .+ p[4]
-fit_model(x, y) = curve_fit(model, x, y, [20.0, 20.0, 1.0, 0]).param
+fit_model(x, y) = curve_fit(model, x, y, [20.0, 20.0, 1.0, 0])
 model_minimum(p) = 1/p[2] * log(p[2]p[1]/p[3])
 
 # add beta from df.l column
@@ -38,7 +39,7 @@ a = Axis(f[1,1],
 	# yscale=log10,
 	# xscale=log10,
 )
-df[:, :fit] .= fill(zeros(4), size(df, 1))
+df[:, :fit] .= fill(fill(measurement(0,0), 4), size(df, 1))
 for (i,r) in enumerate(eachrow(df))
 	I = r.I
 	I = z_estimate(I, I0=1, β=r.β)
@@ -46,7 +47,8 @@ for (i,r) in enumerate(eachrow(df))
 	v = potential(k.y)
 	z = k.x
 	m = fit_model(z, v)
-	df[i, :fit] = m
+	df[i, :fit] = measurement.(m.param, stderror(m))
+	m = m.param
 	mdl = model(z,m)
 
 	z = z.-model_minimum(m)
