@@ -96,31 +96,36 @@ f
 
 
 # %% look at dz distribution
-f = Figure(size=halfsize)
-a = Axis(f[1,1],
-	xlabel="dz", ylabel="pdf",
-)
-for (i,r) in enumerate(eachrow(df[[4,5, 1,2,3, 6],:]))
-	z = z_estimate(r.I, I0=r.fit[1], β=r.fit[2])
-	dz = diff(z)
-	w = 0.02
-	# k = kde(dz, boundary=(-w,w),bandwidth=.001)
-	h = StatsBase.fit(StatsBase.Histogram, dz, -w:.001:w)
-	ls = :dash
-	if r.Brenner
-		ls = :solid
+f = Figure(size=fullsize)
+aI = Axis(f[1,1], xlabel="I", ylabel="pdf")
+adI = Axis(f[1,2], xlabel="dI/dt")
+az = Axis(f[2,1], xlabel="z", ylabel="pdf")
+adz = Axis(f[2,2], xlabel="dz/dt")
+
+k =nothing
+for (i, r) in enumerate(eachrow(df[[5,6], :]))
+	l ="β = "*format(r.β, precision=3)*" μm"
+	l *= "\nI₀ = "*format(r.fit[1], precision=1)
+	if r.Brenner 
+		l *= " (fit)"
 	end
-	# lines!(
-	# 	# k.x, k.density,
-	# 	h.edges[1][1:end-1], h.weights./length(dz),
-	# 	color=r.ot, colorrange=extrema(df.ot),
-	# 	linestyle = ls,
-	# )
-	stairs!(
-		h.edges[1][1:end-1], h.weights./length(dz),
-		color=r.ot, colorrange=extrema(df.ot),
-		linestyle = ls,
-		step=:pre
-	)
+
+	k = dist(r.I, cutoff=0.05)
+	lines!(aI, k.x, k.y, label=l)
+	k=kde(diff(r.I), boundary=(-.05, .05))
+	lines!(adI, k.x, k.density)
+	
+	z = z_estimate(r.I, I0=r.fit[1], β=r.fit[2])
+	k = dist(z, cutoff=0.05)
+	lines!(az, k.x, k.y)
+
+	k=kde(diff(z), boundary=(-.03, .03), bandwidth=.001)
+	lines!(adz, k.x, k.density)
 end
+for a in [aI, adI, az, adz]
+	ylims!(a, low=0)
+end
+Legend(f[:,3], aI, framevisible=false)
+resize_to_layout!(f)
+save("../figures/02_04_02_hist.pdf", f)
 f

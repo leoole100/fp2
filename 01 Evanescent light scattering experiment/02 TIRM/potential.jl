@@ -68,7 +68,7 @@ fit_model(x, y) = curve_fit(model, x, y, [10, 1.0, 1.0, 1.0]).param
 f = Figure()
 aV = Axis(f[1, 1], ylabel="V in kT", xlabel="z")
 # az = Axis(f[2, 1], ylabel="pdf", xlabel="z")
-aI = Axis(f[1, 2], xlabel="intensity")
+# aI = Axis(f[1, 2], xlabel="intensity")
 # linkxaxes!(az, aV)
 # linkyaxes!(aI, az)
 # ylims!(az, 0, nothing)
@@ -87,6 +87,6 @@ for i in eachrow(filter(d -> (d.ot<1 || d.ot==1.5), sort(df, :l)))
 end
 # lines!(aV, 0:.1:8, x -> model(x, [10, 1.0, 1.0, 1.0]), color=:black)
 # lines!(aV, .5:.1:3, x -> model_ot(x, [10, 1.0, 1.0, 1.0, .1, 1.5]), color=:black)
-axislegend(aI, position=:rt)
-save("../figures/02_potential.pdf", f)
+axislegend(aV, position=:rt)
+# save("../figures/02_potential.pdf", f)
 f

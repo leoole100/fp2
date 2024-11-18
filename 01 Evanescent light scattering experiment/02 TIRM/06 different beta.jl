@@ -9,7 +9,7 @@ using LsqFit: curve_fit
 # load and filter data
 include("functions.jl")
 
-filter!(r->r.ot<1.1, df)
+filter!(r->r.ot==1.5, df)
 
 potential(p) = -log.(p) .+ log(maximum(p))
 
@@ -23,6 +23,10 @@ end
 model(x, p) = p[1] .* exp.(-x .* p[2]) .+ p[3] .* x .+ p[4]
 fit_model(x, y) = curve_fit(model, x, y, [20.0, 20.0, 1.0, 0]).param
 model_minimum(p) = 1/p[2] * log(p[2]p[1]/p[3])
+
+background(I) = -.1
+estimate_I0(I) = 2*maximum(I)-background(I)
+calc_z(I, I0=estimate_I0(I), beta=1, b=background(I)) = log.(I0 ./ (I.-b)) ./ beta
 
 # add beta from df.l column
 l_beta = Dict(5.0=>.454, 10.0=>.322, 15.0=>.265, 20.0=>.230)
@@ -41,7 +45,8 @@ a = Axis(f[1,1],
 df[:, :fit] .= fill(zeros(4), size(df, 1))
 for (i,r) in enumerate(eachrow(df))
 	I = r.I
-	I = z_estimate(I, I0=1, β=r.β)
+	# I = z_estimate(I, I0=2*maximum(I), β=r.β)
+	I = calc_z(I)
 	k = dist(I, cutoff=0.05)
 	v = potential(k.y)
 	z = k.x
@@ -49,32 +54,13 @@ for (i,r) in enumerate(eachrow(df))
 	df[i, :fit] = m
 	mdl = model(z,m)
 
-	z = z.-model_minimum(m)
+	z = z./model_minimum(m) .-1
 
-	l = lines!(z, v, 
-		label=format(r.ot, precision=2), 
-		color=r.ot, colorrange=extrema(df.ot),
-	)	
-	lines!(z, mdl,
-		color=r.ot, colorrange=extrema(df.ot), 
-		linestyle=:dash
-	)
+	l = lines!(z, v, label=format(r.β, precision=3))	
+	lines!(z, mdl, linestyle=:dash, color=l.color)
 end
-Legend(f[1,2], a, "Trap Stiffness", framevisible=false)
+Legend(f[1,2], a, "β in μm",framevisible=false)
 colgap!(f.layout, 0)
-save("../figures/02_05_01_potential.pdf", f)
+save("../figures/02_06_01_different_beta.pdf", f)
 f
 
-# %%
-s = [f[3]*kT*1e6*1e15 for f in df.fit] # fN
-
-f = Figure(size=halfsize)
-a = Axis(f[1,1], xlabel="Trap Stiffness", ylabel=" fN")
-plot!(df.ot, value.(s))
-line(x,p) = p[1].*x .+ p[2]
-p = curve_fit(line, df.ot, value.(s), [1., 0.]).param
-lines!(.618:.001:1, x->line(x, p), color=:black)
-print(line(.618, p))
-xlims!(a, low=.618)
-save("../figures/02_05_02_gravity.pdf", f)
-f
