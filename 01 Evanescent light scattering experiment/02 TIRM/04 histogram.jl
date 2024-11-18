@@ -1,9 +1,38 @@
 using CairoMakie
-using StatsBase: moment, std, mean
+using StatsBase: moment, std, mean, var
 using KernelDensity: kde
 
 # load and filter data
 include("functions.jl")
+
+diff_z(z, d) = circshift(z, -d) .- z
+mean_slope(y) = mean(diff(y))
+
+# similar to the provided matlab code
+function dvdt(z; z_bins=100, t_bins=5, cutoff=1/100)
+	z0 = range(extrema(z)..., length=z_bins+1)
+	z_step = diff(z0)[1]
+	dzdt = zeros(length(z0))
+	count = zeros(length(z0))
+	dz = [diff_z(z, i) for i in 1:t_bins]
+	for i in 1:length(z0)
+		z_mask = z0[i]-z_step/2 .< z .< z0[i]+z_step/2
+		count[i] = sum(z_mask)
+		if sum(z_mask) > length(z).*cutoff
+			std_dz = [var(dz_i[z_mask]) for dz_i in dz]
+			dzdt[i] = mean_slope(std_dz)
+		else
+			dzdt[i] = NaN
+		end
+	end
+	return z0, dzdt, count
+end
+function D(dσdt)
+	z, v, c = dσdt
+	D = v ./ (2*Δt)
+	mask = z .< .4
+	return z[mask], D[mask], c[mask]
+end
 
 # %% look at same z
 f = Figure()
@@ -21,37 +50,10 @@ end
 f
 
 # %%
-diff_z(z, d) = z .- circshift(z, d)
 
-# the main assumption is that D(z0) = 1/2 dσ²(z,τ)/dτ
-# ∫dτ da(τ)/dτ is computed as mean(diff(a))
-# similar to the provided matlab code
-function dσdt(z; z_bins=100, τ=1:10, cutoff=1/100)
-	z0 = range(minimum(z), maximum(z), length=z_bins+1)
-	dzdt = zeros(length(z0)-1)
-	count = zeros(length(z0)-1)
-	dz = [diff_z(z, i) for i in τ]
-	for i in 1:length(z0)-1
-		z_mask = z0[i] .< z .< z0[i+1]
-		count[i] = sum(z_mask)
-		if sum(z_mask) > length(z).*cutoff
-			std_dz = [std(dz_i[z_mask]) for dz_i in dz]
-			dzdt[i] = mean(std_dz)
-		else
-			dzdt[i] = NaN
-		end
-	end
-	return z0[1:end-1], dzdt, count
-end
-function D(dσdt)
-	z, σ, c = dσdt
-	D = σ.^2 ./ (2*Δt)
-	return z, D, c
-end
-D(dσdt(z_estimate(df[1,:].I)))
-
-#%%
-p = (I0=.85, β=.016)
+p = (I0=1.2, β=.156)
+# p = (I0=.85, β=.016) #fits but only on linear part
+# p = (I0=2.5, β=0.3) # expected
 
 f = Figure()
 a = Axis(f[1,1], 
@@ -61,29 +63,22 @@ a = Axis(f[1,1],
 	title="I₀="*string(p.I0)*", β="*string(p.β)*" μm"
 )
 lines!(
-	0:.01:.1, 
-	z -> Dz_theoretical(z),
+	0:.01:.7, Dz_theoretical,
 	color=:black,
 	label="Theoretical",
 )
-# for i in eachrow(df[end:end, :])
-for i in eachrow(df)
-	# z = z_estimate(i.I, I0=2.5, β=0.3) # expected
+for i in eachrow(df[4:4, :])
+# for i in eachrow(df)
 	z = z_estimate(i.I, I0=p.I0, β=p.β)
-	z, d, c = D(dσdt(z, cutoff=1/40))
+	z, d, c = D(dvdt(z, cutoff=1/50))
 	scatter!(z, d, 
 		color=i.ot, colorrange=extrema(df.ot),
 		label=i.p,
-		markersize=c./maximum(c).*10 .+ 5,
+		markersize=10 .*c./maximum(c).+2,
 		alpha=.7
 	)
-	# fit a line
-	j = argmax(c)
-	m = diff(d)[j] / diff(z)[j]
-	b = d[j] - m*z[j]
-	lines!(0:.01:z[j+2], z->m.*z.+b, color=i.ot, colorrange=extrema(df.ot))
 end
 # Legend(f[1,2], a, label="Trap Strength", framevisible=false)
-# axislegend(position=:lt)
+axislegend(position=:lt)
 colgap!(f.layout, 1)
 f
