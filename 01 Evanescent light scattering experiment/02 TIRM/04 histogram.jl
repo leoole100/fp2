@@ -1,66 +1,72 @@
 using CairoMakie
-using StatsBase: moment, std, autocor
+using StatsBase: moment, std, mean
 using KernelDensity: kde
-using Optim: optimize, GradientDescent
-using DSP: conv
 
 # load and filter data
 include("functions.jl")
 
-D_estimate(std_z; Δt=Δt) = std_z.^2 ./ (2*Δt)  # from script
-
 # %% look at same z
-function Dz_estimate(I; I0=maximum(I), β=1)
-	z = z_estimate(I, I0=I0, β=β)
-	dz = diff(z)
-	z = z[2:end]
-	
-	zdz = DataFrame(z=z, dz=dz)
-	groups =  groupby(zdz, :z)
-	groups = filter(x -> nrow(x) > 100, groups)
-	std_dz = combine(groups, :dz => std => :std_dz)
-	filter!(i->i.z<3, std_dz)
-	return  std_dz.z, D_estimate(std_dz.std_dz)
-end
-
 f = Figure()
 a = Axis(f[1,1],
-	xlabel="dz", ylabel="pdf"
+xlabel="dz", ylabel="pdf"
 )
 for i in eachrow(df)
 	z = z_estimate(i.I)
 	dz = diff(z)
 	k = kde(dz, boundary=(-.5,.5),bandwidth=.025)
 	lines!(k.x, k.density,
-		color=i.ot, colorrange=extrema(df.ot)
+	color=i.ot, colorrange=extrema(df.ot)
 	)
 end
 f
 
 # %%
+diff_z(z, d) = z .- circshift(z, d)
+
+# the main assumption is that D(z0) = 1/2 dσ²(z,τ)/dτ
+# ∫dτ da(τ)/dτ is computed as mean(diff(a))
+function dσdt(z; z_bins=10, τ=1:10)
+	z0 = range(minimum(z), maximum(z), length=z_bins+1)
+	dzdt = zeros(length(z0)-1)
+	dz = [diff_z(z, i) for i in τ]
+	for i in 1:length(z0)-1
+		z_mask = z0[i] .< z .< z0[i+1]
+		if sum(z_mask) > 3
+			std_dz = [std(dz_i[z_mask]) for dz_i in dz]
+			dzdt[i] = mean(std_dz)
+		else
+			dzdt[i] = NaN
+		end
+	end
+	return z0[1:end-1], dzdt
+end
+function D(dσdt)
+	z, σ = dσdt
+	D = σ.^2 ./ (2*Δt)
+	return z, D
+end
+
 f = Figure()
 a = Axis(f[1,1], 
-	xlabel="z/β", ylabel="D(z) in β^2/s",
-	# xscale=log10,
-	# yscale=log10
+	xlabel="z in μm", ylabel="D(z) in μm²/s",
+	yscale=log10,
 )
-Dz = Nothing
 for i in eachrow(df)
-	Dz = Dz_estimate(i.I, I0=2.4)
-	scatter!(Dz...,
+	# z = z_estimate(i.I, I0=2.5, β=0.5)
+	z = z_estimate(i.I, I0=2, β=0.5)
+	z, dz = D(dσdt(z))
+	lines!(a, z, dz.^2, 
 		color=i.ot, colorrange=extrema(df.ot),
-		label=i.p,
-		alpha=.5
+		label=i.p
 	)
 end
 lines!(
-	0:.1:3,
+	.01:.01:1, 
 	z -> Dz_theoretical(z),
-	label="model",
-	color=:black
+	color=:black,
+	label="Theoretical"
 )
-
-Legend(f[1,2], a, framevisible=false)
-colgap!(f.layout, 0)
+# Legend(f[1,2], a, label="Trap Strength", framevisible=false)
+# axislegend(position=:lt)
+colgap!(f.layout, 1)
 f
-

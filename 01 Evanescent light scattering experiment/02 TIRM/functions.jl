@@ -19,4 +19,4 @@ R=2.15
 remove_offset(I) = abs.(I)
 # calculate z
 z_estimate(I; β=β, I0=1) = log.(I0 ./ remove_offset(I)) .* β
-Dz_theoretical(z; D0=D0/β^2, R=R/β) = D0 ./ (R./z + 0.2 .* log.(R./z) + 0.9712)
+Dz_theoretical(z; D0=D0, R=R) = D0 ./ (R./z + 0.2 .* log.(R./z) + 0.9712)
