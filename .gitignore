@@ -12,6 +12,7 @@
 *.bcf
 *.run.xml
 *.blg
+*.bbl-SAVE-ERROR
 
 # python files
 **/__pycache__

@@ -8,6 +8,7 @@ using KernelDensity: kde
 import CSV, Images
 using Glob: glob
 using Format: format
+using JLD2 
 include("../functions.jl")
 
 cd(@__DIR__)
@@ -27,6 +28,9 @@ df = DataFrame(I=Ia, p=pa)
 df.l = map(p -> parse(Float64, split(p, " ")[2][1:end-2]), df[:,:p])
 df.ot = map(p -> parse(Float64, split(p, " ")[3][3:end]), df[:,:p])
 sort!(df, :ot)
+
+save("../data/TIRM/data.jld2", "df", df)
+
 df
 #%%
 
