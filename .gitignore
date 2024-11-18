@@ -13,6 +13,7 @@
 *.run.xml
 *.blg
 *.bbl-SAVE-ERROR
+**/main.pdf
 
 # python files
 **/__pycache__
