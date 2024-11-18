@@ -48,7 +48,7 @@
 
 \section{Introduction}
 Using the statistics of the random walk small forces can be measured.
-This is demonstrated on colloidal particles in a aqueous solution.
+This is demonstrated on colloidal particles in an aqueous solution.
 Forces are applied using optical tweezers and the position is measured with different microscopy techniques.
 
 
@@ -63,18 +63,18 @@ Forces are applied using optical tweezers and the position is measured with diff
     \caption{Schematic of the experimental setup. Optical tweezers in green, transmission light microscopy in blue and total internal reflection microscopy in red.}
     \label{fig:setup}
 \end{figure}
-This experiment operates with light on small particles (in the range of \SI{1}{\micro m} \cite{instructions}) in a aqueous solution.
+This experiment operates with light on small particles (in the range of \SI{1}{\micro m} \cite{instructions}) in an aqueous solution.
 This is shown in \autoref{fig:setup} as the gray circle in the blue box. 
 
-Using a optical tweezers setup the particle can be trapped in the center of the experiment.
-This results on a 3 dimensional harmonic potential, with a spring constant that is roughly proportional to the trap strength.
+Using an optical tweezers setup the particle can be trapped in the center of the sample.
+This results in a 3-dimensional harmonic potential, with a spring constant that is roughly proportional to the trap strength.
 
 To directly observe the particle transmission light microscopy is used.
 For this a blue led is used to illuminate the particle from below.
 This allows the particle position to measured in $x$ and $y$ direction.
 
 To measure the position in $z$ direction, total internal reflection microscopy is used.
-For this a red laser is bounced off a prism to create a evanescent wave in the aqueous solution.
+For this a red laser is totally reflected at the boundary below the aqueous solution to create an evanescent wave.
 This wave scatters off the particle into a sensitive photo detector.
 
 % \section{Procedure}
@@ -102,7 +102,7 @@ The particle that was used for this experiment is shown in \autoref{fig:01partic
     \caption{Density of recorded particle positions, grouped by optical trap stiffness. The red circle indicates the approximate radius of the optical trap \SI{2.5}{\micro m}.}
     \label{fig:01bivariate}
 \end{figure*}
-To determine the trajectory of the particle, a effective center of mass was calculated for each frame:
+To determine the trajectory of the particle, an effective center of mass was calculated for each frame:
 \begin{equation}
     \vec{r}(t) = \iint \vec{r} \cdot \left(1-I(\vec{r}, t)\right)^2 d\vec{r}    
 \end{equation}
@@ -135,7 +135,7 @@ The MSD can be described by the following model:
 \end{equation}
 
 For a free particle the $\text{MSD}(\infty)=\infty$ and the MSD grows linearly with $D_0$ over time \cite{wiki:msd,instructions}.\\
-The through the fit estimated diffusion Coefficient $D_0$ in \autoref{tab:01spring} is equivalent with the expected value of $D_0 = \frac{k_B T}{6 \pi \eta r} = \SI{0.122(18)}{\micro m ^2 / s}$ \cite{instructions}, with $r = \SI{1.86(27)}{\micro m}$ and $\eta = \SI{0.955}{mPa\cdot s}$\cite{n:water}.
+The diffusion Coefficient $D_0$ estimated using the fit in \autoref{tab:01spring} is equivalent to the theoretical value of $D_0 = \frac{k_B T}{6 \pi \eta r} = \SI{0.122(18)}{\micro m ^2 / s}$ \cite{instructions}, with $r = \SI{1.86(27)}{\micro m}$ and $\eta = \SI{0.955}{mPa\cdot s}$\cite{n:water}.
 The error in the magnification of the microscope does increase the uncertainty.
 
 For a confined particle the MSD reaches a plateau at $\text{MSD}(\infty)$ \cite{instructions}.
@@ -159,8 +159,8 @@ Therefore this procedure is not adequate for such low spring stiffnesses.
 \subsubsection*{Potential}
 A more detailed analysis can be done by looking at the distribution of the particle positions.
 For this the probability density function (PDF) of the particle positions has to be estimated.
-This is done using the kernel density estimation (KDE) with a Gaussian kernel \cite{jl:kde}.
-The resulting 2 dimensional PDF is shown in \autoref{fig:01bivariate}.\\
+This is done using kernel density estimation (KDE) with a Gaussian kernel \cite{jl:kde}.
+The resulting 2-dimensional PDF is shown in \autoref{fig:01bivariate}.\\
 As the density is small for large parts of the explored 2d space, the data is reduced by aggregating along the image coordinates $x$ and $y$.
 As the Potential should by rotationally symmetric, the data from the $x$ and $y$ axis should not significantly deviate.
 
@@ -184,20 +184,31 @@ The resulting potential is shown in \autoref{fig:01potential}.
 The parts of the measurements with a $\text{PDF}(x)>0.05$ are used for a quadratic fit, to estimate the spring constant.
 The resulting spring constants are shown in \autoref{fig:01spring} and \autoref{tab:01spring} and are in the same order of magnitude. 
 
-For the lower spring constant of \SI{0.75}{}, the potential begins quadratic, but flattens after approximately \SI{2.5}{\micro m}. 
+For the lower spring constant of \SI{0.75}{}, the potential begins quadratically, but flattens after approximately \SI{2.5}{\micro m}.
 This is due to the limited size of the trap, but the spring constant can still be estimated.
 
 This method allows for the measurement of a spring constant as low as \SI{0.9011(45)}{\nano N /m}, which means over the used length scales that forces in the order of \SI{1}{\femto N} can be measured.
 
 \subsection{Total Internal Reflection Microscopy}
-As references in \cite{instructions} led to nowhere, we implemented our own methods.
+\textit{Note:} As some references in \cite{instructions} led to nowhere, we implemented our own methods.\\
+To measure the particle movement in the vertical direction, \textit{Total Internal Reflection Microscopy} was used: A laser beam is totally reflected at the glass-water boundary below the particle. The resulting evanescent field decays exponentially in the $z$ direction, which means the intensity of the light scattered by the particle allows for precise position measurement on the vertical axis.
 
-\subsubsection*{Brenner Diffusion Model}
+
+\subsubsection*{Position and Diffusion Coefficient}
 \begin{figure*}
     \centering
     \includegraphics{figures/02_04_01_diffusion.pdf}
     \caption{Estimated diffusion coefficient for different measurements. For differently set evanescent wave parameters $\beta$ in \SI{}{\micro m}. If it is shown for a different $\beta$, it is noted in brackets.}
 \end{figure*}
+
+The $z$ distance between particle and wall can be calculated using the formula \cite{instructions}
+\begin{equation}
+ \label{eq:calculate_z}
+ z = \frac{\log(I) - \log(I_0)}{-\beta}
+\end{equation}
+where $I$ is the scattered light intensity and $I_0$ is the maximum possible intensity, i.e. $z=0$, when the particle touches the glass surface. $\beta^{-1}$ is the characteristic length of the evanescent field.\\
+The $z$-dependent diffusion coefficient can be calculated from the position changes $\Delta z$ in a given $z$ interval.
+
 
 
 \subsubsection*{Potential}
