@@ -37,8 +37,7 @@
     \vfill
     {
         \normalfont\normalsize
-        Abstract auf Englisch (10-15 Zeilen)
-        \blindtext[2]
+        This experiment is determined to investigate the behaviour of a particle undergoing diffusion in the form of Brownian motion both with and without a constrain imposed by the electric field of optical tweezers. Its motion was tracked in the horizontal plane using a microscope. The results make it possible to estimate the diffusion coefficient, which coincides with the theoretical result calculated for an aqueous solution, as well as the effective potential created by the optical tweezers. To measure vertical movements, Total Internal Reflection Microscopy is used in to determine the vertical diffusion movement of the particle as well as the height-dependent diffusion coefficient close to a wall. The measurement was partly successful and qualitatively matches the theoretical model. Curiously, the fit imiplies that the characteristic length of the evanescent field was determined incorrectly. The TIRM results show that forces at the order of a few dozen femto-Newtons can be measured using this method. An attempt to determine the particle mass from the effective gravity failed due to poor measurement results.
     }
     \vfill
     \begin{flushright}
@@ -179,6 +178,7 @@ As the Potential should by rotationally symmetric, the data from the $x$ and $y$
 Using the Maxwell Boltzmann relations \cite{instructions}, the potential at a position $p$ can be calculated from the PDF:
 \begin{equation}
     V(p) = - \frac{\log{\text{PDF}(p)}}{k_B T}
+    \label{eq:pot_boltzmann}
 \end{equation}
 The resulting potential is shown in \autoref{fig:01potential}.
 The parts of the measurements with a $\text{PDF}(x)>0.05$ are used for a quadratic fit, to estimate the spring constant.
@@ -198,7 +198,10 @@ To measure the particle movement in the vertical direction, \textit{Total Intern
 \begin{figure*}
     \centering
     \includegraphics{figures/02_04_01_diffusion.pdf}
-    \caption{Estimated diffusion coefficient for different measurements. For differently set evanescent wave parameters $\beta$ in \SI{}{\micro m}. If it is shown for a different $\beta$, it is noted in brackets.}
+    \caption{Estimated diffusion coefficient for different measurements for different characteristic length $\beta^{-1}$ of the evanescent field as calculated from the incident angle. The values are provided in the plot legend on the right and are given in \SI{}{\micro m}. The theoretical model corresponds to \autoref{eq:D_Brenner_approx}. Intensities are given without unit, they refer to the scale of the MatLab measurement programme and convert to real intensities linearily with an unknown scaling parameter.\\
+    Two datasets can be made to fit the model \textit{if $\beta^{-1}$ is adjusted}. The plot shows the data for adjusted $\beta^{-1}$, the value is denoted in the plot legend in brackets.\\
+    None of the other measurements can fit the theoretical prediction for any $I_0$ even if $\beta$ is adjusted. Four of those datasets are plotted using $I_0=1$. They differ from the two successful measurements quantitatively and they trend steeply upwards with increasing $z$.}
+    \label{fig:D_of_z}
 \end{figure*}
 
 The $z$ distance between particle and wall can be calculated using the formula \cite{instructions}
@@ -206,7 +209,7 @@ The $z$ distance between particle and wall can be calculated using the formula \
  \label{eq:calculate_z}
  z = \frac{\log(I) - \log(I_0)}{-\beta}
 \end{equation}
-where $I$ is the scattered light intensity and $I_0$ is the maximum possible intensity, i.e. $z=0$, when the particle touches the glass surface. $\beta^{-1}$ is the characteristic length of the evanescent field.\\
+where $I$ is the scattered light intensity and $I_0$ is the maximum possible intensity, i.e. $z=0$, when the particle touches the glass surface. $\beta^{-1}$ is the characteristic length of the evanescent field which can be calculated from the angle of incident of the reflected beam.\\
 The $z$-dependent diffusion coefficient can be calculated from the position changes $\Delta z$ in a given $z$ interval. For Brownian motion these should be normally distributed with
 \begin{equation}
 \label{eq:D_delta_t}
@@ -223,39 +226,54 @@ with the radius $R$ of the particle and the free diffusion coefficient $D_0$ giv
  \label{eq:D_0}
  D_0 = \frac{k_B T}{6 \pi \eta R}
 \end{equation}
-The radius $R$ is known from the first part of the experiment.
+The radius $R$ can be computed from the microscope image.\\
+The intensity $I_0$ needed to compute $z$ is initially unknown. Using a computer program, the steps \autoref{eq:calculate_z} and \autoref{eq:D_delta_t} are calculated iteratively with different $I_0$ trying to match \autoref{eq:D_Brenner_approx}. The distance dependent diffusion coefficient $D(z)$ obtained using this method is shown in \autoref{fig:D_of_z}. Two measurements yield results matching the theoretical model, but only for \textit{different $\beta$ values} even though they should be the same. For the other measurement series, four of them shown here using $I_0=1$, it was not possible to match the theoretical model from \autoref{eq:D_Brenner_approx} adjusting $I_0$, and adjusting $\beta$ did not change that. The MatLab script kindly provided for this experiment yields the same results.\\
+For a trap stiffness of \SI{1.5}{} two measurements for different $\beta$ are whown in \autoref{fig:pdf_ts_1_5}. The graphs show the estimated Probability Density Functions for the measured intensity $I$, the differences of consecutive intensity datapoints as well as the PDF of $z$ and its rate of change. Only one of those measurements succeeded. The next objective will be to estimate the effective potential around the particle, generated by the optical tweezers.
 
 
 \begin{figure*}
     \centering
     \includegraphics{figures/02_04_02_hist.pdf}
-    \caption{Distribution of measurements for the same trap stiffness \SI{1.5}{} with different $\beta$.}
+    \caption{Distribution of datapoints for two measurements for the same trap stiffness \SI{1.5}{} but with different $\beta^{-1}$. The graph on the top right ($\Delta I$-distribution) shows quantisation artifacts owing to the limited accuracy of the measurement equipment. The speed distribution of the particle (bottom right) roughly represents a Gaussian. The peak at $0$ and the neighbouring valleys are a result of measurement quantisation: The $0$-bin of the histogram collects all values around it and no points fall into the neighbouring bins.\\
+    Only one of the two measurements yielded a proper result (blue graphs). The other series is drawn using $I_0 = 1$. Despite that, the potentials estimated from the PDF of $z$ match except for a displacement in $z$, likely caused by incorrect assumption of $I_0$ in the second case. \autoref{fig:pot_ts_1_5} shows the potentials if centered around the same position.}
+    \label{fig:pdf_ts_1_5}
 \end{figure*}
+\begin{figure}
+    \centering
+    \includegraphics{figures/02_06_01_different_beta.pdf}
+    \caption{Measured potential at same trap stiffness \SI{1.5}{}, but different illumination angles resulting in different $\beta^{-1}$. The Graphs were computed from the same data that is shown in \autoref{fig:pdf_ts_1_5}. The $z$ positions in this graph are shifted to center both potentials around the same, arbitrarily chosen value of $z=0$. This is justified because $I_0$ could not be determined for the second measurement. The purpose of this figure is to show that the potentials \textit{might} be equal in both cases, matching the expectation because the trap stiffness is the same across both cases.}
+    \label{fig:pot_ts_1_5}
+\end{figure}
 
 \subsubsection*{Potential}
+Optical tweezers exert position dependent forces on a particle resulting in an effective potential. If the probability density function of the particle position is known, this potential can be calculated using \autoref{eq:pot_boltzmann}. The resulting potentials for different optical trap stiffnesses are plotted in \autoref{fig:pot_various_ts}. The potentials are shifted to center around the same arbitrary point $z=0$ to illustrate the effect of varying the trap stiffness. Increased Laser power of the optical tweezers pronounces the effective Potential, increasing the gradient and therefore the forces acting on the particle trapping it in a more refined space.\\
+The shape of the effective potential can be modeled as the sum of an exponential part increasing as the particle gets closer to the wall and a linear part that increases with distance to the wall:
+\begin{equation}
+ \label{eq:pot_model}
+ P(z) = A \cdot \exp(-\kappa z) + z \cdot k_B T \cdot F_{g,\text{eff}} + B
+\end{equation}
+The characteristic length $\kappa^{-1}$ of the potential close to the wall is called the \textit{Debye Screening Length}. $F_{g,\text{eff}}$ is the effective force of gravity acting on the particle inside the solution. It is driven by the actual gravitational force but is reduced by buoyancy and increased by the force of the optical trap. For each measurement, the estimated potential was fitted to \autoref{eq:pot_model} to obtain $\kappa$ and $F_{g,\text{eff}}$. The results are listed in \autoref{tab:pot_fit}. The measured effective gravitational force lies in the regime of femto-Newtons. Linear regression of $F_{g,\text{eff}}$ with respect to trap stiffness should allow us to find the mass of the particle. An attempt is shown in \autoref{fig:fg_lin}, but the fit is inaccurate for the calculated values and the mass could not be determined.
+
 \begin{figure}
     \centering
     \includegraphics{figures/02_05_01_potential.pdf}
-    \caption{Measured Potential for different optical trap stiffnesses.}
+    \caption{Measured Potential for different optical trap stiffnesses. The graphs were shifted so their minima align at the arbitrarily chosen point $z=0$. The graph shows that the effective potential is amplified by the trap stiffness parameter, corresponding to stronger setback forces for higher laser intensity.}
+    \label{fig:pot_various_ts}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics{figures/02_05_02_gravity.pdf}
-    \caption{Linear fit from Potential.}
+    \caption{Linear fit of effective gravity for different trap stiffness values. Extrapolation to zero on the horizontal axis should yield the sum of buoyancy and gravitational force and allow for determining the particle mass. However, the two leftmost points are not compatible with one-another. Extrapolation of the fit drawn in the figure yields an unrealistic result.}
+    \label{fig:fg_lin}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics{figures/laser_linearity.pdf}
-    \caption{Relation of the trap stiffness variable to the actual power.}
-\end{figure}
-\begin{figure}
-    \centering
-    \includegraphics{figures/02_06_01_different_beta.pdf}
-    \caption{Measured potential at same trap stiffness, but different illumination angle.}
+    \caption{This graph shows the relation between the dimensionless value 'trap stiffness' corresponding to the scale on the laser driver unit, assumed to be a Voltage, and the laser output power. These values were used to convert the trap stiffness parameter to real world units. The conversion is nearly linear between values of about \SIrange{0.7}{1}{} on the horizontal axis.}
 \end{figure}
 \begin{table}
     \centering
-    \begin{tabular}{r|l|l}
+    \begin{tabular}{r|c|l}
         stiffness   & effective gravity in \SI{}{\femto N}  & $\kappa^{-1}$ in \SI{}{\nano m} \\
         \hline
         0.70  & \SI{25.88(55)}{} & \SI{260.4(84)}{}\\
@@ -264,11 +282,18 @@ The radius $R$ is known from the first part of the experiment.
         0.97  & \SI{46.38(11)}{} & \SI{ 45.6(26)}{}
     \end{tabular}
     \caption{Fit Parameters from the potential. }
+    \label{tab:pot_fit}
 \end{table}
 
 
 
 \section{Discussion}
+
+The captured image data shows the expected behaviour of a particle trapped inside an approximately harmonic potential performing a random walk. Plotting the mean square displacement over time shows that the particle's movement is restrained to an area around the potential valley. Increasing the trap stiffness restrains the particle more. During one of the measurements the particle escaped the optical trap and moved around freely. The other MSD graphs show the particle behaving as expected, remaining inside the potential well. The diffusion coefficient calculated from the measurements matches the theoretical prediction. The measurement data also allowed for estimation of the potential, illustrating that this method can be used to measure forces in the nano-Newton range.\\
+In the second part of the experiment where Total Internal Reflection Microscopy was used to measure the vertical movement of the particle, things did not go so well. The measured intensities were small and therefore prone to quantisation errors due to limitations of the measurement equipment. One issue was poor alignment of the illuminating laser in the beginning of the experiment. This resulted in odd behaviour of the parameter $\beta^{-1}$ corresponding to the characteristic length of the evanescent field, and might be responsible for the low intensity as well. The experiment yielded mixed results for all the measurements conducted in this second part. They can only be considered fully successful in two cases. Here, the analysis routine described above yields proper results for the absolute position of the particle as well as the diffusion coefficient profile close to the wall. The remaining measurement datasets did not allow for that because they cannot fit the theoretical model. In these cases, the measurements failed to provide the information we were looking for. A silver lining is the general resemblence with the theoretically expected shape for the estimated potentials for these measurements assuming $I_0=1$. Combining these findings with the results from the successful measurements allows the determination of the effective gravity and Debye Screening Length in two more cases. However, this yields mixed results yet again. It was not possible to determine the mass of the particle. But the results show that it is possible to measure forces as small as a few dozen femto-Newtons using this method which could be considered a small success. Overall, the second part of the experiment was mostly unsuccessful, owing partly to poor adjustment in the beginning, but also questionable results after applying the data analysis methods meant to resolve this part of the measurement. The setup should be improved to make adjusting the total internal reflection angle easier and more intuitive. The data analysis script could be adjusted to make it more robust in case measurement data does not show the expected behaviour, as in this case the fit results are unreliable which can render entire measurement series useless. Speaking of unreliability, it is difficult to estimate the uncertainty of the results even if everything goes well. The graphs shown in this report illustrate how difficult it can be to make conclusions based off of the fit parameters.\\
+Last but not least, the instruction manual \autocite{instruction} for this experiment requires improvement. Some references lead nowhere which caused us some confusion while working on this experiment.
+
+
 
 \addcontentsline{toc}{section}{Literature}
 \nocite{*}
