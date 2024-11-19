@@ -69,10 +69,14 @@ f
 
 # %%
 s = [f[3]*kT*1e6*1e15 for f in df.fit] # fN
+s = s .* measurement(1, .1)
+
+k = [1/f[2]*1e3* measurement(1, .1) for f in df.fit] # fN
 
 f = Figure(size=halfsize)
 a = Axis(f[1,1], xlabel="Trap Stiffness", ylabel=" fN")
 plot!(df.ot, value.(s))
+errorbars!(df.ot, value.(s), uncertainty.(s))
 line(x,p) = p[1].*x .+ p[2]
 p = curve_fit(line, df.ot, value.(s), [1., 0.]).param
 lines!(.618:.001:1, x->line(x, p), color=:black)

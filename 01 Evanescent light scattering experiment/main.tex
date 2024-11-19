@@ -133,13 +133,15 @@ The MSD can be described by the following combination model:
 
 For a free particle the $\text{MSD}(\infty)=\infty$ and the MSD grows linearly with $D_0$ over time \cite{wiki:msd,instructions}.\\
 The diffusion Coefficient $D_0$ estimated using the fit is shown in \autoref{tab:01spring}.
-It is equivalent to the theoretical value of $D_0 = \frac{k_B T}{6 \pi \eta r} = \SI{0.122(18)}{\micro m ^2 / s}$ \cite{instructions}, with $r = \SI{1.86(27)}{\micro m}$ and $\eta = \SI{0.955}{mPa\cdot s}$ \cite{n:water}.
+With the uncertainty from the fit, the systematic error of the magnification has a square influence and is not included.
+The measurement is equivalent to the theoretical value of $D_0 = \frac{k_B T}{6 \pi \eta r} = \SI{0.122(18)}{\micro m ^2 / s}$ \cite{instructions}, with $r = \SI{1.86(27)}{\micro m}$ and $\eta = \SI{0.955}{mPa\cdot s}$ \cite{n:water}.
 The error in the magnification of the microscope does additionally increase the uncertainty in the measurement.
 
 For a confined particle the MSD reaches a plateau at $\text{MSD}(\infty)$ \cite{instructions}.
 This happens for the higher trap stiffness (\SI{0.90}{}, \SI{1.01}{}).
 From this the effective spring constant of the optical trap can be estimated $k_{\text{MSD}(\infty)} = \frac{2 k_B T}{\text{MSD}(\infty)}$ \cite{instructions},
-the values are shown in  \autoref{tab:01spring} and \autoref{fig:01spring}, growing with higher trap stiffnesses.\\
+the values are shown in  \autoref{tab:01spring} and \autoref{fig:01spring}, with uncertainty from the temperature and the statistical error from the fit.
+The systematic error from the magnification has a order of $2$.\\
 For the lower measured spring stiffness (\SI{0.75}{}), the MSD does not reach a plateau, as it partially escapes the trap and wanders around (see \autoref{fig:01bivariate}), behaving like a free particle.\\
 Therefore this procedure is not adequate for such low spring stiffnesses.
 
@@ -149,9 +151,9 @@ Therefore this procedure is not adequate for such low spring stiffnesses.
         Stiffness & $D_0$ in \SI{}{\micro m^2/s}& $k_{\text{MSD}(\infty)}$ & $k_V$ \\
         \hline        
         \SI{0}{}    & \SI{0.10728(93)}{}    & NA                & \SI{0}{} \\
-        \SI{0.75}{} & \SI{0.07793(03)}{}    & NA                & \SI{0.9011(45)}{}\\
-        \SI{0.90}{} & \SI{0.0678(24)}{}     & \SI{6.471(62)}{}  & \SI{4.7177(62)}{}\\
-        \SI{1.01}{} & \SI{0.05384(08)}{}    & \SI{8.968(23)}{}  & \SI{6.021(12)}{}\\
+        \SI{0.75}{} & \SI{0.07793(03)}{}    & NA                & \SI{1.2743(64)}{}\\
+        \SI{0.90}{} & \SI{0.0678(24)}{}     & \SI{6.471(62)}{}  & \SI{6.6718(88)}{}\\
+        \SI{1.01}{} & \SI{0.05384(08)}{}    & \SI{8.968(23)}{}  & \SI{8.514(17)}{}\\
     \end{tabular}
     \caption{Estimated diffusion constant and spring constant in \SI{}{\nano N / m}.}
     \label{tab:01spring}
@@ -163,6 +165,7 @@ This is done using kernel density estimation (KDE) with a Gaussian kernel \cite{
 The resulting 2-dimensional PDF is shown in \autoref{fig:01bivariate}.\\
 As the density is small for large parts of the explored 2d space, the data is reduced by aggregating along the image coordinates $x$ and $y$.
 As the Potential should by rotationally symmetric, the data from the $x$ and $y$ axis should not significantly deviate.
+A factor of $\sqrt{2}$ is to convert $x,y$ to a effective $r$.
 
 \begin{figure}
     \centering
@@ -183,7 +186,9 @@ Using the Maxwell Boltzmann relations \cite{instructions}, the potential at a po
 \end{equation}
 The resulting potential is shown in \autoref{fig:01potential} for different trap stiffnesses.
 The parts of the measurements with a $\text{PDF}(x)>0.05$ are used for a quadratic fit, to estimate the effective spring constant.
-The results are shown in \autoref{fig:01spring} and \autoref{tab:01spring} and are in the same order of magnitude, as the estimated spring constant from the MSD.
+The results are shown in \autoref{fig:01spring} and \autoref{tab:01spring}.
+Here the systematic error from the magnification is not included, it influences the result in order $2$, which is the same as in $k_{\text{MSD}(\infty)}$.
+Assuming that $k_{\text{MSD}(\infty)}=k_V$ a error of $\SI{5}{\percent}$ is unaccounted for.
 
 For the lower spring constant of \SI{0.75}{}, the potential begins quadratically, but flattens after approximately \SI{2.5}{\micro m}.
 This is due to the limited size of the trap, but the spring constant can still be estimated.
@@ -234,7 +239,7 @@ The success of the $I_0$ estimation procedure does not depend on the trap stiffn
 \begin{figure*}
     \centering
     \includegraphics{figures/02_04_02_hist.pdf}
-    \caption{Distribution of values for two measurements for the same trap stiffness \SI{1.5}{} but with different $\beta$.}
+    \caption{Distribution of values for two measurements for the same trap stiffness \SI{1.5}{} but with different $\beta$. Same colors as \autoref{fig:D_of_z}.}
     \label{fig:pdf_ts_1_5}
 \end{figure*}
 To investigate this further, the distributions of the measured variables are shown in figure \autoref{fig:pdf_ts_1_5} for a measurement where the procedure was successful and unsuccessful. 
@@ -268,15 +273,17 @@ $F_{g,\text{eff}}$ is the effective force of gravity acting on the particle insi
 It is driven by the actual gravitational force but is reduced by buoyancy and increased by the force of the optical trap. \\
 For each measurement, the estimated potential was fitted to \autoref{eq:pot_model} to obtain $\kappa$ and $F_{g,\text{eff}}$. 
 The results are listed in \autoref{tab:pot_fit}.
+The uncertainty is a combination of the statistical uncertainty from the fit and a uncertainty in $\beta$ of \SI{10}{\percent}, corresponding with a \SI{2}{mm} uncertainty in positioning of the illumination laser.
+The error in $I_0$ has no influence, as it is absorbed in the scaling and translation of the model.
 \begin{table}
     \centering
     \begin{tabular}{r|c|l}
         stiffness   & effective gravity in \SI{}{\femto N}  & $\kappa^{-1}$ in \SI{}{\nano m} \\
         \hline
-        0.70  & \SI{25.88(55)}{} & \SI{260.4(84)}{}\\
-        0.75  & \SI{13.47(61)}{} & \SI{ 84.2(12)}{}\\
-        0.80  & \SI{29.06(18)}{} & \SI{47.28(83)}{}\\
-        0.97  & \SI{46.38(11)}{} & \SI{ 45.6(26)}{}
+        0.70  & \SI{25.9(26)}{} & \SI{260(27)}{}\\
+        0.75  & \SI{13.5(13)}{} & \SI{ 84.2(85)}{}\\
+        0.80  & \SI{29.1(29)}{} & \SI{47.3(38)}{}\\
+        0.97  & \SI{46.4(46)}{} & \SI{ 45.6(42)}{}
     \end{tabular}
     \caption{Fit Parameters from the potential. }
     \label{tab:pot_fit}

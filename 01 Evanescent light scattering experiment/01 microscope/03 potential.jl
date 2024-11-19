@@ -73,7 +73,7 @@ for m in 2:size(df, 1)
 		mdl = curve_fit(model, k.x, potential(k.y), [0., 1., 0.])
 		offset = mdl.param[3]
 		lines!(a, 
-			k.x .-offset, model(k.x, mdl.param), 
+			k.x .-offset, model(k.x, mdl.param).*sqrt(2), 
 			color=i.ot, colorrange=extrema(df.ot), 
 			# linestyle=:dash,
 		)
@@ -87,7 +87,7 @@ for m in 2:size(df, 1)
 		end
 
 		k = dist(t[:,j], cutoff=0)
-		lines!(a, k.x .-offset, potential(k.y), color=i.ot, colorrange=extrema(df.ot),
+		lines!(a, k.x .-offset, potential(k.y).*sqrt(2), color=i.ot, colorrange=extrema(df.ot),
 		alpha=.2
 		)
 	end
@@ -96,10 +96,10 @@ i = df[1,:]
 t = scale(i.t .-mean(i.t, dims=1))
 for j in 1:2
 	k = dist(t[:,j], cutoff=0.01)
-	lines!(a, k.x, potential(k.y), color=i.ot, colorrange=extrema(df.ot), alpha=.5)
+	lines!(a, k.x, potential(k.y).*sqrt(2).+ 0.5, color=i.ot, colorrange=extrema(df.ot), alpha=.5)
 end
 xlims!(a, -5,5)
-ylims!(a, 0, 4)
+ylims!(a, 0, 6)
 Colorbar(f[1, 2], limits=extrema(df.ot), label="Trap Strength", width=7)
 colgap!(f.layout, 5)
 save("../figures/01_03_3_axis.pdf", f)
@@ -119,7 +119,8 @@ end
 # er(a, df.ot[2:end], kT.*mean([df.Vkx[2:end], df.Vky[2:end]]), "V")
 # er(a, df.ot[2:end], kT.*df.Vkx[2:end], rich("V",subscript("x")))
 # er(a, df.ot[2:end], kT.*df.Vky[2:end], rich("V",subscript("y")))
-scale_potential(y) = value.(kT .* y) .* 1e12 .* 1e9	# to nN/m
+scale_potential(y) = value.(kT .* y) .* 1e12 * 1e9 * sqrt(2)# to nN/m
+scale_potential_m(y) = kT .* y .* 1e12 * 1e9 * sqrt(2)# to nN/m
 s = scatter!(a, df.ot[2:end], 
 	scale_potential(mean([df.Vkx[2:end], df.Vky[2:end]])), 
 	label="V", markersize=7
