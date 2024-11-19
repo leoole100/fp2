@@ -40,8 +40,6 @@ function D(dσdt; mask=true)
 	return z, D, c
 end
 
-
-# %%
 df[:, :fit] .= fill([0.0, 0.0], size(df, 1))
 
 # add beta from df.l column
@@ -59,8 +57,9 @@ df[:, :Brenner] = fill(false, size(df, 1))
 df[4, :Brenner] = true
 df[5, :Brenner] = true
 
-f = Figure(size=fullsize)
-a = Axis(f[1:2,1], 
+#%%
+f = Figure(size=halfsize)
+a = Axis(f[1,1], 
 	xlabel="z in μm", ylabel="D(z) in μm²/s",
 	# yscale=log10,
 	# xscale=log10,
@@ -69,63 +68,60 @@ lines!(
 	0:.01:.5, Dz_theoretical,
 	color=:black,
 	label="Model",
+	linestyle=:dash
 )
-for (i,r) in enumerate(eachrow(df[[4,5, 1,2,3, 6],:]))
-# for i in eachrow(df)
-	# z = z_estimate(i.I, I0=p[1], β=p[2])
+for (i,r) in enumerate(eachrow(df))
 	z = z_estimate(r.I, I0=r.fit[1], β=r.fit[2])
-	z, d, c = D(dvdt(z, cutoff=1/200))
+	z, d, c = D(dvdt(z, cutoff=1/1000))
 	if r.fit[2] == r.β
 		β_string = "β = "*string(r.β)
 	else
 		β_string = "β = "*string(r.β)*" ("*format(r.fit[2])*")"
 	end
-	scatterlines!(z, d,	
-		color=r.ot, colorrange=extrema(df.ot),
-		label="I₀ = "*string(r.fit[1])*", "*β_string,
-		# markersize=7 .*c./maximum(c) .+ 3,
-		# alpha=c./maximum(c),
-		marker=[:circle, :rect, :diamond][mod(i, 3)+1],
-	)
+	lines!(z, d)
 end
-Legend(f[1,2], a, framevisible=false)
-Colorbar(f[2,2], limits=extrema(df.ot), label="Trap Strength", vertical=false, flipaxis=false)
-resize_to_layout!(f)
+
 save("../figures/02_04_01_diffusion.pdf", f)
 f
 
 
 # %% look at dz distribution
-f = Figure(size=fullsize)
+f = Figure(size=(6inch,2inch))
 aI = Axis(f[1,1], xlabel="I", ylabel="pdf")
 adI = Axis(f[1,2], xlabel="dI/dt")
-az = Axis(f[2,1], xlabel="z", ylabel="pdf")
-adz = Axis(f[2,2], xlabel="dz/dt")
+adz = Axis(f[1,3], xlabel="dz/dt in μm/s")
+az = Axis(f[1,4], xlabel="z in μm")
 
 k =nothing
 for (i, r) in enumerate(eachrow(df[[5,6], :]))
-	l ="β = "*format(r.β, precision=3)*" μm"
+	l ="β = "*format(r.β, precision=3)#*" μm"
 	l *= "\nI₀ = "*format(r.fit[1], precision=1)
 	if r.Brenner 
 		l *= " (fit)"
 	end
 
+	c=Makie.wong_colors()[4+i]
+
 	k = dist(r.I, cutoff=0.05)
-	lines!(aI, k.x, k.y, label=l)
-	k=kde(diff(r.I), boundary=(-.05, .05))
-	lines!(adI, k.x, k.density)
+	lines!(aI, k.x, k.y, color=c)
+
+	k=kde(diff(r.I)./Δt, boundary=(-40, 40))
+	lines!(adI, k.x, k.density, color=c)
 	
 	z = z_estimate(r.I, I0=r.fit[1], β=r.fit[2])
 	k = dist(z, cutoff=0.05)
-	lines!(az, k.x, k.y)
+	lines!(az, k.x, k.y, color=c, label=l,)
 
-	k=kde(diff(z), boundary=(-.03, .03), bandwidth=.001)
-	lines!(adz, k.x, k.density)
+	k=kde(diff(z)./Δt, boundary=(-30, 30), bandwidth=1)
+	lines!(adz, k.x, k.density, color=c)
 end
 for a in [aI, adI, az, adz]
 	ylims!(a, low=0)
+	hideydecorations!(a, grid=true, label=false)
 end
-Legend(f[:,3], aI, framevisible=false)
+# Legend(f[1, 5], aI, framevisible=false)
+axislegend(az, padding=0, framevisible=false)
+colgap!(f.layout, 5)
 resize_to_layout!(f)
 save("../figures/02_04_02_hist.pdf", f)
 f
