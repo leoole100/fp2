@@ -37,7 +37,11 @@
     \vfill
     {
         \normalfont\normalsize
-        This experiment is determined to investigate the behaviour of a particle undergoing diffusion in the form of Brownian motion both with and without a constrain imposed by the electric field of optical tweezers. Its motion was tracked in the horizontal plane using a microscope. The results make it possible to estimate the diffusion coefficient, which coincides with the theoretical result calculated for an aqueous solution, as well as the effective potential created by the optical tweezers. To measure vertical movements, Total Internal Reflection Microscopy is used in to determine the vertical diffusion movement of the particle as well as the height-dependent diffusion coefficient close to a wall. The measurement was partly successful and qualitatively matches the theoretical model. Curiously, the fit imiplies that the characteristic length of the evanescent field was determined incorrectly. The TIRM results show that forces at the order of a few dozen femto-Newtons can be measured using this method. An attempt to determine the particle mass from the effective gravity failed due to poor measurement results.
+        Statistical analysis of random walks can be used to measure small forces.
+        This is demonstrated on colloidal particles in an aqueous solution.
+        Optical tweezers were employed to apply controlled forces.
+        Particle trajectories were recorded in all 3 dimensions using transmission light microscopy and total internal reflection microscopy. \\
+        Comparison of different analytical methods showed that the measured forces and diffusion coefficients matched expectations, demonstrating the ability to measure forces in the $10^{-15}$ newton range.
     }
     \vfill
     \begin{flushright}
@@ -48,12 +52,8 @@
 \section{Introduction}
 Using the statistics of the random walk small forces can be measured.
 This is demonstrated on colloidal particles in an aqueous solution.
-Forces are applied using optical tweezers and the position is measured with different microscopy techniques.
-
-
-% \subsection{Physical Principles}
-% kompakten Zusammenstellung der physikalischen Grundlagen
-
+Forces are applied using optical tweezers and the position is measured with transmission light microscopy and total internal reflection microscopy.
+Different statistical analysis are explored to determine the forces and diffusion coefficients from the measured trajectories.
 
 \section{Methods and Procedures}
 \begin{figure}
@@ -139,7 +139,7 @@ The error in the magnification of the microscope does additionally increase the 
 For a confined particle the MSD reaches a plateau at $\text{MSD}(\infty)$ \cite{instructions}.
 This happens for the higher trap stiffness (\SI{0.90}{}, \SI{1.01}{}).
 From this the effective spring constant of the optical trap can be estimated $k_{\text{MSD}(\infty)} = \frac{2 k_B T}{\text{MSD}(\infty)}$ \cite{instructions},
-the values are shown in  \autoref{tab:01spring} and \autoref{fig:01spring}.\\
+the values are shown in  \autoref{tab:01spring} and \autoref{fig:01spring}, growing with higher trap stiffnesses.\\
 For the lower measured spring stiffness (\SI{0.75}{}), the MSD does not reach a plateau, as it partially escapes the trap and wanders around (see \autoref{fig:01bivariate}), behaving like a free particle.\\
 Therefore this procedure is not adequate for such low spring stiffnesses.
 
@@ -306,13 +306,18 @@ The influence of the angle of incidence of the laser beam on the potential was i
 This should not have a influence on the potential.
 This is verified by the results shown in \autoref{fig:pot_ts_1_5}.
 
-\pagebreak
+\clearpage
 \section{Discussion}
-The captured image data shows the expected behaviour of a particle trapped inside an approximately harmonic potential performing a random walk. Plotting the mean square displacement over time shows that the particle's movement is restrained to an area around the potential valley. Increasing the trap stiffness restrains the particle more. During one of the measurements the particle escaped the optical trap and moved around freely. The other MSD graphs show the particle behaving as expected, remaining inside the potential well. The diffusion coefficient calculated from the measurements matches the theoretical prediction. The measurement data also allowed for estimation of the potential, illustrating that this method can be used to measure forces in the nano-Newton range.\\
-In the second part of the experiment where Total Internal Reflection Microscopy was used to measure the vertical movement of the particle, things did not go so well. The measured intensities were small and therefore prone to quantisation errors due to limitations of the measurement equipment. One issue was poor alignment of the illuminating laser in the beginning of the experiment. This resulted in odd behaviour of the parameter $\beta^{-1}$ corresponding to the characteristic length of the evanescent field, and might be responsible for the low intensity as well. The experiment yielded mixed results for all the measurements conducted in this second part. They can only be considered fully successful in two cases. Here, the analysis routine described above yields proper results for the absolute position of the particle as well as the diffusion coefficient profile close to the wall. The remaining measurement datasets did not allow for that because they cannot fit the theoretical model. In these cases, the measurements failed to provide the information we were looking for. A silver lining is the general resemblence with the theoretically expected shape for the estimated potentials for these measurements assuming $I_0=1$. Combining these findings with the results from the successful measurements allows the determination of the effective gravity and Debye Screening Length in two more cases. However, this yields mixed results yet again. It was not possible to determine the mass of the particle. But the results show that it is possible to measure forces as small as a few dozen femto-Newtons using this method which could be considered a small success. Overall, the second part of the experiment was mostly unsuccessful, owing partly to poor adjustment in the beginning, but also questionable results after applying the data analysis methods meant to resolve this part of the measurement. The setup should be improved to make adjusting the total internal reflection angle easier and more intuitive. The data analysis script could be adjusted to make it more robust in case measurement data does not show the expected behaviour, as in this case the fit results are unreliable which can render entire measurement series useless. Speaking of unreliability, it is difficult to estimate the uncertainty of the results even if everything goes well. The graphs shown in this report illustrate how difficult it can be to make conclusions based off of the fit parameters.\\
-Last but not least, the instruction manual \autocite{instructions} for this experiment requires improvement. Some references lead nowhere which caused us some confusion while working on this experiment.
+The measurements based on the transmission light microscopy yielded good results:
+The diffusion coefficients are in agreement with the theoretical prediction.
+The effective spring stiffness measured using the MSD and the Maxwell-Boltzmann relation are similar and allow measurements of forces in the \SI{1}{\femto N} range.\\
+Limitations of the different analysis techniques were nicely illustrated by observing of a particle that escaped the trap.
 
+The part based on the total internal reflection microscopy were less successful.
+The measured intensities were small and therefore prone to quantisation errors due to limitations of the measurement equipment.
+Although the reason for the non convergence of the $I_0$ estimation procedure could not be found, the results demonstrate that this is a feasible method to measure forces at least in the range of \SI{10}{\femto N}.
 
+% \pagebreak
 \addcontentsline{toc}{section}{Literature}
 \nocite{*}
 \printbibliography
