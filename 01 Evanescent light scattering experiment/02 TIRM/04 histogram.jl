@@ -89,8 +89,8 @@ f
 f = Figure(size=(6inch,2inch))
 aI = Axis(f[1,1], xlabel="I", ylabel="pdf")
 adI = Axis(f[1,2], xlabel="dI/dt")
-adz = Axis(f[1,3], xlabel="dz/dt in μm/s")
-az = Axis(f[1,4], xlabel="z in μm")
+az = Axis(f[1,3], xlabel="z in μm")
+adz = Axis(f[1,4], xlabel="dz/dt in μm/s")
 
 k =nothing
 for (i, r) in enumerate(eachrow(df[[5,6], :]))
