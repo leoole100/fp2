@@ -55,7 +55,7 @@ Forces are applied using optical tweezers and the position is measured with diff
 % kompakten Zusammenstellung der physikalischen Grundlagen
 
 
-\section{Methods}
+\section{Methods and Procedures}
 \begin{figure}
     \centering
     \includegraphics{figures/setup.pdf}
@@ -69,15 +69,21 @@ This results in a 3-dimensional harmonic potential, which is proportional to the
 The laser power is continuous (in a used interval) with a unlabeled readout on the laser.
 This is value is henceforth referred to as \emph{trap strength}.
 
-To directly observe the particle transmission light microscopy is used.
-For this a blue led is used to illuminate the particle from below.
-This allows the particle position to measured in $x$ and $y$ direction.
+To directly observe the particle \emph{transmission light microscopy} was used, a blue LED was placed under the sample to illuminate the particle from below.
+This allows the particle position to measured in $x$ and $y$ direction.\\
+Images with a resolution of $600\times 800$\si{px} were recorded with a frequency of \SI{10}{Hz} for \SI{10}{min} by a CCD Camera.
+The magnification of the microscope was assumed to be \SI{0.13319672}{\micro m/px} \cite{instructions}, this is the main systematic error of this measurement, as the scale changes with focus.\\
+The images were normalized with a black (illumination off) and white (illumination on, particle not in frame) reference image, to remove the influence of dust on the imaging elements.\\
+To determine the trajectory $\vec r(t)$ of the particle, an effective center of mass was calculated for each frame:
+\begin{equation}
+    \vec{r}(t) = \iint \vec{r} \; \left(1-I(\vec{r}, t)\right)^2 d\vec{r}    
+\end{equation}
 
-To measure the position in $z$ direction, total internal reflection microscopy is used.
-For this a red laser is totally reflected at the boundary below the aqueous solution to create an evanescent wave.
-This wave scatters off the particle into a sensitive photo detector.
-
-% \section{Procedure}
+To measure the position in $z$ direction, \emph{total internal reflection microscopy} was used:
+A laser beam is totally reflected at the glass-water boundary below the particle. 
+The resulting evanescent field decays exponentially in the $z$ direction with a characteristic length $\beta$ that is determined by the angle of incidence of the laser beam.
+The particle scatters the light, depending on the field strength and therefore exponentially on the distance to the wall.\\
+The scattered light, was measured with a sensitive photodetector with a frequency of \SI{1}{kHz} for \SI{15}{min}.
 
 \section{Results}
 \subsection{Transmission Light Microscopy}
@@ -88,11 +94,7 @@ This wave scatters off the particle into a sensitive photo detector.
     \label{fig:01particle}
 \end{figure}
 In the first section of the experiment, the particles were observed using a transmission light microscope setup.
-For this images with a resolution of $600\times 800$\si{px} were recorded with a frequency of \SI{10}{Hz} for \SI{10}{min}.
-The magnification of the microscope was assumed to be \SI{0.13319672}{\micro m/px} \cite{instructions}, this is the main systematic error of this measurement, as the scale changes with focus.
-
-The images were normalized with a black (illumination off) and white (illumination on, particle not in frame) reference image, to remove the influence of dust on the imaging elements.
-The particle that was used for this experiment is shown in \autoref{fig:01particle}, after the normalization.\\
+A image of particle the used particle is shown in \autoref{fig:01particle}.
 From this the radius of the particle was estimated to be \SI{1.86(27)}{\micro m}.
 
 \begin{figure*}
@@ -101,13 +103,8 @@ From this the radius of the particle was estimated to be \SI{1.86(27)}{\micro m}
     \caption{Density of recorded particle positions, grouped by optical trap stiffness. The red circle indicates the approximate radius of the optical trap \SI{2.5}{\micro m}.}
     \label{fig:01bivariate}
 \end{figure*}
-To determine the trajectory $\vec r(t)$ of the particle, an effective center of mass was calculated for each frame:
-\begin{equation}
-    \vec{r}(t) = \iint \vec{r} \; \left(1-I(\vec{r}, t)\right)^2 d\vec{r}    
-\end{equation}
-The density of the resulting trajectory is shown in \autoref{fig:01bivariate} for different optical trap stiffnesses.
-The approximate effective region of the optical trap is drawn as a red circle.
-
+The density of the measured trajectories is shown in \autoref{fig:01bivariate} for different optical trap stiffnesses.
+The approximate effective region of the optical trap is drawn as a red circle.\\
 For the trap stiffness of \SI{0}{}, the particle is free to wander around, for the higher stiffnesses (\SI{0.90}{}, \SI{1.01}{}) the particle is mostly confined to the trap.\\
 For a weak trap (\SI{0.75}{}) the particle is still mostly confined to the trap, but can escape the linear trap region and randomly wander around, until it is recaptured by the trap.
 This happened multiple times during the shown measurement.
@@ -196,9 +193,7 @@ This method allows for the measurement of a spring constant as low as \SI{0.9011
 \subsection{Total Internal Reflection Microscopy}
 \emph{Note: Some references in \cite{instructions} led to nowhere, which caused some confusion.}
 
-To measure the particle movement in the vertical direction, \textit{Total Internal Reflection Microscopy} was used: A laser beam is totally reflected at the glass-water boundary below the particle. The resulting evanescent field decays exponentially in the $z$ direction, which means the intensity of the light scattered by the particle allows for precise position measurement on the vertical axis.\\
-The scattered light intensity was measured with a frequency of \SI{1}{kHz} for \SI{15}{min}.
-
+A promising method to study even small forces is Total Internal Reflection Microscopy, as the controllable exponential decay of the evanescent field allows for precise measurements of the particle position in the $z$ direction.
 
 \subsubsection*{Position and Diffusion Coefficient}
 \begin{figure}
@@ -208,7 +203,7 @@ The scattered light intensity was measured with a frequency of \SI{1}{kHz} for \
     \label{fig:D_of_z}
 \end{figure}
 
-The $z$ distance between particle and wall can be calculated using the formula \cite{instructions}
+From the measured scattering intensity the $z$ distance between particle and wall can be calculated using the formula \cite{instructions}
 \begin{equation}
  \label{eq:calculate_z}
  z = \beta \left(\log(I_0) - \log(I)\right)
