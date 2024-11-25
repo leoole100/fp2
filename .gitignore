@@ -30,3 +30,6 @@
 
 # large measurements
 *.avi
+
+# libreoffice locks
+*.~lock.*
