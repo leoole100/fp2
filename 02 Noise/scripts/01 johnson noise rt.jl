@@ -82,9 +82,14 @@ end
 linkxaxes!(a, ar)
 xlims!(low=0) 
 hidexdecorations!(a; grid=false)
-save("../figure/01 johnson noise.pdf", f)
+save("../figures/01 johnson noise.pdf", f)
 f
 
+
+# %%
+save("../data/gen/01 Johnson noise RT.jld2", Dict(
+	"S0"=>mean(fits.S0)
+))
 
 # %%
 # collect results as a DataFrame
