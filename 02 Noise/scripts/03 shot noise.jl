@@ -14,10 +14,13 @@ include("functions.jl")
 # %%
 # Load the data
 cd(@__DIR__)
-# df = DataFrame(CSV.File("../data/02 johnson noise temperature.csv"))
+# df = DataFrame(CSV.File("../data/03 photocurrent.csv"))
+df = DataFrame(CSV.File("../data/04 photocurrent.csv"))
 
-scale_measurements!(df) # estimates V^2 from measured values
-estimate_noise_VJ2!(df)	# estimates VJ^2 by removing the amplifier noise
+
+# scale_measurements!(df) # estimates V^2 from measured values
+# estimate_noise_VJ2!(df)	# estimates VJ^2 by removing the amplifier noise
+df.VJ2 = df.Vsq ./ 600^2 ./ df.G2
 
 # fit lines to estimate T0
 groups = groupby(df, :Δf)
@@ -28,8 +31,8 @@ fit_params = DataFrame(Dict(
 	:Δf => [g.Δf[1] for g in groups],
 ))
 for (g, f) in zip(groups, eachrow(fit_params))
-	p = curve_fit(mdl, value.(g.T), value.(g.VJ2), p0)
-	f.p = measurement.(p.param, stderror(p))
+	p = curve_fit(mdl, value.(g.I), value.(g.VJ2), p0)
+	f.p = [measurement(p.param[i], stderror(p)[i]) for i in 1:2]
 end
 fit_params[:, :T0] = [-p[1]/p[2] for p in fit_params.p]
 

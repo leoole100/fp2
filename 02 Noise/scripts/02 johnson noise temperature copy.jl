@@ -44,7 +44,7 @@ a = Axis(f[1, 1];
 for (g_R, m) in zip(groupby(df, :R), [:circle, :rect, :utriangle, Circle, Rect])
 	for g in groupby(g_R, :Δf)
 		scatter!(
-			value.(g.T), value.(g.VJ2),
+			value.(g.T), value.(g.VJ2 ./g.Δf),
 			marker=m,
 			color=g.Δf[1], colorrange=extrema(df.Δf),
 			label="R=$(g.R[1]) Ω, Δf=$(g.Δf[1]) Hz"

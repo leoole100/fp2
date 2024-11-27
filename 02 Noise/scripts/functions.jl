@@ -9,7 +9,8 @@ function scale_measurements!(df)
 end
 
 function estimate_noise(df)
-	return minimum(df.V2)	
+	# return minimum(df.V2)	
+	return 0
 end
 
 function estimate_noise_VJ2!(df)
