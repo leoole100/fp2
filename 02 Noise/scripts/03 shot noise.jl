@@ -4,59 +4,43 @@ amplified with preamp G1 and amp G2, with a assumed constant noise on G1.
 
 =#
 
-using DataFrames: DataFrame
+using DataFrames
 using CSV: CSV
 using CairoMakie
 using Measurements: measurement, value, uncertainty
 using LsqFit: curve_fit, stderror
+using Format: format
+using StatsBase
+using JLD2
 include("functions.jl")
 
 # %%
 # Load the data
 cd(@__DIR__)
-# df = DataFrame(CSV.File("../data/03 photocurrent.csv"))
 df = DataFrame(CSV.File("../data/04 photocurrent.csv"))
 
+# df.V = measurement.(df.Vsq, df.VsqU) 
+df.V = measurement.(df.Vsq, load("../data/gen/04 meter uncertainty.jld2")["std"]) 
+df.V = df.V .* 10 ./ (100 .* df.G2 .*1000).^2 # scale measurements to volts²
+df.V *= 1/(10000)^2 	# convert to current, with a 10kΩ resistor
+df.Δf = 1e3*df.Δf # convert to Hz
+df.I *= 1e-6 # to A
+df.S = df.V ./ df.Δf
+sort!(df, [:I, :Δf])
 
-# scale_measurements!(df) # estimates V^2 from measured values
-# estimate_noise_VJ2!(df)	# estimates VJ^2 by removing the amplifier noise
-df.VJ2 = df.Vsq ./ 600^2 ./ df.G2
-
-# fit lines to estimate T0
-groups = groupby(df, :Δf)
-mdl(x, p) = p[1] .+ p[2] .* x
-p0 = [1.0, 0.0]
-fit_params = DataFrame(Dict(
-	:p => fill(measurement.(p0), length(groups)),
-	:Δf => [g.Δf[1] for g in groups],
-))
-for (g, f) in zip(groups, eachrow(fit_params))
-	p = curve_fit(mdl, value.(g.I), value.(g.VJ2), p0)
-	f.p = [measurement(p.param[i], stderror(p)[i]) for i in 1:2]
-end
-fit_params[:, :T0] = [-p[1]/p[2] for p in fit_params.p]
+select(df, [:I, :Δf, :S])
 
 
-# plot the VJ2 over T fir different R and Δf
+#%%
+
+e = vcat([diff(d.S) ./ diff(d.I) / 2 for d in groupby(df, :Δf)] ...)
+
 f = Figure()
-a = Axis(f[1, 1];
-	xlabel="Temperature in K", 
-	ylabel="V² Junction",
+a = Axis(f[1,1],
+	xlabel="measured e in 10^-19 C"
 )
-for g in groupby(df, :Δf)
-		scatter!(
-			value.(g.T), value.(g.VJ2),
-			color=g.Δf[1], colorrange=extrema(df.Δf),
-			label="Δf=$(g.Δf[1]) Hz"
-		)
-end
-for f in eachrow(fit_params)
-	x = range(0, 300, length=100)
-	lines!(x, mdl(x, value.(f.p)), 
-		color=f.Δf, colorrange=extrema(df.Δf)
-	)
-end
-Legend(f[1,2], a, framevisible=false)
-xlims!(low=0)
+density!(value.(e).*1e19)
+vlines!([1.602e-19].*1e19, color=:black)
 ylims!(low=0)
+hideydecorations!(a)
 f

@@ -3,7 +3,7 @@
 - Forgot factor 100 in G1
 
 
-# Shotnoise
+# Shotnoise 04
 - measured current over 10kOhm resistor in millivolt, noted in uA 
 - uncertainy current 0.1 units
 - uncerity voltage 0.002 units

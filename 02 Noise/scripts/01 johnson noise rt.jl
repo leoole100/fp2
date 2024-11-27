@@ -65,8 +65,8 @@ for f in eachrow(fits)
 end
 axislegend(a,
 	[PolyElement(color=c, colorrange=extrema(df.Δf)) for c in unique(df.Δf)],
-	string.(unique(df.Δf)),
-	"Δf",
+	format.(round.(unique(df.Δf)/1e3)),
+	"Δf / kHz",
 	position=:lt
 )
 
