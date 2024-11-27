@@ -3,11 +3,14 @@ Script to analyse the amplified Johnson noise of a Resistor to estimate (kb T).
 amplified with preamp G1 and amp G2, with a assumed constant noise on G1.
 =#
 
-using DataFrames: DataFrame
+using DataFrames
 using CSV: CSV
 using CairoMakie
 using Measurements: measurement, value, uncertainty
 using LsqFit: curve_fit, stderror
+using Format: format
+using StatsBase
+using JLD2
 include("functions.jl")
 
 # %%
@@ -15,43 +18,80 @@ include("functions.jl")
 cd(@__DIR__)
 df = DataFrame(CSV.File("../data/01 johnson noise rt.csv"))
 
-scale_measurements!(df) # estimates V^2 from measured values
-estimate_noise_VJ2!(df)	# estimates VJ^2 by removing the amplifier noise
-
+# df.V = measurement.(df.Vsq, df.VsqU) 
+df.V = measurement.(df.Vsq, load("../data/gen/04 meter uncertainty.jld2")["std"]) 
+df.V = df.V .* 10 ./ (df.G1 .* 100 .* df.G2).^2 # scale measurements to volts²
 df.Δf = 1e3*df.Δf # convert to Hz
+df.S = df.V ./ df.Δf
+select!(df, Not([:VsqU, :f1, :f2, :G1, :G2, :Vsq])) # remove unused columns
 
-# fit a line to estimate k_b=1/(4TΔf) VJ²/R
+sort(df, [:Δf, :R])
+
+
+# %%
+# fit a line for each group of Δf
 mdl(x, p) = p[1] .+ p[2] .* x
 p0 = [1.0, 0.0]
-T = measurement(25.0, 0.1) + 273.15
-fit_params = fit_groups(df, :Δf, :R, :VJ2, mdl, p0)
-fit_params.Δf = unique(df.Δf)
-fit_params.kb = 1 ./ (4T*measurement.(fit_params.Δf, .04*fit_params.Δf)) .* hcat(fit_params.p...)[2, :]
 
-# plot the noise over the resistance
-f = Figure()
-a = Axis(f[1, 1];
-	xlabel="Resistance [Ω]", ylabel="V² Junction [V²]",
-	# xscale=log10, yscale=log10
+# create new columns for the fit parameters
+fits = DataFrame(
+	p = [
+		curve_fit(mdl, value.(g.R), value.(g.S), p0)
+		for g in groupby(df, :Δf)
+	],
+	Δf = unique(df.Δf)
 )
-# marker = [MarkerElement(marker=m) for m in [:x, :o]]
-colors = [PolyElement(color=c, colorrange=extrema(df.Δf)) for c in unique(df.Δf)]
-for d in eachrow(df)
-	scatter!(d.R, value(d.VJ2), 
-		color=d.Δf, colorrange=extrema(df.Δf)
-	)
-end
-for f in eachrow(fit_params)
-	x = range(0, 10e3, 100)
-	lines!(x, mdl(x, value.(f.p)), color=f.Δf, colorrange=extrema(df.Δf))
-end
+fits.p = [measurement.(p.param, stderror(p)) for p in fits.p]
+fits.kT = [d.p[2] / 4 for d in eachrow(fits)]
+T = measurement(22.0, 3) + 273.15
+fits.k = [kT / T for kT in fits.kT]
+fits.S0 = [p[1] for p in fits.p]
+fits
 
+
+# %%
+f = Figure()
+s = 1e15
+a = Axis(f[1, 1]; 
+	ylabel="S in 10^$(format(log10(s))) V²/Hz",
+)
+for d in groupby(df, :Δf)
+	scatter!(d.R, value.(d.S).*s, color=d.Δf, colorrange=extrema(df.Δf))
+	errorbars!(d.R, value.(d.S).*s, uncertainty.(d.S).*s, color=d.Δf)
+end
+for f in eachrow(fits)
+	x = range(.1, 10e3, 100)
+	lines!(x, mdl(x, value.(f.p)).*s, color=f.Δf, colorrange=extrema(df.Δf))
+end
 axislegend(a,
 	[PolyElement(color=c, colorrange=extrema(df.Δf)) for c in unique(df.Δf)],
 	string.(unique(df.Δf)),
 	"Δf",
 	position=:lt
 )
-xlims!(low=0)
-print(fit_params)
+
+ar = Axis(f[2,1];
+	ylabel="Residuals",
+	xlabel="Resistance in Ω", 
+)
+for (d, fit) in zip(groupby(df, :Δf), eachrow(fits))
+	y = s.*(value.(d.S) - mdl(value.(d.R), value.(fit.p)))
+	errorbars!(d.R, y, s.*uncertainty.(d.S); color=:gray)
+	scatterlines!(d.R, y, color=fit.Δf, colorrange=extrema(df.Δf))
+end
+linkxaxes!(a, ar)
+xlims!(low=0) 
+hidexdecorations!(a; grid=false)
+save("../figure/01 johnson noise.pdf", f)
 f
+
+
+# %%
+# collect results as a DataFrame
+results = [fits.kT, fits.k, fits.S0]
+DataFrame(
+	:parameter => ["kT", "k", "S0"],
+	:mean => [mean(value.(r)) for r in results],
+	:accuracy => [std(values.(r)) for r in results],
+	:precision => [uncertainty(mean(r)) for r in results],
+)

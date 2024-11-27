@@ -1,13 +1,6 @@
 using DataFrames: DataFrame, groupby
 using Measurements: measurement
 
-function scale_measurements!(df)
-	df.V2 = measurement.(df.Vsq, df.VsqU)
-	# remove the gain
-	df.V2 = df.V2 .* 10 # 10 is a additional gain
-	df.V2 = df.V2 ./ (df.G1 .* df.G2).^2
-end
-
 function estimate_noise(df)
 	# return minimum(df.V2)	
 	return 0
