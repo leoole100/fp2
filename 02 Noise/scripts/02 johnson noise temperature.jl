@@ -9,6 +9,7 @@ using CairoMakie
 using Measurements: measurement, value, uncertainty
 using LsqFit: curve_fit, stderror
 using Format: format
+using StatsBase
 using JLD2
 include("functions.jl")
 
@@ -45,7 +46,7 @@ fits.p = [p.param for p in fits.p]
 
 
 # %%
-f = Figure()
+f = Figure(size=fullsize)
 s = 1e15
 a = Axis(f[1, 1]; 
 	ylabel="S in 10^$(format(log10(s))) V²/Hz",
@@ -58,6 +59,33 @@ for (d, f) in zip(groups, eachrow(fits))
 	# errorbars!(value.(d.T), value.(d.S).*s, uncertainty.(d.S).*s, uncertainty.(d.T), color=d.Δf)
 end
 ylims!(low=0)
-axislegend(position=:lt)
+Legend(f[1,2], a, framevisible=false)
 save("../figures/02 temperature.pdf", f)
 f
+
+# %%
+# calculate where the lines intersect
+# T = (S1 - S2) / (m2 - m1)
+
+T = [
+	(f1.p[1] - f2.p[1]) / (f2.p[2] - f1.p[2])
+	for f1 in eachrow(fits)
+	for f2 in eachrow(fits)
+]
+T = T[.!isnan.(T)]
+T =  T[-100 .< T .< 100]
+
+f = Figure(size=halfsize)
+a = Axis(f[1,1],
+	xlabel="T in K"
+)
+density!(T)
+vlines!([0], color=:black)
+hideydecorations!(a)
+ylims!(low=0)
+save("../figures/02 temperature distribution.pdf", f)
+f
+
+#%%
+# calculate the mean and uncertainty
+T_mean = measurement(mean(T), std(T))

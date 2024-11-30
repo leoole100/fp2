@@ -38,3 +38,17 @@ function fit_groups(
 
 	return fit_params
 end
+
+# make plots consistent
+inch = 96
+pt = 4/3
+cm = inch/2.54
+update_theme!(
+	fontsize=10,
+	fonts = (;
+		regular="Roboto Regular",
+		bold="Roboto Bold",
+	),
+)
+halfsize = (3inch, (3/1.618)inch)
+fullsize = (5inch, (5/1.618)inch)

@@ -1,0 +1,111 @@
+\documentclass[
+    parskip=half, 
+    twoside=false,
+    twocolumn=true,
+    fontsize=11pt,
+]{scrarticle}
+\input{../preamble.tex}
+
+\begin{document}
+
+\title{title}
+\subtitle{subtitle}
+\author{Aurel Müller-Schoenau, Leon Oleschko}
+\date{\dotdate\today}
+
+
+% make a custom title page
+\begin{titlepage}
+    \sffamily
+    \vspace*{3cm}
+    {
+        \fontsize{32}{32}
+        \markieren{}{}{}{Rauschen}
+    }
+    \vspace{.25cm}\\
+    {
+        \Large
+        Aurel Müller-Schoenau, Leon Oleschko\\
+        Supervised by Richard Schlitz
+        \vspace{.05cm}\\
+        10. Januar 2024
+        \vspace{.25cm}\\
+        \normalsize
+        Physikalisches Fortgeschrittenenpraktikum 2\\
+        Universität Konstanz
+    }
+    \vfill
+    {
+        \normalfont\normalsize
+        Abstract auf Englisch (10-15 Zeilen)
+        \blindtext[2]
+    }
+    \vfill
+    \begin{flushright}
+        Available at \url{www.github.com/leoole100/fp2}.
+    \end{flushright}
+\end{titlepage}
+
+\section{Introduction}
+
+\section{Setup}
+The statistical uncertainty of the used voltmeter was measured to be $\sigma = \SI{0.001}{V}$ in the used range.
+
+\subsection*{Oscilloscope RMS Measurement}
+
+
+\section{Johnson-Nyquist Noise}
+\begin{figure*}[h!]
+    \centering
+    \includegraphics{figures/01 johnson noise.pdf}
+    \caption{
+        Measured noise density over different resistors for different bandwidths.
+        Linear fit residuals are shown in the lower plot.
+        Uncertainties are estimated using the Uncertainties of the voltage measurements.
+        The uncertainties of the resistors and the amplifiers are not considered.
+    }
+    \label{fig:johnson noise}
+\end{figure*}
+
+\begin{equation}
+    S = 4\; k_B T\; R + S_0
+\end{equation} 
+Therefore $k_B T$ and the amplifier noise $S_0$ can be measured from the fit in \autoref{fig:johnson noise}.
+Assuming $T=\SI{295(3)}{K}$, the measured value for $k_B$ is $\SI{1.416(19)e-23}{J/K}$, which is off the literature value of $\SI{1.380e-23}{J/K}$.
+The amplifier noise is measured to be $\SI{6.168(55)e-17}{V^2/Hz}$.
+
+\subsubsection*{Temperature Measurement}
+\begin{figure*}[h!]
+    \centering
+    \includegraphics{figures/02 temperature.pdf}
+    \caption{
+        Measured noise density over temperature for different resistors and bandwidths.
+    }
+    \label{fig:johnson noise temperature}
+\end{figure*}
+\begin{figure}[h!]
+    \centering
+    \includegraphics{figures/02 temperature distribution.pdf}
+    \caption{
+        Distribution of the measured temperature by looking at the crossings of the linear fits in \autoref{fig:johnson noise temperature}.
+    }
+    \label{fig:johnson noise temperature distribution}
+\end{figure}
+The measured zero temperature is \SI{-6.4(15)}{K}, the uncertainty is only including the spread.
+
+\section{Shot Noise}
+\begin{figure}[h!]
+    \centering
+    \includegraphics{figures/03 shot noise.pdf}
+    \caption{
+        Distribution of the measured value for $e$, by measuring the voltage over a resistor (blue) and using a transimpedance amplifier (yellow).
+    }
+    \label{fig:shot noise}
+\end{figure}
+The estimated values for $e$ using the two methods respectively are $\SI{1.8(5)e-19}{C}$ and $\SI{1.9(8)e-19}{C}$, which are both off the literature value of $\SI{1.602e-19}{C}$.
+
+\pagebreak
+\section{Discussion}
+
+
+\end{document}

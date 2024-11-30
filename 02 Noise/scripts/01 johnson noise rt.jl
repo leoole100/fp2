@@ -50,29 +50,33 @@ fits
 
 
 # %%
-f = Figure()
+f = Figure(size=fullsize)
 s = 1e15
 a = Axis(f[1, 1]; 
 	ylabel="S in 10^$(format(log10(s))) V²/Hz",
+	yscale=log10,
+	xscale=log10,
 )
 for d in groupby(df, :Δf)
 	scatter!(d.R, value.(d.S).*s, color=d.Δf, colorrange=extrema(df.Δf))
 	errorbars!(d.R, value.(d.S).*s, uncertainty.(d.S).*s, color=d.Δf)
 end
 for f in eachrow(fits)
-	x = range(.1, 10e3, 100)
+	x = range(1, 10e3, 100)
 	lines!(x, mdl(x, value.(f.p)).*s, color=f.Δf, colorrange=extrema(df.Δf))
 end
 axislegend(a,
 	[PolyElement(color=c, colorrange=extrema(df.Δf)) for c in unique(df.Δf)],
 	format.(round.(unique(df.Δf)/1e3)),
 	"Δf / kHz",
+	orientation=:horizontal,
 	position=:lt
 )
 
 ar = Axis(f[2,1];
 	ylabel="Residuals",
 	xlabel="Resistance in Ω", 
+	xscale=log10,
 )
 for (d, fit) in zip(groupby(df, :Δf), eachrow(fits))
 	y = s.*(value.(d.S) - mdl(value.(d.R), value.(fit.p)))
@@ -80,7 +84,6 @@ for (d, fit) in zip(groupby(df, :Δf), eachrow(fits))
 	scatterlines!(d.R, y, color=fit.Δf, colorrange=extrema(df.Δf))
 end
 linkxaxes!(a, ar)
-xlims!(low=0) 
 hidexdecorations!(a; grid=false)
 save("../figures/01 johnson noise.pdf", f)
 f
@@ -99,4 +102,6 @@ DataFrame(
 	:mean => [mean(value.(r)) for r in results],
 	:accuracy => [std(values.(r)) for r in results],
 	:precision => [uncertainty(mean(r)) for r in results],
+	:measurement => [measurement(mean(value.(r)), std(value.(r))) for r in results],
 )
+
