@@ -28,9 +28,6 @@ function estimate_e(df)
 	df.S = df.V ./ df.Δf
 	sort!(df, [:I, :Δf])
 
-	select(df, [:I, :Δf, :S])
-
-
 	return vcat([diff(d.S) ./ diff(d.I) / 2 for d in groupby(df, :Δf)] ...)
 end
 
@@ -45,22 +42,28 @@ dfs = [
 	DataFrame(CSV.File("../data/05 transimpedance amplifier.csv"))
 ]
 
-for (df, l) in zip(dfs, ["photocurrent", "transimpedance amplifier"])
-	density!(value.(estimate_e(df)).*s,
+for (df, l) in zip(dfs, ["I", "TIA"])
+	e = estimate_e(df)
+
+	# remove outliers
+	e = e[.1e-19 .<e.<10e-19]
+
+	hist!(value.(e).*s,
 		label=l,
 	)
+	
 	println(
 		"$(l):\t",
 		measurement(
-			mean(value.(estimate_e(df))),
-			std(value.(estimate_e(df)))
+			mean(value.(e)),
+			std(value.(e))
 		)
 	)
 end
 
 vlines!([1.602e-19].*s, color=:black)
 ylims!(low=0)
-hideydecorations!(a)
+# hideydecorations!(a)
 # axislegend(a, position=:rt)
 save("../figures/03 shot noise.pdf", f)
 f

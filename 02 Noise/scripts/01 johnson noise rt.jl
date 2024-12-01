@@ -53,8 +53,8 @@ fits
 f = Figure(size=fullsize)
 s = 1e15
 a = Axis(f[1, 1]; 
-	ylabel="S in 10^$(format(log10(s))) V²/Hz",
-	yscale=log10,
+	ylabel="S in f V²/Hz",
+	# yscale=log10,
 	xscale=log10,
 )
 for d in groupby(df, :Δf)
@@ -85,6 +85,8 @@ for (d, fit) in zip(groupby(df, :Δf), eachrow(fits))
 end
 linkxaxes!(a, ar)
 hidexdecorations!(a; grid=false)
+rowgap!(f.layout, 5)
+rowsize!(f.layout, 1, Relative(3/4))
 save("../figures/01 johnson noise.pdf", f)
 f
 
