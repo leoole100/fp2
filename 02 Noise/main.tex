@@ -5,6 +5,7 @@
     fontsize=11pt,
 ]{scrarticle}
 \input{../preamble.tex}
+\addbibresource{literature.bib}
 
 \begin{document}
 
@@ -47,11 +48,14 @@
 
 \section{Introduction}
 
+All measurements conducted in the real world are subject to some form of noise. What is often regarded an obstacle may provide some important information about the system that is being observed. In this experiment, we take a look at two types of noise, namely Johnson noise occuring in an electrical resistor and Shot noise of a photo diode. Some of the properties of these types of noise are universal and will allow us to derive the Boltzmann constant and the elementary charge as well as the point of absolute zero temperature.
+
 \section{Setup}
-The statistical uncertainty of the used voltmeter was measured to be $\sigma = \SI{0.001}{V}$ in the used range.
+For this experiment, the setup \textit{Noise Fundamentals NF1-A} by \textit{TeachSpin, Inc.} was used. It consists of a low level electronics (LLE) component with a built-in preamplifier, and in a separate enclosure the High Level Electronics such as frequency filters and an additional output amplifier. The resistors used in the first part of the experiment are built directly into the LLE setup, whereas the module carrying the photo diode and lamp to measure shot noise has to be connected separately. An additional probe with resistors sits inside a Dewar which can hold liquid Nitrogen. Since we are measuring wide-band noise, the measurement bandwidth is important. The effective bandwidth resulting from the settings in the HLE component is taken from a table provided in the setup manual \autocite{instructions}.\\
+Measurements are taken with a multimeter connected to the output of the HLE. The statistical uncertainty of the voltmeter was measured to be $\sigma = \SI{0.001}{V}$.
 
 \subsection*{Oscilloscope RMS Measurement}
-
+An oscilloscope connected to the setup was supposed to be used for RMS measurements. That would have been favourible to understand the influence of different parameters at a glance. But during initial testing, we found that the readings on the device differed significantly from what the multimeter was showing, and were susceptible to axis scaling on in the oscillosope graph. A few unsuccessful attempts later, the device was ruled out of the experiment due to what we consider a firmware bug.\\
 
 \section{Johnson-Nyquist Noise}
 \begin{figure*}[h!]
@@ -107,5 +111,8 @@ The estimated values for $e$ using the two methods respectively are $\SI{1.76(25
 \pagebreak
 \section{Discussion}
 
+\addcontentsline{toc}{section}{Literature}
+\nocite{*}
+\printbibliography
 
 \end{document}
