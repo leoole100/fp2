@@ -114,12 +114,17 @@ The measured zero temperature is \SI{-6.4(15)}{K}, the uncertainty is only inclu
     \centering
     \includegraphics{figures/03 shot noise.pdf}
     \caption{
-        Distribution of the measured value for $e$, by measuring the voltage over a resistor (blue) and using a transimpedance amplifier (yellow).
+        Distribution of the measured value for $e$, by measuring the voltage over a resistor (blue) and using a trans-impedance amplifier (yellow).
     }
     \label{fig:shot noise}
 \end{figure}
-The estimated values for $e$ using the two methods respectively are $\SI{1.76(25)e-19}{C}$ and $\SI{1.9(82)e-19}{C}$, which are both in agreement with the literature value of $\SI{1.602e-19}{C}$.
-\textbf{Why is the second Uncertainty so high? See Histogram.}
+\begin{equation}
+    S_I = 2 e I_0 + S_0 
+    \quad\Rightarrow\quad
+    e = \frac{1}{2}\frac{\Delta S_I}{\Delta I_0}
+\end{equation}
+
+The estimated values for $e$ using the two methods respectively are $\SI{1.76(25)e-19}{C}$ and $\SI{1.9(08)e-19}{C}$, which are both in agreement with the literature value of $\SI{1.602e-19}{C}$.
 
 \pagebreak
 \section{Discussion}

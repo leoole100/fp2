@@ -107,3 +107,8 @@ DataFrame(
 	:measurement => [measurement(mean(value.(r)), std(value.(r))) for r in results],
 )
 
+# mean for k
+k = measurement(
+	mean(value.(fits.k)),
+	sqrt(mean(uncertainty.(fits.k))^2 + std(value.(fits.k))^2)
+)
