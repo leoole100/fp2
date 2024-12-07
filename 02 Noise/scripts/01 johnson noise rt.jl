@@ -55,7 +55,7 @@ s = 1e15
 a = Axis(f[1, 1]; 
 	ylabel="S in f V²/Hz",
 	# yscale=log10,
-	xscale=log10,
+	# xscale=log10,
 )
 for d in groupby(df, :Δf)
 	scatter!(d.R, value.(d.S).*s, color=d.Δf, colorrange=extrema(df.Δf))
@@ -76,7 +76,7 @@ axislegend(a,
 ar = Axis(f[2,1];
 	ylabel="Residuals",
 	xlabel="Resistance in Ω", 
-	xscale=log10,
+	# xscale=log10,
 )
 for (d, fit) in zip(groupby(df, :Δf), eachrow(fits))
 	y = s.*(value.(d.S) - mdl(value.(d.R), value.(fit.p)))

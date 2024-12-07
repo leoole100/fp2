@@ -11,6 +11,7 @@ using LsqFit: curve_fit, stderror
 using Format: format
 using StatsBase
 using JLD2
+using Format
 include("functions.jl")
 
 # %%
@@ -49,14 +50,24 @@ a = Axis(f[1, 1];
 	ylabel="S in nV²/Hz",
 	xlabel="T in K",
 )
+linestyles = Dict(
+	unique(df.R) .=> [:solid, :dash, :dot]
+)
 for (d, f) in zip(groups, eachrow(fits))
 	s = 1e9
-	scatter!(value.(d.T), value.(d.S).*s)
+	scatter!(value.(d.T), value.(d.S).*s, alpha=0.7,  
+	color=f.Δf, colorrange=extrema(df.Δf)
+	)
 	x = range(-30, 300, 100)
-	lines!(x, mdl(x, f.p).*s, label="$(f.R)Ω, $(f.Δf)Hz")
+	lines!(x, mdl(x, f.p).*s, alpha=0.7, 
+		label="$(format(f.R, autoscale=:metric))Ω, \t $(format(f.Δf/1000, precision=0)) kHz",
+		color=f.Δf, colorrange=extrema(df.Δf),
+		linestyle=linestyles[f.R]
+	)
 end
 ylims!(low=0)
 Legend(f[1,2], a, framevisible=false)
+colgap!(f.layout, 0)
 save("../figures/02 temperature.pdf", f)
 f
 
