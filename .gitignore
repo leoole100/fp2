@@ -24,8 +24,12 @@
 *.egg-info
 
 # julia files
-Manifest.toml
-Project.toml
+#Manifest.toml
+#Project.toml
+*.toml
+
+# kate swap
+*.kate-swp
 
 **/literature
 
