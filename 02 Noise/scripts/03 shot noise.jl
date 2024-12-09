@@ -39,16 +39,17 @@ a = Axis(f[1,1],
 
 dfs = [
 	DataFrame(CSV.File("../data/04 photocurrent.csv")),
-	DataFrame(CSV.File("../data/05 transimpedance amplifier.csv"))
+	DataFrame(CSV.File("../data/05 transimpedance amplifier.csv")),
+	DataFrame(CSV.File("../data/05 transimpedance amplifier 8.csv"))
 ]
 
-for (df, l) in zip(dfs, ["I", "TIA"])
+for (df, l) in zip(dfs, ["I", "TIA", "TIAC"])
 	e = estimate_e(df)
 
 	# remove outliers
 	e = e[.1e-19 .<e.<10e-19]
 
-	hist!(value.(e).*s,
+	stephist!(value.(e).*s,
 		label=l,
 	)
 	
