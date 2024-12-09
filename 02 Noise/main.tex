@@ -133,8 +133,8 @@ There are two notable observations:
 Firstly, the smallest resistor (\SI{10}{\ohm}) behaves like a short circuit in that the measured noise does not depend on temperature. 
 The majority of it must be coming from another source, which is not very surprising knowing that Johnson noise depends linearly on resistance.\\
 Probing a resistor of \SI{10}{\kilo\ohm} yielded the expected result. 
-With the spectral noise density $S$ beinig independent of the bandwidth and proportional to the temperature.\\
-But the results from the \SI{100}{\kilo\ohm}-measurement are puling: Here, noise actually decreases with increasing bandwidth. 
+With the spectral noise density $S$ being independent of the bandwidth and proportional to the temperature.\\
+But the results from the \SI{100}{\kilo\ohm}-measurement are puzzling: Here, noise actually decreases with increasing bandwidth.
 As the same frequency bands were used for the \SI{10}{\kilo\ohm} resistor, where no such effect was observed, the noise source has to depend on resistance. 
 For example, there might be an additional noise current which creates a higher voltage across the bigger resistor.
 Another complication, however is that the additional noise is also dependent on temperature. 
@@ -151,8 +151,8 @@ Either way, more measurements would be needed to pin down the source.
     \label{fig:johnson noise temperature distribution}
 \end{figure}
 Because of all that, interpreting the results from this part of the experiment is difficult. 
-Computing the point of absolute zero temperature by extrapolating linearly to the axis intersection yields a result which is significantly below \SI{0}{\kelvin}. 
-This result can be improved by making arbitrary assumptions about the additional noise. 
+Computing the point of absolute zero temperature by extrapolating linearly to the axis intersection yields the results shown in \autoref{fig:johnson noise temperature distribution}. Most of them lie significantly below \SI{0}{\kelvin}. The mean result is \SI{-6.4(15)}{\kelvin}.
+This result can be improved by making arbitrary assumptions about the additional noise, but this approach is vague without a proper model for the additional noise.
 \textbf{Make such a assumption to calculate a value.}
 
 \section{Shot Noise}
