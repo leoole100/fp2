@@ -92,6 +92,7 @@ f
 # %%
 # calculate where the lines intersect
 # T = (S1 - S2) / (m2 - m1)
+filter!(f -> f.R < 100e3, fits)
 
 T = [
 	(f1.p[1] - f2.p[1]) / (f2.p[2] - f1.p[2])
