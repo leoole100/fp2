@@ -155,8 +155,30 @@ Computing the point of absolute zero temperature by extrapolating linearly to th
 This result can be improved by making arbitrary assumptions about the additional noise. 
 \textbf{Make such a assumption to calculate a value.}
 
-
 \section{Shot Noise}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/tamp_schematic.pdf}
+    \caption{
+        Current measurement across a photo diode using a transimpedance amplifier setup. Assuming no current flows into the amplifier input, the current through $R_f$ has to be exactly the current $I + I_0$ flowing through the diode. This allows for very precise measurement of $\langle I^2 \rangle$.
+        Provided by \autocite{instructions}.
+    }
+    \label{fig:transimpedance schematic}
+\end{figure}
+Charge is transported through a conductor only in multiples of the elementary charge $e$. This produces a type of noise called \textit{Shot Noise} which becomes relevant for very small currents. The variance of the noise current across an electric component is
+\begin{equation}
+    \label{eq:shot noise}
+    S_I\;\Delta f = \langle I^2 \rangle = 2 e\; I_0\; \Delta f + S_0\;\Delta f
+\end{equation}
+as shown in \autocite{Buch}. Note that the total current is $I_0 + I$ with the mean noise current $\langle I \rangle = 0$. Again, an additional noise source $S_0$ was added, accounting for the signal processing chain. According to \autoref{eq:shot noise} the value of $e$ can be calculated if $I_0$ is known, because the additional component $S_0$ can be eliminated by measuring the same component at different currents, and computing the derivative
+\begin{equation}
+ e = \frac{1}{2}\frac{\Delta S_I}{\Delta I_0}
+\end{equation}
+
+The current can be measured in two different ways: 
+It can be determined by connecting a resistor in series with the diode and measuring the voltage drop across it, similar to how Johnson noise was measured in the previous part. 
+Another way is to use an amplifier which produces an output voltage proportional to an input current, a so-called \textit{transimpedance amplifier}.The schematic using the latter setup is shown in \autoref{fig:transimpedance schematic}. A lamp with variable brightness next to the photo diode allowed for adjustment of the mean current $I_0$.
+
 \begin{figure}[h!]
     \centering
     \includegraphics{figures/03 shot noise.pdf}
@@ -167,36 +189,19 @@ This result can be improved by making arbitrary assumptions about the additional
     }
     \label{fig:shot noise}
 \end{figure}
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/tamp_schematic.pdf}
-    \caption{
-        Current measurement across a photo diode using a transimpedance amplifier setup. Assuming no current flows into the amplifier input, the current through $R_f$ has to be exactly the current $I + I_0$ flowing through the diode. This allows for very precise measurement of $\langle I^2 \rangle$.
-        Provided by \autocite{instructions}.
-    }
-    \label{fig:transimpedance schematic}
-\end{figure}
+% The estimated values for $e$ using the two methods respectively are $\SI{1.76(25)e-19}{C}$ and $\SI{1.9(08)e-19}{C}$, which are both in agreement with the literature value of $\SI{1.602e-19}{C}$.
+% \textbf{Discuss the corrections for the wrong data point.}
 
+As there is no structure in the measured values for $e$ over bandwidth or current, the distribution of the measured values is shown in \autoref{fig:shot noise}.
+Here the measurements over the resistors have a mean value of $\SI{1.76(25)e-19}{C}$, with a statistical uncertainty.
+This is compatible with the literature value of $\SI{1.602e-19}{C}$.\\
+The measurement using the transimpedance amplifier shows two outliers in the histogram, coincidentally at about $2 \cdot e$ and $e/2$.
+They are caused by the same, likely incorrect data point. During one measurement the noise is suspiciously large. The result is an inflated, computed value for $e$ from the discrete derivative between the previous data point and the one in question, and a deflated value for the following one. The gain setting on the output amplifier was likely read off incorrectly. 
+Assuming the setting next too it, the measurement can be corrected, yielding a value of \SI{1.897(68)e-10}{C}.
+This demonstrates the advantage of using the lower noise transimpedance amplifier configuration.
 
-Charge is transported through a conductor only in multiples of the elementary charge $e$. This produces a type of noise called \textit{Shot Noise} which becomes relevant for very small currents. The variance of the noise current across an electric component is
-\begin{equation}
-    \label{eq:shot noise}
-    S_I\;\Delta f = \langle I^2 \rangle = 2 e I_0 \Delta f + S_0 \Delta f
-\end{equation}
-as shown in \autocite{Buch}. Note that the total current is $I_0 + I$ with the mean noise current $\langle I \rangle = 0$. Again, an additional noise source $S_0$ was added, accounting for the signal processing chain. According to \autoref{eq:shot noise} the value of $e$ can be calculated if $I_0$ is known, because the additional component $S_0$ can be eliminated by measuring the same component at different currents, and computing the derivative
-\begin{equation}
- e = \frac{1}{2}\frac{\Delta S_I}{\Delta I_0}
-\end{equation}
-In the second part of the experiment, shot noise was measured across a photo diode. \\
-The current $I_0$ can be measured in two different ways: It can be determined by connecting a resistor in series with the diode and measuring the voltage drop across it, similar to how Johnson noise was measured in the previous part. Another way is to use an amplifier which produces an output voltage proportional to an input current, a so-called \textit{transimpedance amplifier}.The schematic using the latter setup is shown in \autoref{fig:transimpedance schematic}. A lamp with variable brightness next to the photo diode allowed for adjustment of the mean current $I_0$.\\
-The estimated values for $e$ using the two methods respectively are $\SI{1.76(25)e-19}{C}$ and $\SI{1.9(08)e-19}{C}$, which are both in agreement with the literature value of $\SI{1.602e-19}{C}$.
-\textbf{Discuss the corrections for the wrong data point.}
-
-The last part of the experiment focused on shot noise measured for a photo diode, and all results are compatible with the literature value. But that owes largely to high anticipated measurement uncertainties. The results here prove that the transimpedance amplifier produces less noise, giving a result closer to the real value and with smaller uncertainty. The histogram shown in \autoref{fig:shot noise} for all values of $e$ computed from different measurements shows most results accumulated around a value close to, but not quite at the literature value of about \SI{1.6e-19}{\coulomb}. Since our results are consistently too large, the noise we measured relative to $I_0$ must have been stronger than theoretically expected. 
-This could be attributed to another component adding its own shot noise, perhaps a transistor inside the amplifier. 
-\textbf{Proportional noise in the current supply?}\\
-The two outliers in the histogram, coincidentally at about $2 \cdot e$ and $e/2$ are caused by the same, likely incorrect data point. During one measurement series, noise is suspiciously large for only one measurement. The result is an inflated, computed value for $e$ from the discrete derivative between the prevous data point and the one in question, and a deflated value for the following one. The gain setting on the output amplifier was likely read off incorrectly.
-\textbf{Assuming a different Gain setting.}
+Our results are consistently too large, implying a additional with $I_0$ correlated noise source. 
+This could be the power supply for the lamp.
 
 \section{Discussion}
 In the grand scheme, our measurements show that both types of noise behave mostly as expected. Looking in detail however, they deviate significantly from theory in several aspects, most notably in case of Johnson-Noise with respect to temperature.
