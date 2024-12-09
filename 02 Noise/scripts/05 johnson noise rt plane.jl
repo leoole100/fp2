@@ -36,67 +36,31 @@ p = curve_fit(
 p = measurement.(p.param, stderror(p))
 
 
-# %%
-# plot in 2d
-f = Figure()
-a = Axis(f[1, 1]; 
-	xlabel="R in Ω",
-	ylabel="Δf in Hz",
-)
-colorrange=(0, value.(maximum(df.V)))
-
-x = range(1, stop=maximum(df.R), length=100)
-y = range(1, stop=maximum(df.Δf), length=100)
-z = [p[1].*y .+ p[2] .* x .* y for x in x, y in y]
-hm = contourf!(x, y, value.(z),
-	# colorrange=colorrange
-)
-Colorbar(f[1, 2], hm, label="V²")
-
-# plot the data
-scatter!(df.R, df.Δf,
-	strokecolor=:white, strokewidth=1,
-	color=value.(df.V), colorrange=colorrange
-)
-
-# add Residuals
-residuals = value.(df.V) .- plane([df.R df.Δf], p)
-b = Axis(f[2, 1]; 
-)
-hm = heatmap!(df.R, df.Δf, value.(residuals),
-	colormap=:coolwarm,
-	colorrange=value.((-maximum(abs.(residuals)), maximum(abs.(residuals))))
-)
-Colorbar(f[2, 2], hm, label="Residuals")
-
-linkaxes!(b, a)
-# xlims!(low=0); ylims!(low=0)
-f
 
 # %%
 # Plot in 3d
-f = Figure()
+f = Figure(size=fullsize)
 a = Axis3(f[1, 1]; 
-	xlabel="R in Ω",
-	ylabel="Δf in Hz",
-	zlabel="V²",
+	xlabel="R in kΩ",
+	ylabel="Δf in kHz",
+	zlabel="(μV)²",
 )
 
 x = range(0, stop=maximum(df.R), length=20)
 y = range(0, stop=maximum(df.Δf), length=20)
 z = [p[1] .* y .+ p[2] .* x .* y for x in x, y in y]
-contour3d!(x, y, value.(z), levels=20, linewidth=2)
+contour3d!(x./1e3, y./1e3, value.(z).*1e12, levels=20, linewidth=2)
 # wireframe!(x, y, value.(z))
-surface!(x, y, value.(z), alpha=.5)
+surface!(x./1e3, y./1e3, value.(z).*1e12, alpha=.5)
 
 # plot the data
 residuals = value.(df.V) .- plane([df.R df.Δf], p)
 s = stem!(
-	df.R, df.Δf, value.(df.V),
+	df.R./1e3, df.Δf./1e3, value.(df.V).*1e12,
 	strokecolor=:black, strokewidth=1.5,
 	markersize=12,
-	color=value.(residuals), 
-	colorrange=value.((-maximum(abs.(residuals)), maximum(abs.(residuals)))),
+	color=value.(residuals).*1e12, 
+	colorrange=value.((-maximum(abs.(residuals)), maximum(abs.(residuals)))).*1e12,
 	colormap=:coolwarm
 	# color= value.(df.V), colorrange=colorrange
 )
@@ -106,3 +70,12 @@ xlims!(low=0); ylims!(low=0); zlims!(low=0)
 
 save("../figures/05 johnson noise rt plane.pdf", f)
 f
+
+# %%
+# calculate kb T from the slope
+T = measurement(22.0, 3) + 273.15
+kb = p[2] / 4 / T
+
+save("../data/gen/05 Johnson noise RT.jld2", Dict(
+	"S0"=>p[1],
+))

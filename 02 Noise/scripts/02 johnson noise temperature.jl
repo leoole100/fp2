@@ -24,7 +24,7 @@ df.T = measurement.(df.T, 3)
 df.V = df.V .* 10 ./ (600 .* df.G2).^2 # scale measurements to volts²
 df.Δf = 1e3*df.Δf # convert to Hz
 df.S = df.V ./ df.Δf
-df.S = df.S .- load("../data/gen/01 Johnson noise RT.jld2")["S0"]
+df.S = df.S .- load("../data/gen/05 Johnson noise RT.jld2")["S0"]
 
 sort!(df, [:T, :Δf, :R])
 select(df, [:T, :Δf, :R, :S])
@@ -33,7 +33,7 @@ select(df, [:T, :Δf, :R, :S])
 # fit lines
 mdl(x, p) = p[1] .+ p[2] .* x
 p0 = [0., 1.0]
-sort!(df, [:R, :Δf], rev=[true, false])
+sort!(df, [:R, :Δf], rev=[false, false])
 groups = groupby(df, [:R, :Δf], sort=false)
 fits = DataFrame(
 	Δf = getindex.(keys(groups), 2),
@@ -46,15 +46,15 @@ fits = DataFrame(
 fits.p = [p.param for p in fits.p]
 
 f = Figure(size=fullsize)
-a = Axis(f[1, 1]; 
-	ylabel="S in nV²/Hz",
+a = Axis(f[1:2, 1]; 
+	ylabel="S in (μV)²/Hz",
 	xlabel="T in K",
 )
 linestyles = Dict(
 	unique(df.R) .=> [:solid, :dash, :dot]
 )
 for (d, f) in zip(groups, eachrow(fits))
-	s = 1e9
+	s = 1e12
 	scatter!(value.(d.T), value.(d.S).*s, alpha=0.7,  
 	color=f.Δf, colorrange=extrema(df.Δf)
 	)
@@ -66,8 +66,26 @@ for (d, f) in zip(groups, eachrow(fits))
 	)
 end
 ylims!(low=0)
-Legend(f[1,2], a, framevisible=false)
-colgap!(f.layout, 0)
+Legend(
+	f[1,2],
+	[
+		PolyElement(color=c, colorrange=extrema(df.Δf)) for c in unique(df.Δf)
+	],
+	format.(unique(df.Δf)./1000, precision=0),
+	"Δf / kHz",
+	framevisible=false
+)
+Legend(
+	f[2,2],
+	[
+		LineElement(linestyle=linestyles[c]) for c in unique(df.R)
+	],
+	format.(unique(df.R), autoscale=:metric),
+	"R / Ω",
+	framevisible=false
+)
+
+colgap!(f.layout, 5)
 save("../figures/02 temperature.pdf", f)
 f
 

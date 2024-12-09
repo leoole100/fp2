@@ -34,27 +34,31 @@ end
 f = Figure(size=halfsize)
 s = 1e19
 a = Axis(f[1,1],
-	xlabel="measured e in 10^$(format(log10(1/s))) C"
+	# xlabel="measured e in 10^$(format(log10(1/s))) C"
+	xlabel=rich("measured e in 10", superscript(format(log10(1/s))), " C"),
 )
 
 dfs = [
 	DataFrame(CSV.File("../data/04 photocurrent.csv")),
-	DataFrame(CSV.File("../data/05 transimpedance amplifier.csv")),
+	# DataFrame(CSV.File("../data/05 transimpedance amplifier.csv")),
 	DataFrame(CSV.File("../data/05 transimpedance amplifier 8.csv"))
 ]
 
-for (df, l) in zip(dfs, ["I", "TIA", "TIAC"])
+for (i, df) in enumerate(dfs)
 	e = estimate_e(df)
 
 	# remove outliers
 	e = e[.1e-19 .<e.<10e-19]
 
-	stephist!(value.(e).*s,
-		label=l,
+	hist!(value.(e).*s,
+		# bins = 10,
+		# label=l,
+		offset=[0,1,1][i],
+		scale_to=.9
 	)
 	
 	println(
-		"$(l):\t",
+		# "$(l):\t",
 		measurement(
 			mean(value.(e)),
 			std(value.(e))
@@ -63,8 +67,8 @@ for (df, l) in zip(dfs, ["I", "TIA", "TIAC"])
 end
 
 vlines!([1.602e-19].*s, color=:black)
-ylims!(low=0)
-# hideydecorations!(a)
+ylims!(0, 2)
+hideydecorations!(a)
 # axislegend(a, position=:rt)
 save("../figures/03 shot noise.pdf", f)
 f

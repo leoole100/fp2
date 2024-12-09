@@ -38,7 +38,7 @@
     \vfill
     {
         \normalfont\normalsize
-        
+        \textbf{TODO}
     }
     \vfill
     \begin{flushright}
@@ -51,14 +51,18 @@
 All measurements conducted in the real world are subject to some form of noise. What is often regarded an obstacle may provide some important information about the system that is being observed. In this experiment, we take a look at two types of noise, namely Johnson-Nyquist noise occuring in an electrical resistor and Shot noise of a photo diode. Some of the properties of these types of noise are universal and will allow us to derive the Boltzmann constant and the elementary charge as well as the point of absolute zero temperature.
 
 \section{Setup}
-For this experiment, the setup \textit{Noise Fundamentals NF1-A} by \textit{TeachSpin, Inc.} was used. It consists of a low level electronics (LLE) component with a built-in preamplifier, and in a separate enclosure the High Level Electronics such as frequency filters and an additional output amplifier. 
-\textbf{Squarer?}
+For this experiment, the setup \textit{Noise Fundamentals NF1-A} by \textit{TeachSpin, Inc.} was used. It consists of a low level electronics (LLE) component with a built-in preamplifier, and in a separate enclosure the High Level Electronics such as an additional output amplifier, frequency filters and a voltage squaring circuit.\\
 The resistors used in the first part of the experiment are built directly into the LLE setup, whereas the module carrying the photo diode and lamp to measure shot noise has to be connected separately. An additional probe with resistors sits inside a Dewar which can hold liquid Nitrogen. Since we are measuring wide-band noise, the measurement bandwidth is important. The effective bandwidth resulting from the settings in the HLE component is taken from a table provided in the setup manual \autocite{instructions}.\\
 Measurements are taken with a multimeter connected to the output of the HLE. The statistical uncertainty of the voltmeter was measured to be $\sigma = \SI{0.001}{V}$.
 
-\subsection*{Oscilloscope RMS Measurement}
-An oscilloscope connected to the setup was supposed to be used for RMS measurements. That would have been favourible to understand the influence of different parameters at a glance. But during initial testing, we found that the readings on the device differed significantly from what the multimeter was showing, and were susceptible to axis scaling on in the oscillosope graph. A few unsuccessful attempts later, the device was ruled out of the experiment due to what we consider a firmware bug.
-\textbf{additionally downsampled data, depending on zoom settings}
+\subsection*{Oscilloscope}
+A oscilloscope, can alternatively be used to measure the noise and to apply digital filtering after the experiment.
+The disadvantages are a larger additional quantisation noise, as the analog digital converters in oscilloscopes have a lower resolution than multimeters.
+Additionally the spectral bandwidth is limited by the sampling frequency and the memory depth.\\
+An oscilloscope connected to the setup was supposed to be used to digitize the voltage.
+To validate the correct function of the instruments, the oscilloscope was set to measure the AC Root Mean Square voltage, calculating it in the digital domain, while the multimeter was set to AC voltage, doing the same in the analog domain.
+But, we found that the readings on the oscilloscope differed significantly from what the multimeter was showing, and were susceptible to axis scaling on the oscilloscope graph, that was not consistent with expectations.
+The device was ruled out of the experiment due to what we consider a firmware bug.
 
 \section{Johnson-Nyquist Noise}
 
@@ -82,22 +86,29 @@ Conducting an experiment at room temperature means that a certain amount of ther
 
 Where $k_B$ is the Boltzmann constant, $T$ is temperature and $R$ is the electric resistance of the resistor. The bandwidth $\Delta f$ is crucial since the data is measured digitally. It is adjusted using the high pass and low pass filters in the HLE component. The offset $S_0$ was added to the equation taken from \autocite{Buch}. It has its roots in the signal processing chain and is assumed to be white noise. 
 Using the setup to probe a very small resistance should yield $S_0$, but it can also be eliminated from the equation by taking the derivate with respect to $R$, assuming that resistor and amplifier operate independently.\\
-The schematic for this measurement is shown in \autoref{fig:johnson setup R}. The resistor $R_\text{IN}$ is the one being probed. The preamplifier has a gain of $6$.  According to \autoref{eq:johnson noise}, the noise is linear in $R$ and $\Delta f$. It was measured for multiple resistors and bandwidths. \\
+The schematic for this measurement is shown in \autoref{fig:johnson setup R}. The resistor $R_\text{IN}$ is the one being probed. The preamplifier has a gain of $6$.  According to \autoref{eq:johnson noise}, the noise is linear in $R$ and $\Delta f$. It was measured for varying resistors and bandwidths.
 \begin{figure*}[h!]
     \centering
     \includegraphics{figures/05 johnson noise rt plane.pdf}
     \caption{
-        Measured noise density over different resistors for different bandwidths.
-        Linear fit residuals are shown in the lower plot.
-        Uncertainties are estimated using the Uncertainties of the voltage measurements.
-        The uncertainties of the resistors and the amplifiers are not considered.
+        Measured noise density over different resistors and bandwidths.
+        Fit according to \autoref{eq:johnson noise}, fit residuals as colors.
     }
     \label{fig:johnson noise}
 \end{figure*}
-The results are shown in \autoref{fig:johnson noise}. Since the resistance and temperature are known, the Boltzmann constant can be determined from the linear fits shown in the graph. Assuming $T=\SI{295(3)}{K}$, the measured value for $k_B$ is $\SI{1.416(19)e-23}{J/K}$, which is off the literature value of $\SI{1.380e-23}{J/K}$.
-\textbf{Why is it not in agreement with the literature value? What can explain the deviation?} 
-The offset noise generated by the signal chain is measured to be $\SI{6.168(55)e-17}{V^2/Hz}$.
 
+Our data in \autoref{fig:johnson noise} clearly fits the model \autoref{eq:johnson noise}. 
+The fit residuals were very small, owing to the fact that this part of the experiment is hard-wired into the LLE setup, with short wires and consistent electrical connections.
+Despite that, the value computed for the Boltzmann constant $k_B = \SI{1.433(1.5)e-23}{J/K}$ differs significantly from the literature value of $\SI{1.380e-23}{J/K}$. 
+The uncertainty is calculated from the fit, and $T = \SI{295(3)}{K}$.
+The noise of the amplifier can be estimated to be $S_0 = \SI{6.213(15)e-7}{(\mu V)^2/Hz}$.\\
+The overestimated $k_B$ implies additional noise sources that correlate with $R$ and $\Delta f$, or with $S$.
+\textit{
+    One possible explanation is a frequency-dependent component to the preamplifier noise, but this would not explain any change in behaviour for measurements with varying resistance but constant bandwidth.
+    Another possibility is noise generated by the second amplifier stage.
+    In that case, the noise component added to the signal would vary in magnitude relative to the signal due to variable gain.
+    This was not taken into consideration during the experiment.
+}
 
 \subsubsection*{Temperature Measurement}
 \begin{figure*}[h!]
@@ -105,9 +116,32 @@ The offset noise generated by the signal chain is measured to be $\SI{6.168(55)e
     \includegraphics{figures/02 temperature.pdf}
     \caption{
         Measured noise density over temperature for different resistors and bandwidths.
+        The measured noise of the amplifier is 
     }
     \label{fig:johnson noise temperature}
 \end{figure*}
+In the previous section, the absolute room temperature was assumed to be already known. 
+However, since \autoref{eq:johnson noise} is linear in $T$ (neglecting the offset noise $S_0$, which has already been quantified) extrapolating the measured data to the point where the noise vanishes should yield the value $T$ at absolute zero. 
+To do this, a probe containing several resistors is lowered into a Dewar. 
+The probe is connected to the LLE using an otherwise similar setup to \autoref{fig:johnson setup R}. The noise RMS was measured at room temperature (\SI{295(3)}{K}) and with the probe submerged in liquid Nitrogen (\SI{77(3)}{K}). Again, the measurement was conducted for different resistors and bandwidths.
+
+% The measured zero temperature is \SI{-6.4(15)}{K}. The measurement errors were so small that the uncertainty was calculated from only the spread of data points, but the result implies other error sources.
+% \textbf{Discuss differing procedure, reasons for the uncertainties and the bandwidth dependency.}
+
+The resulting noise measurements are shown in \autoref{fig:johnson noise temperature} including linear fits.
+There are two notable observations: 
+Firstly, the smallest resistor (\SI{10}{\ohm}) behaves like a short circuit in that the measured noise does not depend on temperature. 
+The majority of it must be coming from another source, which is not very surprising knowing that Johnson noise depends linearly on resistance.\\
+Probing a resistor of \SI{10}{\kilo\ohm} yielded the expected result. 
+With the spectral noise density $S$ beinig independent of the bandwidth and proportional to the temperature.\\
+But the results from the \SI{100}{\kilo\ohm}-measurement are puling: Here, noise actually decreases with increasing bandwidth. 
+As the same frequency bands were used for the \SI{10}{\kilo\ohm} resistor, where no such effect was observed, the noise source has to depend on resistance. 
+For example, there might be an additional noise current which creates a higher voltage across the bigger resistor.
+Another complication, however is that the additional noise is also dependent on temperature. 
+This should only be the case for Johnson noise, which would behave differently. 
+We might be observing a nonlinear effect of an additional noise source which generates more noise the stronger the already existing signal is.
+Either way, more measurements would be needed to pin down the source.
+
 \begin{figure}[h!]
     \centering
     \includegraphics{figures/02 temperature distribution.pdf}
@@ -116,17 +150,19 @@ The offset noise generated by the signal chain is measured to be $\SI{6.168(55)e
     }
     \label{fig:johnson noise temperature distribution}
 \end{figure}
-In the previous section, the absolute room temperature was assumed to be already known. However, since \autoref{eq:johnson noise} is linear in $T$ (neglecting the offset noise $S_0$, which has already been quantified) extrapolating the measured data to the point where the noise vanishes should yield the value $T$ at absolute zero. To do this, a probe containing several resistors is lowered into a Dewar. The probe is connected to the LLE using an otherwise similar setup to \autoref{fig:johnson setup R}. The noise RMS was measured at room temperature and with the probe submerged in liquid Nitrogen. Again, the measurement was conducted for different bandwidths. \\
-The results are shown in \autoref{fig:johnson noise temperature} including linear fits.
-The measured zero temperature is \SI{-6.4(15)}{K}. The measurement errors were so small that the uncertainty was calculated from only the spread of data points, but the result implies other error sources.
-\textbf{Discuss differing procedure, reasons for the uncertainties and the bandwidth dependency.}
+Because of all that, interpreting the results from this part of the experiment is difficult. 
+Computing the point of absolute zero temperature by extrapolating linearly to the axis intersection yields a result which is significantly below \SI{0}{\kelvin}. 
+This result can be improved by making arbitrary assumptions about the additional noise. 
+\textbf{Make such a assumption to calculate a value.}
+
 
 \section{Shot Noise}
 \begin{figure}[h!]
     \centering
     \includegraphics{figures/03 shot noise.pdf}
     \caption{
-        Distribution of the measured value for $e$, by measuring the voltage over a resistor (blue) and using a trans-impedance amplifier (yellow).
+        Distribution of the measured value for $e$, by measuring the voltage over a resistor (blue), using a trans-impedance amplifier (yellow).
+        The literature value is marked by the black line.
     }
     \label{fig:shot noise}
 \end{figure}
@@ -155,35 +191,17 @@ The current $I_0$ can be measured in two different ways: It can be determined by
 The estimated values for $e$ using the two methods respectively are $\SI{1.76(25)e-19}{C}$ and $\SI{1.9(08)e-19}{C}$, which are both in agreement with the literature value of $\SI{1.602e-19}{C}$.
 \textbf{Discuss the corrections for the wrong data point.}
 
-%\pagebreak
-\section{Discussion}
-In the grand scheme, our measurements show that both types of noise behave mostly as expected. Looking in detail however, they deviate significantly from theory in several aspects, most noteably in case of Johnson-Noise with respect to temperature.
-
-\subsection*{Johnson-Nyquist Noise for variable $R$ and $\Delta f$}
-In the first section of the experiment, where Johnson noise was measured for varying resistance and bandwidth, our data clearly shows the expected linear dependence. The measurement uncertainty was very small, owing to the fact that this part of the experiment is hard-wired into the LLE setup, with short wires and consistent electrical connections. Despite that, the value computed for the Boltzmann constant $k_B$ differs significantly from the literature value. \\
-This implies additional, consistent noise sources that were not accounted for. One possible explanation is a frequency-dependent component to the preamplifier noise, but this would not explain any change in behaviour for measurements with varying resistance but constant bandwidth. Another possibility is noise generated by the second amplifier stage. In that case, the noise component added to the signal would vary in magnitude relative to the signal due to variable gain. This was not taken into consideration during the experiment.
-
-\subsection*{Johnson-Nyquist Noise over Temperature}
-The most surprising results are observed looking at Johnson-Nyquist noise with respect to temperature. The electrical connection between the probe and the LLE was certainly not ideal, adding another half a meter or so of cable into the mix. But not all effects found here can be explained by that. There are two notable observations: Firstly, the smallest resistor (\SI{10}{\ohm}) behaves like a short circuit in that the measured noise does not depend on temperature. The majority of it must be coming from another source, which is not very surprising knowing that Johnson noise depends linearily on resistance.\\
-Probing a resistor of \SI{10}{\kilo\ohm} yielded the expected result. 
-With the spectral noise density $S$ beinig independent of the bandwidth and proportional to the temperature.\\
-But the results from the \SI{100}{\kilo\ohm}-measurement are puling: Here, noise actually decreases with increasing bandwidth. A simple explantion like frequency dependent background noise fails, because the same frequency bands were used for the \SI{10}{\kilo\ohm} resistor, where no such effect was observed. 
-So the noise source has to depend on resistance. For example, there might be an additional noise current which creates a higher voltage across the bigger resistor.\\
-Another complication, however is that the additional noise is also dependent on temperature. This sould only be the case for Johnson noise, which would behave differently. We might be observing a nonlinear effect of an additional noise source which generates more noise the stronger the already existing signal is. Either way, more measurements would be needed to pin down the source.
-
-Because of all that, interpreting the results from this part of the experiment is difficult. Computing the point of absolute zero temperature by extrapolating linearily to the axis intersection yields a result which is significantly below \SI{0}{\kelvin}. This result can be improved by making arbitrary assumptions about the additional noise. For example, one might assume there is a noise component linear in temperature and bandwidth which only occurs in the \SI{100}{\kilo\ohm} case. By doing this, it is possible to find values that are compatible with the real value, but these results are useless due to lack of a proper model for the strange noise we are observing.
-
-\subsection{Shot Noise and determining the elementary charge $e$}
-
 The last part of the experiment focused on shot noise measured for a photo diode, and all results are compatible with the literature value. But that owes largely to high anticipated measurement uncertainties. The results here prove that the transimpedance amplifier produces less noise, giving a result closer to the real value and with smaller uncertainty. The histogram shown in \autoref{fig:shot noise} for all values of $e$ computed from different measurements shows most results accumulated around a value close to, but not quite at the literature value of about \SI{1.6e-19}{\coulomb}. Since our results are consistently too large, the noise we measured relative to $I_0$ must have been stronger than theoretically expected. 
 This could be attributed to another component adding its own shot noise, perhaps a transistor inside the amplifier. 
 \textbf{Proportional noise in the current supply?}\\
 The two outliers in the histogram, coincidentally at about $2 \cdot e$ and $e/2$ are caused by the same, likely incorrect data point. During one measurement series, noise is suspiciously large for only one measurement. The result is an inflated, computed value for $e$ from the discrete derivative between the prevous data point and the one in question, and a deflated value for the following one. The gain setting on the output amplifier was likely read off incorrectly.
 \textbf{Assuming a different Gain setting.}
 
-\pagebreak
+\section{Discussion}
+In the grand scheme, our measurements show that both types of noise behave mostly as expected. Looking in detail however, they deviate significantly from theory in several aspects, most notably in case of Johnson-Noise with respect to temperature.
+
 \section{Conclusion}
-The experiment setup \textbf{NF1-A} by \textit{TeachSpin, Inc.} provides good results while generating little additional noise in the signal processing chain. This allows for quantitative measurements of Johnson-Nyquist noise and shot noise to determine the Boltzmann constant and the elementary charge. The obtained results are close to literature values, but differ significantly due to consistent, additional noise sources which could not be located conclusively. Only the temperature-dependent yielded questionable result, subject to a strange type of noise varying with resistance and most curiously, temperature. Unfortunately, the available measurement data does not allow for further investigation. Quantifiying the results is therefore difficult, and the determined temperature value at absolute zero is significantly lower than expected.
+The experiment setup \textbf{NF1-A} by \textit{TeachSpin, Inc.} provides good results while generating little additional noise in the signal processing chain. This allows for quantitative measurements of Johnson-Nyquist noise and shot noise to determine the Boltzmann constant and the elementary charge. The obtained results are close to literature values, but differ significantly due to consistent, additional noise sources which could not be located conclusively. Only the temperature-dependent yielded questionable result, subject to a strange type of noise varying with resistance and most curiously, temperature. Unfortunately, the available measurement data does not allow for further investigation. Quantifying the results is therefore difficult, and the determined temperature value at absolute zero is significantly lower than expected.
 
 \addcontentsline{toc}{section}{Literature}
 \nocite{*}
