@@ -92,28 +92,32 @@ f
 # %%
 # calculate where the lines intersect
 # T = (S1 - S2) / (m2 - m1)
-filter!(f -> f.R < 100e3, fits)
 
-T = [
-	(f1.p[1] - f2.p[1]) / (f2.p[2] - f1.p[2])
-	for f1 in eachrow(fits)
-	for f2 in eachrow(fits)
-]
-T = T[.!isnan.(T)]
-T =  T[-100 .< T .< 100]	# remove outliers
+function estimate_T(df1, df2)
+	T = [
+		(f1.p[1] - f2.p[1]) / (f2.p[2] - f1.p[2])
+		for f1 in eachrow(df1)
+		for f2 in eachrow(filter(f -> f.R == 10e3, fits))
+	]
+	T = T[.!isnan.(T)]
+	T =  T[-100 .< T .< 100]	# remove outliers
+	return T
+end
 
 f = Figure(size=halfsize)
 a = Axis(f[1,1],
 	xlabel="T in K"
 )
-# density!(T)
-hist!(T)
+hist!(estimate_T(fits, fits), color=:gray, normalization=:density)
+hist!(estimate_T(filter(f -> f.R == 10, fits), filter(f -> f.R == 10e3, fits)), normalization=:density)
 vlines!([0], color=:black)
-# hideydecorations!(a)
-ylims!(low=0)
+hideydecorations!(a)
+ylims!(0, 1.8)
 save("../figures/02 temperature distribution.pdf", f)
-f
 
-#%%
 # calculate the mean and uncertainty
 T_mean = measurement(mean(T), std(T))
+print(T_mean)
+
+
+f
