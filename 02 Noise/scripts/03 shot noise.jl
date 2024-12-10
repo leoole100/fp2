@@ -54,6 +54,7 @@ for (i, df) in enumerate(dfs)
 		# bins = 10,
 		# label=l,
 		offset=[0,1,1][i],
+		color=[Makie.wong_colors()[1], :gray, Makie.wong_colors()[2]][i],
 		scale_to=.9
 	)
 	
