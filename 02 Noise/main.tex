@@ -54,16 +54,16 @@
 All measurements conducted in the real world are subject to some form of noise. What is often regarded an obstacle may provide some important information about the system that is being observed. In this experiment, we take a look at two types of noise, namely Johnson-Nyquist noise occuring in an electrical resistor and Shot noise of a photo diode. Some of the properties of these types of noise are universal and will allow us to derive the Boltzmann constant and the elementary charge as well as the point of absolute zero temperature.
 
 \section{Setup}
-For this experiment, the setup \textit{Noise Fundamentals NF1-A} by \textit{TeachSpin, Inc.} was used. It consists of a low level electronics (LLE) component with a built-in preamplifier, and in a separate enclosure the High Level Electronics such as an additional output amplifier, frequency filters and a voltage squaring circuit.\\
+For this experiment, the setup \textit{Noise Fundamentals NF1-A} by \textit{TeachSpin, Inc.} was used. It consists of a low level electronics (LLE) component with a built-in preamplifier, and in a separate enclosure the high level electronics (HLE) such as an additional output amplifier, frequency filters and a voltage squaring circuit.\\
 The resistors used in the first part of the experiment are built directly into the LLE setup, whereas the module carrying the photo diode and lamp to measure shot noise has to be connected separately. An additional probe with resistors sits inside a Dewar which can hold liquid Nitrogen. Since we are measuring wide-band noise, the measurement bandwidth is important. The effective bandwidth resulting from the settings in the HLE component is taken from a table provided in the setup manual \autocite{instructions}.\\
 Measurements are taken with a multimeter connected to the output of the HLE. The statistical uncertainty of the voltmeter was measured to be $\sigma = \SI{0.001}{V}$.
 
 \subsection*{Oscilloscope}
-A oscilloscope, can alternatively be used to measure the noise and to apply digital filtering after the experiment.
-The disadvantages are a larger additional quantisation noise, as the analog digital converters in oscilloscopes have a lower resolution than multimeters.
+An oscilloscope can alternatively be used to measure the noise and to apply digital filtering after the experiment.
+The disadvantages are a larger additional quantisation noise, as the analog digital converters in oscilloscopes usually have a lower resolution than multimeters.
 Additionally the spectral bandwidth is limited by the sampling frequency and the memory depth.\\
 An oscilloscope connected to the setup was supposed to be used to digitize the voltage.
-To validate the correct function of the instruments, the oscilloscope was set to measure the AC Root Mean Square voltage, calculating it in the digital domain, while the multimeter was set to AC voltage, doing the same in the analog domain.
+To validate the correct function of the instruments, the oscilloscope was set to measure the Root Mean Square voltage, calculating it in the digital domain, while the multimeter was set to AC voltage, doing the same in the analog domain.
 But, we found that the readings on the oscilloscope differed significantly from what the multimeter was showing, and were susceptible to axis scaling on the oscilloscope graph not consistent with expectations.
 The device was ruled out of the experiment due to what we consider a firmware bug.
 
@@ -90,17 +90,18 @@ Conducting an experiment at room temperature means that a certain amount of ther
     \label{eq:johnson noise}
     S\;\Delta f = \langle V_J^2 \rangle = 4\; k_B T\; R\; \Delta f + S_0\, \Delta f
 \end{equation} 
-Where $k_B$ is the Boltzmann constant, $T$ is temperature and $R$ is the electric resistance of the resistor. The bandwidth $\Delta f$ is crucial since the data is measured digitally. It is adjusted using the high pass and low pass filters in the HLE component. The offset $S_0$ was added to the equation taken from \autocite{Buch}. It has its roots in the signal processing chain and is assumed to be white noise. 
-Using the setup to probe a very small resistance should yield $S_0$, but it can also be eliminated from the equation by taking the derivate with respect to $R$, assuming that resistor and amplifier operate independently.\\
-The schematic for this measurement is shown in \autoref{fig:johnson setup R}. The resistor $R_\text{IN}$ is the one being probed. The preamplifier has a gain of $6$.  According to \autoref{eq:johnson noise}, the noise is linear in $R$ and $\Delta f$. It was measured for varying resistors and bandwidths.
+where $k_B$ is the Boltzmann constant, $T$ is temperature and $R$ is the electric resistance of the resistor. The bandwidth $\Delta f$ is crucial since the data is sampled. It is adjusted using the high pass and low pass filters in the HLE component. The offset $S_0$ was added to the equation taken from \autocite{Buch}. It has its roots in the signal processing chain and is assumed to be white noise. 
+% Using the setup to probe a very small resistance should yield $S_0$, but it can also be eliminated from the equation by taking the derivate with respect to $R$, assuming that resistor and amplifier operate independently.\\
 
-Our data in \autoref{fig:johnson noise} clearly fits the model \autoref{eq:johnson noise}. 
+The schematic for this measurement is shown in \autoref{fig:johnson setup R}. The resistor $R_\text{IN}$ is the one being probed. The preamplifier has a gain of $6$.  According to \autoref{eq:johnson noise}, the noise is linear in $R$ and $\Delta f$. It was measured for varying resistance and bandwidths.
+
+Our data in \autoref{fig:johnson noise} clearly fits the model from \autoref{eq:johnson noise}.
 The fit residuals were very small, owing to the fact that this part of the experiment is hard-wired into the LLE setup, with short wires and consistent electrical connections.
 Despite that, the value computed for the Boltzmann constant $k_B = \SI{1.433(1.5)e-23}{J/K}$ differs significantly from the literature value of $\SI{1.380e-23}{J/K}$. 
 The uncertainty is calculated from the fit, and $T = \SI{295(3)}{K}$.
 The noise of the amplifier can be estimated to be $S_0 = \SI{6.213(15)e-7}{(\mu V)^2/Hz}$.\\
 The overestimated $k_B$ implies additional noise sources that correlate with $R$ and $\Delta f$.
-This can be explained by white current noise, that is picked up by the wires, resulting in a Voltage depending on $R$ over the resistor.
+This can be explained by white current noise, that is picked up by the wires, resulting in a voltage drop over the resistor proportional to $R$.
 
 \subsubsection*{Temperature Measurement}
 \begin{figure*}[h!]
@@ -108,7 +109,7 @@ This can be explained by white current noise, that is picked up by the wires, re
     \includegraphics{figures/02 temperature.pdf}
     \caption{
         Measured noise density over temperature for different resistors and bandwidths.
-        The measured noise of the amplifier is 
+        The measured noise of the amplifier has already been subtracted.
     }
     \label{fig:johnson noise temperature}
 \end{figure*}
@@ -176,7 +177,7 @@ The schematic using the latter setup is shown in \autoref{fig:transimpedance sch
     \centering
     \includegraphics{figures/03 shot noise.pdf}
     \caption{
-        Distribution of the measured value for $e$, by measuring the voltage over a resistor (blue), using a trans-impedance amplifier (gray).
+        Distribution of the measured value for $e$, by measuring the voltage over a resistor (blue), using a trans-impedance amplifier (gray).output amplifier, frequency filters and a voltage
         Corrected measurements, assuming different gain setting (yellow). 
         The literature value is marked by the black line.
     }
@@ -190,10 +191,10 @@ Here the measurements over the resistors have a mean value of $\SI{1.76(25)e-19}
 This is compatible with the literature value of $\SI{1.602e-19}{C}$.\\
 The measurement using the transimpedance amplifier shows two outliers in the histogram, coincidentally at about $2 \cdot e$ and $e/2$.
 They are caused by the same, likely incorrect data point. During one measurement the noise is suspiciously large. The result is an inflated, computed value for $e$ from the discrete derivative between the previous data point and the one in question, and a deflated value for the following one. The gain setting on the output amplifier was likely read off incorrectly. 
-Assuming the setting next too it, the measurement can be corrected, yielding a value of \SI{1.897(68)e-10}{C}.
+Assuming the setting next to it, the measurement can be corrected, yielding a value of \SI{1.897(68)e-10}{C}.
 This demonstrates the advantage of using the lower noise transimpedance amplifier configuration.
 
-Our results are consistently too large, implying a additional with $I_0$ correlated noise source. 
+Our results are consistently too large, implying an additional noise source correlated with $I_0$. 
 This could be the power supply for the lamp.
 
 \section{Conclusion}
