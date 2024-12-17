@@ -1,5 +1,4 @@
 .vscode
-.venv
 
 # latex files
 *.aux
@@ -15,18 +14,7 @@
 *.bbl-SAVE-ERROR
 **/main.pdf
 
-# python files
-**/__pycache__
-*.py[cod]
-*$py.class
-*.pyc
-*.pyo
-*.egg-info
 
-# julia files
-#Manifest.toml
-#Project.toml
-*.toml
 
 # kate swap
 *.kate-swp
