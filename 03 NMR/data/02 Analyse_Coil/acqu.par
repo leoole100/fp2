@@ -1,0 +1,7 @@
+z_shim = 14.26
+y_shim = -30.4
+x_shim = -3.19
+expName = "02 Analyse_Coil"
+dataDirectory = "C:\Users\fpphysik\Desktop\Daten\WiSe_24-25\AL"
+position = [1308,515]
+experiment = "AnalyseCoil"

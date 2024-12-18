@@ -1,0 +1,13 @@
+expName = "01 Monitor_Noise"
+dataDirectory = "C:\Users\fpphysik\Desktop\Daten\WiSe_24-25\AL"
+maxFreqAmp = 5
+freqRange = 200
+maxTimeAmp = 20
+b1freq = 1977.6
+cap = 11.25
+rxGain = 2
+nrPnts = 32768
+acqTime = 0.5
+nrScans = 200
+position = [1187,536]
+experiment = "MonitorNoise"
