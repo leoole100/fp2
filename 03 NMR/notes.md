@@ -1,1 +1,0 @@
-# Nuclear Magnetic Resonance
