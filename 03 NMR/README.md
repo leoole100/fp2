@@ -40,3 +40,4 @@ Bottom:  Water, Top: Salty Water
 03. T1 (8. in experiment)
 04. Spin Echo
 05. CPMG
+06. Relaxation Time Contrast
