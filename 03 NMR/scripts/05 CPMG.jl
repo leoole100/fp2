@@ -48,8 +48,8 @@ a = Axis(f[1:length(data),2],
 )
 
 for ((p, t, a), f, t2) in zip(data, fits, T2)
-	s = scatter!(a.t, a.A, label=split(p, "/")[end-1]*"\nT2=$(t2) ms")
-	x = 1:7000
+	local s = scatter!(a.t, a.A, label=split(p, "/")[end-1]*"\nT2=$(t2) ms")
+	local x = 1:7000
 	lines!(x, mdl(x, f.param), color=s.color)
 end
 

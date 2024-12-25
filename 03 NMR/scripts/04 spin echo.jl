@@ -13,7 +13,7 @@ data = collect(zip(paths, shims, traces))
 sort!(data; by= i->i[2])
 
 # %%
-f = Figure(size=halfsize)
+f = Figure(size=(halfsize[1],2.2inch))
 axs = [Axis(f[i,1]) for i in 1:3]
 
 for a in axs[1:end-1]

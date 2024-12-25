@@ -5,7 +5,7 @@ cd(@__DIR__)
 # %%
 data = DataFrame(
 	paths = glob("../data/*1D*/*Image.txt"),
-	direction = ["z", "x", "y"]
+	direction = ["Z", "X", "Y"]
 )
 
 data[:, :images] =  [DataFrame(CSV.File(p), ["f", "S"]) for p in data.paths]

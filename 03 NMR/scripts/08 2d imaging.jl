@@ -30,8 +30,8 @@ f = Figure(size=(6inch, fullsize[2]))
 axs = [Axis(f[1,i]) for i in 1:size(data,1)]
 
 for (i, (d, a)) in enumerate(zip(eachrow(data), axs))
-	x = range(-d.shape[1]/2, d.shape[1]/2, size(d.image, 1))
-	y = range(-d.shape[2]/2, d.shape[2]/2, size(d.image, 2))
+	local x = (-d.shape[1]/2, d.shape[1]/2)
+	local y = (-d.shape[2]/2, d.shape[2]/2)
 	
 	im = image!(a,
 		x, y, d.image,
@@ -56,7 +56,7 @@ end
 
 axs[1].ylabel = "Z in cm"
 Label(f[2,:], "y in cm")
-# rowgap!(f.layout, 0)
+rowgap!(f.layout, 5)
 
 
 for a in axs[2:end]

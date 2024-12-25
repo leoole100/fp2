@@ -1,4 +1,4 @@
-using FFTW, DataFrames, StatsBase
+using FFTW, DataFrames, StatsBase, Glob
 function spectrum(t, V)
 	fs = 1/mean(diff(t))
 	A = fft(V)
@@ -15,13 +15,21 @@ function spectrum(t, V)
 	))
 end
 
+function runall()
+	cd(@__DIR__)
+	for p in glob("*.jl")
+		println("\n"*p)
+		include(p)
+	end
+end
+
 # make plots consistent
 using CairoMakie
 inch = 96
 pt = 4/3
 cm = inch/2.54
 update_theme!(
-	fontsize=10,
+	fontsize=10pt,
 	fonts = (;
 		regular="Roboto Regular",
 		bold="Roboto Bold",

@@ -1,5 +1,6 @@
 include("00 functions.jl")
 using Measurements, LsqFit
+using Measurements: value, uncertainty
 cd(@__DIR__)
 
 #%%
@@ -13,7 +14,7 @@ d.T2 /= 1000
 
 d = d[2:end,:]
 
-
+mdl(x, p) = x.^p[1] * p[2]
 
 f = Figure(size=halfsize)
 a = Axis(f[1,1];
@@ -22,8 +23,11 @@ a = Axis(f[1,1];
 )
 
 for (t,l) in zip([d.T1, d.T2], ["T1", "T2"])
+	fit = curve_fit(mdl, d.c, value.(t), [-1., 1.])
 	scatter!(d.c, value.(t), label=l)
 	errorbars!(d.c, value.(t), uncertainty.(t))
+	local x=.25:.05:2
+	lines!(x, mdl(x, fit.param))
 end
 axislegend()
 save("../figures/06 contrast.pdf", f)
