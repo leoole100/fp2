@@ -22,5 +22,4 @@ for (t,l) in zip([d.T1, d.T2], ["T1", "T2"])
 	errorbars!(d.c, value.(t)./1e3, uncertainty.(t)./1e3)
 end
 axislegend()
-save("../figures/01 concentration.pdf")
 f

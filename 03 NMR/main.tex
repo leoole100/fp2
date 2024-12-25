@@ -1,0 +1,65 @@
+\documentclass[
+    parskip=half, 
+    twoside=false,
+    twocolumn=true,
+    fontsize=11pt,
+]{scrarticle}
+\input{../preamble.tex}
+\addbibresource{literature.bib}
+
+\begin{document}
+
+\title{title}
+\subtitle{subtitle}
+\author{Aurel Müller-Schoenau, Leon Oleschko}
+\date{\dotdate\today}
+
+
+% make a custom title page
+\begin{titlepage}
+    \sffamily
+    \vspace*{3cm}
+    {
+        \fontsize{32}{32}
+        \markieren{}{}{Earth Field}{Nuclear Magnetic Resonance}
+    }
+    \vspace{.25cm}\\
+    {
+        \Large
+        Aurel Müller-Schoenau, Leon Oleschko\\
+        Supervised by Stefan Kraner
+        \vspace{.05cm}\\
+        18.12.2024
+        \vspace{.25cm}\\
+        \normalsize
+        Physikalisches Fortgeschrittenenpraktikum 2\\
+        Universität Konstanz
+    }
+    \vfill
+    {
+        \normalfont\normalsize 
+        TODO
+    }
+    \vfill
+    \begin{flushright}
+        Available at \url{www.github.com/leoole100/fp2}.
+    \end{flushright}
+\end{titlepage}
+
+\section{Introduction}
+
+\section{}
+\paragraph{Noise Analysis}
+\begin{figure}
+    \centering
+    \includegraphics{figures/01 noise.pdf}
+    \caption{}
+\end{figure}
+
+\section{Conclusion}
+
+\addcontentsline{toc}{section}{Literature}
+\nocite{*}
+\printbibliography
+
+\end{document}

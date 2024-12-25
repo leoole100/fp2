@@ -33,3 +33,6 @@ Length of container: 11cm along x, 2 dots along z, radius 2 cm along y
 35: Image dimensions 16, 32 with 120, 120 mm with 4s Polarizing duration, echo time 200ms
 34 - 38: switched T1 and T2 dominated cases.
 Bottom:  Water, Top: Salty Water 
+
+## Steps in the analysis
+01. Noise Characterisation
