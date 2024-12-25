@@ -5,7 +5,7 @@ cd(@__DIR__)
 #%%
 c = DataFrame(CSV.File("../data/02 Analyse_Coil/C,F.txt"), ["C", "f"])
 v = DataFrame(CSV.File("../data/01 Monitor_Noise/T,A in uV.txt"), ["T", "V"])
-s = spectrum(v)
+s = spectrum(v.T, v.V)
 fid = DataFrame(CSV.File("../data/04 FID/f,A.txt"), ["f", "A"])
 
 f = Figure(size=halfsize)

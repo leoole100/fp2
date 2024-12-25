@@ -36,3 +36,7 @@ Bottom:  Water, Top: Salty Water
 
 ## Steps in the analysis
 01. Noise, Capacitance
+02. FID
+03. T1 (8. in experiment)
+04. Spin Echo
+05. CPMG

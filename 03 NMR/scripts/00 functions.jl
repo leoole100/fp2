@@ -1,12 +1,18 @@
 using FFTW, DataFrames, StatsBase
-function spectrum(V::DataFrame)
-	fs = 1/mean(diff(V.T))
-	A = fft(V.V)
-	freq = fftfreq(size(V, 1), fs)
+function spectrum(t, V)
+	fs = 1/mean(diff(t))
+	A = fft(V)
+	freq = fftfreq(size(V)[1], fs)
 	A = A[1:length(A)÷2]
 	freq = freq[1:length(A)]
 	A = A .* 2/fs
-	return DataFrame([freq, abs.(A)], ["f", "A"])
+	# return DataFrame([freq, abs.(A)], ["f", "A"])
+	return DataFrame(Dict(
+		:f=>freq,
+		:A=>abs.(A),
+		:Re=>real.(A),
+		:Im=>imag.(A)
+	))
 end
 
 # make plots consistent
