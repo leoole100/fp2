@@ -35,4 +35,4 @@ Length of container: 11cm along x, 2 dots along z, radius 2 cm along y
 Bottom:  Water, Top: Salty Water 
 
 ## Steps in the analysis
-01. Noise Characterisation
+01. Noise, Capacitance
