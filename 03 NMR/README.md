@@ -41,3 +41,4 @@ Bottom:  Water, Top: Salty Water
 04. Spin Echo
 05. CPMG
 06. Relaxation Time Contrast
+07. 1D Imaging
