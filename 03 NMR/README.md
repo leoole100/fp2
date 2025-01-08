@@ -42,3 +42,23 @@ Bottom:  Water, Top: Salty Water
 05. CPMG
 06. Relaxation Time Contrast
 07. 1D Imaging
+
+
+## Nachbesprechung
+- figure 1:
+add rms value
+
+- figure 2:
+possibly analyse coil record, peak should be at 60-80 uV/Hz
+
+- add figure with short acquisition delay, if recorded\
+Dataset 05
+
+- Write about 90° and 180° pulse measurement\
+No record
+
+- Figure 4: add frequency space
+
+- Figure 5: remove dataset 14 and 15
+
+- Figure 6: add raw measurements
