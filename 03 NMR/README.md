@@ -49,16 +49,20 @@ Bottom:  Water, Top: Salty Water
 add rms value
 
 - figure 2:
-possibly analyse coil record, peak should be at 60-80 uV/Hz
+possibly analyse coil record, peak should be at 60-80 uV/Hz\
+The right record is shown
 
 - add figure with short acquisition delay, if recorded\
-Dataset 05
+Dataset 05\
+Does not look as good, as expected ...
 
 - Write about 90° and 180° pulse measurement\
 No record
 
-- Figure 4: add frequency space
+- Figure 4: add frequency space\
+does not look good
 
-- Figure 5: remove dataset 14 and 15
+- Figure 5: remove dataset 14 and 15\
+still need to make better presentation
 
 - Figure 6: add raw measurements

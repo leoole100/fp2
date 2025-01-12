@@ -36,3 +36,24 @@ Label(f[:, 0], "Signal in uV", rotation = pi/2)
 save("../figures/04 spin echo shims.pdf", f)
 
 f
+
+# %%
+f = Figure(size=halfsize)
+a = Axis(f[1,1], ylabel="A in uV/Hz", xlabel="frequency in Hz")
+
+for (p, s, t) in data
+	sp = spectrum(t.t, t.S)
+	lines!(
+		sp.f, sp.A,
+		color=s, colorrange=extrema(shims),
+	)
+	# a.ylabel = "shim:\n$(format(s))"
+end
+
+c = 1982.1189270971015
+w = 5
+xlims!(c-w, c+w)
+
+save("../figures/04 spin echo shims spectrum.pdf", f)
+
+f

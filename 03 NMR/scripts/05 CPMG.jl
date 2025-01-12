@@ -5,13 +5,14 @@ using CSV, Glob, Format, LsqFit, Measurements
 
 paths = sort(glob("../data/*CPMG*/"))[5:end]
 filter!(p->!occursin("contrast", p), paths)
+paths = paths[3:end]
 
 traces = [DataFrame(CSV.File(p*"t ms, S uV.txt"), ["t", "S"]) for p in paths]
 attenuation = [DataFrame(CSV.File(p*"t ms, Attenuation.txt"), ["t", "A"]) for p in paths]
 
+# %%
 data = collect(zip(paths, traces, attenuation))
 
-# %%
 mdl(x, p) = exp.(-1 .* x ./ p[1])
 
 fits = [
@@ -21,12 +22,14 @@ fits = [
 
 T2 = [measurement(f.param[1], stderror(f)[1]) for f in fits]
 
+data = collect(zip(paths, traces, attenuation, fits, T2))
+sort(data, d->Measurements.value(d[5]))
 
 f = Figure(size=(7inch, fullsize[2]))
 
 axs = [Axis(f[i,1]) for i in 1:length(data)]
 
-for ((p, t, a), ax, c) in zip(data, axs, Makie.wong_colors())
+for ((p, t, a, f, T2), ax, c) in zip(data, axs, Makie.wong_colors())
 	lines!(ax,
 		t.t, t.S,
 		color=c
@@ -47,7 +50,7 @@ a = Axis(f[1:length(data),2],
 		xlabel="Time in ms", ylabel="Attenuation"
 )
 
-for ((p, t, a), f, t2) in zip(data, fits, T2)
+for (p, t, a, f, t2) in data
 	local s = scatter!(a.t, a.A, label=split(p, "/")[end-1]*"\nT2=$(t2) ms")
 	local x = 1:7000
 	lines!(x, mdl(x, f.param), color=s.color)
