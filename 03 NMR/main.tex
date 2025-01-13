@@ -48,6 +48,8 @@
 
 \section{Introduction}
 
+Nuclear Magnetic Resonance images are applied in a wide field, ranging from precise magnetic field measurements to sample identification and even imaging in medical appliances. This experiment aims to provide an introduction of the basic concepts behind NMR and how to apply them practically. In the final section we will use the aquired knowledge to capture a cross section image of a sample containing two different substances and determine which is which.
+
 \section{TODO: Find Section Title}
 
 The key principle behind the Nuclear Magnetic Resonance measurement is that a nucleus that posesses a magnetic moment which is not aligned with an external magnetic field will rotate around the magnetic field axis at its \textit{Larmor Frequency}
@@ -156,25 +158,45 @@ But in order to aquire an NMR image in the first place, signal intensity needs t
 \begin{figure*}
     \centering
     \begin{subfigure}[c]{.45\textwidth}
+        \label{fig:sample}
         \includegraphics{figures/07 sample holder.pdf}
-        \caption{TODO}
+        \caption{A sample consisting of two tubes containing tap water and a salt water solution, respectively underwent our NMR imaging experiment. The tubes are aligned along the $x$ and $y$ axis but are offset in $z$.}
     \end{subfigure}
     \begin{subfigure}[c]{.45\textwidth}
+        \label{fig:1d_image}
         \includegraphics{figures/07 1d imaging.pdf}
-        \caption{TODO}
+        \caption{The one-dimensional image capture along the $x$, $y$ and $z$ directions resemble the structure of the two tubes: long and flat along $x$, a profile thicker towards the middle projecting onto the $y$ axis, and two distinct humps along $z$, the axis along which the samples are offset. Notice that the two humps in $z$ have different heights, because the substances in the two tubes have different NMR parameters.}
     \end{subfigure}
     \caption{}
 \end{figure*}
+The spin echo measurement makes use of the fact that after inversing the phase relationship between many spins oscillating at different rates, after some time they will all align again. This changes if gradient fields of different magnitude are used: An initial gradient field $G = x G_x$ is applied. This means a spin at position $x$ now precesses around this field over a period of time $\tau_\text{init}$ to obtain a phase of
+\begin{equation*}
+ \phi_1 = \omega_\text{Larmor} \tau_\text{init} = \gamma x G_x \tau_\text{init}
+\end{equation*}
+Afterwards, the spin continues to precess in the static field of $B$ over a time period $\tau_\text{e}$. The total phase is now
+\begin{equation*}
+ \phi_\text{total} = \phi_1 + \gamma B \tau_\text{e} = \gamma (x G_x \tau_\text{init} + B \tau_\text{e})
+\end{equation*}
+Therefore, the time when $\phi_\text{total} = 0$ and the echo occurs is dependent on the position $x$ via
+\begin{equation}
+ \tau_\text{e}(x) = \frac{-x G_x}{B} \tau_\text{init}
+\end{equation}
+This means that the structure of the signal in the time domain resembles the distribution of bulk magnetic moment in space, allowing one-dimensional imaging along the gradient field axis. If the spacial domain is sampled by aquiring data for different times $\tau_\text{e}$, each corresponding to the echo time of a certain Larmor frequency, this imaging procedure is called \textit{frequency encoding}. An alternative method is to vary the field gradient from $G_\text{min}$ to $G_\text{max}$ and conduct multiple measurements for the same echo time $\tau_\text{e}$. Here, the echo corresponding to a certain position $x$ occurs for a certain gradient $G_x$ because the gradient field initialised the nuclei at that position with the correct phase decoherence. This type of measurement is called \textit{phase encoding}. \\
 
+A sample similar to \autoref{fig:sample} was measured using this method along three spacial axis: $x$ being the axis along the cylinders, and $z$ being the axis along which the two tubes are displaced. One tube contained water while the other one was a salty solution. The image data shown in \autoref{fig:1d_image} resembles the one-dimensional structure of the sample: The distribution is roughly constant along $x$, both tubes align along the $y$ axis resulting in just one peak, and the $z$ measurement shows two seperate humps of different magnitude, owing to the different substances in the two tubes.\\
+
+It is also possible to capture two-dimensional images using NMR by using frequency encoding on one axis and phase encoding on the other. In \autoref{fig:2d_image} you can see three images captured of the double-tube sample in the $x$-$y$-plane. Each image was captured using different parameters. For short polarisation time, only the salt water sample shows up in the image (positive contrast) because it gets polarised quickly due to short $T_1$ time. In the second image, long polarisation time allows the water sample to also get polarised and both show up. For long polarisation time, the short $T_2$ time of the salt water sample has led to such drastic signal decay during the long aquisition delay that only the water sample shows up (negative contrast).
 
 \begin{figure*}
     \centering
+    \label{fig:2d_image}
     \includegraphics{figures/08 2d imaging.pdf}
-    \caption{TODO}
+    \caption{Two-dimensional image captured of the sample shown in \autoref{fig:sample} for differing parameters. The salt water sample's lower $T_1$ and $T_2$ times make it show up even after a short polarisation pulse as seen on the left, but after a long aquisition delay the signal has already faded as illustrated on the right.}
 \end{figure*}
 
 
 \section{Conclusion}
+The EFNMR setup serves as a nice and illustrative experiment to investigate and understand the mechanisms behind Nuclear Magnetic Resonance probing and imaging. All parts of the experiment, from tuning the resonant circuit through measuring the decay time scales of different samples to capturing one- and even two-dimensional images were a success. The Larmor frequency spectrum measurement allowed for optimising shimming parameters to achieve uniform spin precession throughout the sample. Our measurements of the time constant for longitudinal relaxation not only show the expected exponential behaviour, but also exhibit small oscillations caused by Larmor precession around the polarising field. The Hahn Echo measurement worked as intended and so did the multi-pulse experiments, illustrating the impact that $\pi$ pulse errors have on the decay rate, and how to correct them. Through our testing of different Copper Sulfate solutions, we were able to confirm that the substance can be used as a constrast agent in NMR imaging. In the final part of the experiment, we were able to apply imaging procedures to correctly distinguish a salt water probe from a water sample using both positive and negative contrast imaging.
 
 \addcontentsline{toc}{section}{Literature}
 \nocite{*}
