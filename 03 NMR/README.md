@@ -54,7 +54,7 @@ The right record is shown
 
 - add figure with short acquisition delay, if recorded\
 Dataset 05\
-**Does not look as good, as expected look at [](figures/09%20resonance.pdf).**
+looks as expected [](figures/09%20resonance.pdf).
 
 - Write about 90° and 180° pulse measurement\
 No record
