@@ -37,8 +37,8 @@
     }
     \vfill
     {
-        \normalfont\normalsize 
-        TODO
+        \normalfont\normalsize
+        We demonstrated key measurements using Nuclear Magnetic Resonance (NMR) with the Earth's magnetic field. Phenomena such as Free Induction Decay and Spin Echo were explored, and relaxation constants $T_1$ and $T_2$ were determined for various samples. Imaging techniques effectively differentiated saltwater from tap water using relaxation contrast, highlighting the method's potential for non-invasive material characterization.
     }
     \vfill
     \begin{flushright}
@@ -49,16 +49,17 @@
 \section{Introduction}
 Nuclear Magnetic Resonance measurements have various applications, ranging from precise magnetic field measurements to sample identification and even imaging in medical appliances. This experiment provides an introduction of the basic concepts behind NMR and how to apply them practically. In the final section we will use the acquired knowledge to capture a cross section image of a sample containing two different substances and determine which is which.
 
-\subsection*{Principle}
-The key principle behind the Nuclear Magnetic Resonance measurement is that a nucleus that possesses a magnetic moment which is not aligned with an external magnetic field will rotate around the magnetic field axis at its \textit{Larmor Frequency}
+\section{Methods}
+The key principle behind the Nuclear Magnetic Resonance measurement is that a nucleus that possesses a magnetic moment which if not aligned with an external magnetic field will rotate around the magnetic field axis at its \textit{Larmor Frequency}
 \begin{equation}
 \label{eq:larmor_frequency}
  \omega_\text{Larmor} = \gamma B
 \end{equation}
 where $B$ is the magnetic flux density and $\gamma$ is the gyromagnetic ratio of the nucleus. If many nuclei oscillate coherently, the corresponding magnetic moment can be detected externally.\\
-In order to achieve coherence throughout the sample, the field strength $B$ must not vary significantly with position. For this experiment, the earths magnetic field is sufficient and will serve as the external field. This method is called \textit{Earth Field Nuclear Magnetic Resonance}.
+In order to detect the precession, it needs to be coherent throughout the sample.
+To achieve this, the field strength $B$ must not vary significantly with position. For this experiment, the earths magnetic field is sufficient and will serve as the external field. This method is called \textit{Earth Field Nuclear Magnetic Resonance}.
 
-\section{TODO: Find Section Title, like Experiment}
+\section{Results}
 \subsection{Noise Analysis}
 \begin{figure}
     \centering
@@ -66,23 +67,22 @@ In order to achieve coherence throughout the sample, the field strength $B$ must
     \caption{Signal level detected by the coil for varying resonance frequency $\omega_{\text{LCR}}$ of the LCR circuit by altering the value of $C$. The yellow curve corresponds to the relationship between these variables, $\omega_{\text{LCR}} = 1/\sqrt{LC}$. $L$ is the inductance of the detection coil.}
     \label{fig:tune_C}
 \end{figure}
-\begin{figure}
-    \centering
-    \includegraphics{figures/09 resonance.pdf}
-    \caption{
-        TODO: add to text\\
-        TODO: write caption\\
-        TODO: should we keep it?
-    }
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics{figures/09 resonance.pdf}
+%     \caption{
+%         TODO: add to text\\
+%         TODO: write caption\\
+%         TODO: should we keep it?
+%     }
+% \end{figure}
 
 To detect the signal later during the experiment, an electric resonant circuit of the same resonant frequency $\omega$ will be brought close to the sample. Such a circuit contains an inductance $L$ represented by a coil in the center of which the sample is located; the coil acts as the detector for the oscillating magnetic moment. A capacitor with capacitance $C$ and an ohmic resistor $R$ connected in series with the coil create an LCR circuit. Current $I$ and voltage $U$ follow a specific relationship in each of the components. For the whole circuit, this results to a second-order differential equation for $I$ and $U$ equivalent to that of a harmonic oscillator with a resonance frequency of
 \begin{equation}
     \label{eq:LCR_frequency}
     \omega_{\text{LCR}} = \frac{1}{\sqrt{LC}}
 \end{equation}
-Given the detector coil of fixed inductance $L$, a variable capacitor can be used to tune the circuit to the larmor frequency of the sample. \autoref{fig:tune_C} shows the noise magnitude detected by the circuit with respect to variable resonant frequency following a change in $C$. The spectrum consists of a noise floor below \SI{0.1}{\micro \volt \per \hertz}, a large peak around \SI{2}{\kilo \hertz} at \SI{0.5}{\micro \volt \per \hertz} as well as a series of spikes at uneven multiples of roughly \SI{50}{\hertz}. Those spikes are likely caused by the power supply connected to the grid. The large spike might be the mechanical resonance frequency of the coil, because the magnitude increased a lot when playing a \SI{2}{\kilo \hertz} tone next to it. All other noise sources, like lamps or electronic devices and the noise generated in the measurement electronics, add up to the remaining noise floor.
-The noise RMS is \SI{9.90}{\micro \volt \per \hertz}.
+Given the detector coil of fixed inductance $L$, a variable capacitor can be used to tune the circuit to the larmor frequency of the sample. \autoref{fig:tune_C} shows the noise magnitude detected by the circuit with respect to variable resonant frequency following a change in $C$. The spectrum consists of a noise floor below \SI{0.1}{\micro \volt \per \hertz}, a large peak around \SI{2}{\kilo \hertz} at \SI{0.5}{\micro \volt \per \hertz} as well as a series of spikes at uneven multiples of roughly \SI{50}{\hertz}. Those spikes are likely caused by the power supply connected to the grid. The large spike might be the mechanical resonance frequency of the coil, because the magnitude increased a lot when playing a \SI{2}{\kilo \hertz} tone next to it. All other noise sources, like lamps or electronic devices and the noise generated in the measurement electronics, add up to the remaining noise floor with a RMS value of \SI{9.90}{\micro \volt \per \hertz}.
 
 \subsection{Free Induction Decay}
 \begin{figure}
@@ -127,18 +127,18 @@ The time constant for Spin-Lattice Relaxation goes by the name $T_1$. Longitudin
 
 \subsection{Spin Echo}
 \begin{figure}
-    \begin{subfigure}{.5\textwidth}
+    % \begin{subfigure}{.5\textwidth}
         \centering
         \includegraphics{figures/04 spin echo shims.pdf}
         \caption{Hahn Echo measurement for different shimming parameters. In the top graph, shimming parameters were optimised to nearly cancel out Larmor frequency variance across the sample. The resulting echo pulse is wide and shallow. In the two following examples, shimming was reduced narrowing the pulse.}
         \label{fig:hahn}        
-    \end{subfigure}
-    \begin{subfigure}{.5\textwidth}
-        \centering
-        \includegraphics{figures/04 spin echo shims spectrum.pdf}
-        \caption{TODO: should we keep it?, it doesn't look good.}
-    \end{subfigure}
-    \caption{}
+    % \end{subfigure}
+    % \begin{subfigure}{.5\textwidth}
+    %     \centering
+    %     \includegraphics{figures/04 spin echo shims spectrum.pdf}
+    %     \caption{TODO: should we keep it?, it doesn't look good.}
+    % \end{subfigure}
+    % \caption{}
  \end{figure}
 A sample has been polarised by a polarisation pulse, and the magnetic moment was rotated into the transverse plane using a $\pi/2$ pulse. Now the signal induced into the detection circuit decreases due to several mechanisms. These have been discussed already, and shimming was introduced as a method of reducing decoherence caused by spatially varying Larmor frequencies. Shimming is relevant because decoherence is the strongest contributor to signal decay during Free Induction Decay. But the process is deterministic and can be reversed by applying a $\pi$ pulse to the sample. During FID a nucleus experiencing higher field strength will precess faster and obtain a positive phase difference with respect to the mean Larmor frequency precession after a time $t$. The $\pi$ pulse flips the magnetisation orientation of the nucleus in the precession plane, preserving the phase difference magnitude, but due to inverse orientation it is now negative. Once the same time period $t$ has passed again, the nucleus has overcome its phase deficiency and is now in phase with the mean precession again. The dephasing decay before the flip reverses afterwards and at time $2\cdot t$ a \textit{Hahn Echo} is observed. In \autoref{fig:hahn} the resulting echo pulse is shown for three different shimming parameters. The shortest pulse corresponds to worst shimming, resulting in fast decoherence decay and therefore a short echo pulse as phase coherence is reacquired for only a brief period of time.
 
