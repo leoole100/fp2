@@ -177,23 +177,24 @@ But in order to acquire an NMR image in the first place, signal intensity needs 
     \end{subfigure}
     \caption{}
 \end{figure*}
-The spin echo measurement makes use of the fact that after inverting the phase relationship between many spins oscillating at different rates, after some time they will all align again. This changes if gradient fields of different magnitude are used: An initial gradient field $G = x G_x$ is applied. This means a spin at position $x$ now precesses around this field over a period of time $\tau_\text{init}$ to obtain a phase of
+The spin echo measurement makes use of the fact that after inverting the phase relationship between many spins oscillating at different rates, after some time they will all align again. NMR imaging takes a more sophisticated approach: An initial gradient field $G = x G_x$ is applied to the sample. A spin at position $x$ precesses around this field over a period of time $\tau_\text{init}$ to obtain a phase of
 \begin{equation*}
- \phi_1 = \omega_\text{Larmor} \tau_\text{init} = \gamma x G_x \tau_\text{init}
+ \phi_X = \omega_\text{Larmor} \tau_\text{init} = \gamma x G_x \tau_\text{init} =: k_p x
 \end{equation*}
-Afterwards, the spin continues to precess in the static field of $B$ over a time period $\tau_\text{e}$. The total phase is now
+The transverse magnetisation in the sample is now given by
 \begin{equation*}
- \phi_\text{total} = \phi_1 + \gamma B \tau_\text{e} = \gamma (x G_x \tau_\text{init} + B \tau_\text{e})
+ M_\bot(x) = |M_\bot(x)|\cdot \exp(i k_p x)
 \end{equation*}
-Therefore, the time when $\phi_\text{total} = 0$ and the echo occurs is dependent on the position $x$ via
+Because the spacial position $x$ is encoded in the phase information, this is referred to as \textit{phase encoding}. The signal aquired by the detection coil is now given as the integral over all positions $x$:
 \begin{equation}
- \tau_\text{e}(x) = \frac{-x G_x}{B} \tau_\text{init}
+\label{eq:1d_imag}
+ S(k_p) = \int |M_\bot(x)| \cdot \exp(i k_p x) dx
 \end{equation}
-This means that the structure of the signal in the time domain resembles the distribution of bulk magnetic moment in space, allowing one-dimensional imaging along the gradient field axis. If the spacial domain is sampled by acquiring data for different times $\tau_\text{e}$, each corresponding to the echo time of a certain Larmor frequency, this imaging procedure is called \textit{frequency encoding}. An alternative method is to vary the field gradient from $G_\text{min}$ to $G_\text{max}$ and conduct multiple measurements for the same echo time $\tau_\text{e}$. Here, the echo corresponding to a certain position $x$ occurs for a certain gradient $G_x$ because the gradient field initialised the nuclei at that position with the correct phase decoherence. This type of measurement is called \textit{phase encoding}.
+Therefore, the signal magnitude with respect to $k_p$ which depends on the field gradient, resembles the Fourier transform of the spacial magnetisation distribution in the sample along the $x$ axis. Obtaining data for many $k_p$ now allows reconstruction of $|M_\bot(x)|$ by applying IFT.\\
 
 A sample similar to \autoref{fig:sample} was measured using this method along three spacial axis: $x$ being the axis along the cylinders, and $z$ being the axis along which the two tubes are displaced. One tube contained water while the other one was a salty solution. The image data shown in \autoref{fig:1d_image} resembles the one-dimensional structure of the sample: The distribution is roughly constant along $x$, both tubes align along the $y$ axis resulting in just one peak, and the $z$ measurement shows two seperate humps of different magnitude, owing to the different substances in the two tubes.
 
-It is also possible to capture two-dimensional images using NMR by using frequency encoding on one axis and phase encoding on the other. In \autoref{fig:2d_image} you can see three images captured of the double-tube sample in the $x$-$y$-plane. Each image was captured using different parameters. For short polarisation time, only the salt water sample shows up in the image (positive contrast) because it gets polarised quickly due to short $T_1$ time. In the second image, long polarisation time allows the water sample to also get polarised and both show up. For long polarisation time, the short $T_2$ time of the salt water sample has led to such drastic signal decay during the long acquisition delay that only the water sample shows up (negative contrast).
+It is also possible to capture two-dimensional images using NMR. To do this, an additional gradient field is applied in $y$ direction \textit{during readout}. This way, a range of $k_y$ wave vectors is sampled over time. The phase for a spin at position $y$ now oscillates during readout according to $\phi_y = \gamma G_y y t := \omega_y t$. Magnetisation in $y$ is therefore encoded in the signal time domain at frequency $\omega_y$. This is called \textit{frequency encoding}. A 2d inverse Fourier Transform in $t$ and $k_p$ now yields the two-dimensional magnetisation magnitude $M_\bot(x,y)$. In \autoref{fig:2d_image} you can see three images captured of the double-tube sample in the $x$-$y$-plane. Each image was captured using different parameters. For short polarisation time, only the salt water sample shows up in the image (positive contrast) because it gets polarised quickly due to short $T_1$ time. In the second image, long polarisation time allows the water sample to also get polarised and both show up. For long polarisation time, the short $T_2$ time of the salt water sample has led to such drastic signal decay during the long acquisition delay that only the water sample shows up (negative contrast).
 
 \begin{figure*}
     \centering
