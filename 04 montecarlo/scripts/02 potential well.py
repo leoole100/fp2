@@ -8,11 +8,13 @@ N_t = 10
 N = 500000
 
 def step(x=0, step_size=step_size):
-	x_new = x + np.random.choice([-1,1])*step_size
-	if x_new < 0 or x_new > 1:
-		return x
+	x = x + np.random.choice([-1.,1.])*step_size
+	if x < 0:
+		return 0.
+	elif x > 1:
+			return 1.
 	else:
-		return x_new
+		return x
 	
 # %%
 # run simulation
@@ -30,9 +32,12 @@ for d in data:
 plt.show()
 
 # %%
-hist, bins = np.histogram(data, bins=100, density=True, range=(0,1))
-plt.bar(bins[:-1], hist)
+hist, bins = np.histogram(data.ravel(), bins=50, density=True)
+plt.bar(bins[:-1], hist, align="edge", width=1/len(hist))
+plt.plot([0,1], [1,1], color="black")
 plt.xlabel("x")
 plt.ylabel("Density")
 plt.savefig("../figures/02 potential well.pdf")
 plt.show()
+
+# %%
