@@ -10,7 +10,6 @@ N = 1000
 def step(x=0, step_size=step_size):
 	return x + np.random.choice([-1,1])*step_size
 
-
 # %%
 # run simulation
 data = np.zeros((N_t, N))
@@ -28,10 +27,13 @@ plt.show()
 
 # %%
 # msd
-msd = np.cumsum(data**2, axis=1)
+msd = data**2
 msd_mean = np.average(msd, axis=0)
 
+
 plt.plot(msd_mean)
+plt.plot(np.arange(N) *step_size**2, color="black")
+
 plt.xlabel("Step")
 plt.ylabel("MSD")
 plt.xscale("log")
