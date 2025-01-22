@@ -33,7 +33,10 @@ msd_mean = np.average(msd, axis=0)
 
 plt.plot(msd_mean)
 plt.xlabel("Step")
-plt.ylabel("MSD???")
+plt.ylabel("MSD")
+plt.xscale("log")
+plt.yscale("log")
+plt.savefig("../figures/01 free particle.pdf")
 plt.show()
 
 # %%
