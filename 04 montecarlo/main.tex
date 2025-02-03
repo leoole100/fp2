@@ -64,7 +64,7 @@ In this experiment, we simulate the one-dimensional trajectory of a particle ins
 
 % TODO: Diagramme: Trajektorien, Mean Trajectorien, MSQ mit theoretischer Kurve
 
-In the first part of this experiment, the simple goal was to get a simulation running with nothing more than a freely moving particle in one dimension. The code was written in python and parallelised using NumPy. The trajectory was initialised at position \SI{0}{}. For each timestep, a displacement of $\Delta x_n \in \{\pm \Delta x\}$ was applied in either the positive or negative direction, chosen randomly (at each timestep) with equal probability. This results in Brownian Motion shown in \autoref{fig:pt1_trajectory}. Simulation data was generated for \SI{50} individual trajectories, each one being simulated for a total of $N=\SI{10000}{}$ timesteps. The expected result are freely diffusive dynamics, as shown in the plot. The \textit{Mean Square Displacement} is defined by
+In the first part of this experiment, the simple goal was to get a simulation running with nothing more than a freely moving particle in one dimension. The code was written in python and vectorized using NumPy. The trajectory was initialised at position \SI{0}{}. For each timestep, a displacement of $\Delta x_n \in \{\pm \Delta x\}$ was applied in either the positive or negative direction, chosen randomly (at each timestep) with equal probability. This results in Brownian Motion shown in \autoref{fig:pt1_trajectory}. Simulation data was generated for \SI{50} individual trajectories, each one being simulated for a total of $N=\SI{10000}{}$ timesteps. The expected result are freely diffusive dynamics, as shown in the plot. The \textit{Mean Square Displacement} is defined by
 \begin{equation}
  MSQ(t_n) = x^2(t_n), \qquad t_n = n \cdot \Delta t
 \end{equation}
@@ -78,6 +78,8 @@ The MSQ averaged over all \SI{50}{} trajectories is shown in \autoref{fig:pt1_ms
 \subsection{Potential Well}
 \includegraphics{figures/02 time evolution.pdf}
 \includegraphics{figures/02 histogram.pdf}
+\includegraphics{figures/02 histogram random start.pdf}
+\includegraphics{figures/02 histogram evolution.pdf}
 
 \subsection{Harmonic Potential}
 
