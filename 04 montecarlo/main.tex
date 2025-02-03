@@ -1,0 +1,75 @@
+\documentclass[
+    parskip=half, 
+    twoside=false,
+    twocolumn=true,
+    fontsize=11pt,
+]{scrarticle}
+\input{../preamble.tex}
+\addbibresource{literature.bib}
+
+\begin{document}
+
+\title{title}
+\subtitle{subtitle}
+\author{Aurel Müller-Schoenau, Leon Oleschko}
+\date{\dotdate\today}
+
+
+% make a custom title page
+\begin{titlepage}
+    \sffamily
+    \vspace*{3cm}
+    {
+        \fontsize{32}{32}
+        \markieren{}{}{}{Motencarlo}
+    }
+    \vspace{.25cm}\\
+    {
+        \Large
+        Aurel Müller-Schoenau, Leon Oleschko\\
+        Supervised by Philipp Baumgärtel
+        \vspace{.05cm}\\
+        22.01.2025
+        \vspace{.25cm}\\
+        \normalsize
+        Physikalisches Fortgeschrittenenpraktikum 2\\
+        Universität Konstanz
+    }
+    \vfill
+    {
+        \normalfont\normalsize
+        TODO
+    }
+    \vfill
+    \begin{flushright}
+        Available at \url{www.github.com/leoole100/fp2}.
+    \end{flushright}
+\end{titlepage}
+
+\section{Introduction}
+
+\section{Methods}
+
+
+\section{Results}
+\subsection{Free Particle}
+\includegraphics{figures/01 time trace.pdf}
+\includegraphics{figures/01 msd.pdf}
+
+\subsection{Potential Well}
+\includegraphics{figures/02 time evolution.pdf}
+
+\subsection{Harmonic Potential}
+
+\subsection{Double Well}
+
+
+\pagebreak
+\section{Conclusion}
+
+
+\addcontentsline{toc}{section}{Literature}
+\nocite{*}
+\printbibliography
+
+\end{document}
