@@ -47,14 +47,33 @@
 \end{titlepage}
 
 \section{Introduction}
-
-\section{Methods}
-
+In physics research we ususally try to rely on very simplified model systems. This lets us investigate dynamics deterministically under controlled conditions to analyse each and every relevant interplay. However, nature is complex and modeling real systems may lead to the question - How do you analyse systems so complex they have a (practically) indefinite amount of degrees of freedom?\\
+Statistical physics deals with this issue by making assumptions based on the idea that nature approaches thermodynamic equilibrium. This simplifies the dynamics of a single particle because one may assume the interactions with the rest of the system can be reduced to random interactions following a certain distribution. Computer-based methods making use of random numbers as means for simulation are generally called \textit{Monte-Carlo-Methods}.\\
+In this experiment, we simulate the one-dimensional trajectory of a particle inside different energy potential landscapes under the influence of random kicks. Our goal is to confirm the theoretical models derived in statistical mechanics.
 
 \section{Results}
 \subsection{Free Particle}
+\begin{figure}
+\label{fig:pt1_trajectory}
 \includegraphics{figures/01 time trace.pdf}
+\end{figure}
+\begin{figure}
+\label{fig:pt1_msd}
 \includegraphics{figures/01 msd.pdf}
+\end{figure}
+
+% TODO: Diagramme: Trajektorien, Mean Trajectorien, MSQ mit theoretischer Kurve
+
+In the first part of this experiment, the simple goal was to get a simulation running with nothing more than a freely moving particle in one dimension. The code was written in python and parallelised using NumPy. The trajectory was initialised at position \SI{0}{}. For each timestep, a displacement of $\Delta x_n \in \{\pm \Delta x\}$ was applied in either the positive or negative direction, chosen randomly (at each timestep) with equal probability. This results in Brownian Motion shown in \autoref{fig:pt1_trajectory}. Simulation data was generated for \SI{50} individual trajectories, each one being simulated for a total of $N=\SI{10000}{}$ timesteps. The expected result are freely diffusive dynamics, as shown in the plot. The \textit{Mean Square Displacement} is defined by
+\begin{equation}
+ MSQ(t_n) = x^2(t_n), \qquad t_n = n \cdot \Delta t
+\end{equation}
+Since the displacements for different timesteps $t_i\neq t_j$ are uncorrelated, we expect that
+\begin{align}
+ MSQ(t_n = n \Delta t) &= \left(\sum_{i=1}^n \Delta x_i\right)^2 \\&= 2 \cdot \underbrace{\sum_{i<j\leq n} \Delta x_i \Delta x_j}_{=0} + \sum_{i=1}^n \Delta x_i^2 \\ &= n \cdot \Delta x^2
+\end{align}
+The MSQ averaged over all \SI{50}{} trajectories is shown in \autoref{fig:pt1_msd} alongside the theoretical prediction.
+
 
 \subsection{Potential Well}
 \includegraphics{figures/02 time evolution.pdf}
