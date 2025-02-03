@@ -76,19 +76,59 @@ The MSQ averaged over all \SI{50}{} trajectories is shown in \autoref{fig:pt1_ms
 
 
 \subsection{Potential Well}
-\includegraphics{figures/02 time evolution.pdf}
+\begin{figure}
+\label{fig:pt2_trajectory}
+ \includegraphics{figures/02 time evolution.pdf}
+\end{figure}
+
+Next we looked at a particle trapped inside a potential well with infinitely high walls. This was realised by not allowing displacement across the borders of the well so that the particle was effectively reflected. Inside the well, the potential is flat, resulting in dynamics similar to those of the free particle. \autoref{fig:pt2_trajectory} shows simulation data for \SI{1000}{} trajectories, each with initial position \SI{0.5}{} in the middle of the potential well with borders $0$ and $1$. As one would expect, the mean displacement stays exactly there as the particle cannot escape the potential. The histogram in \autoref{fig:pt2_histogram} shows the average spacial distribution of all trajectories. It is flat, meaning that on average, the particle is able to visit each position of the potential with equal probability. The dip at the starting position is likely a sampling artifact since the histogram grid might not line up with the grid imposed on the particle movement owing to the fact that $\Delta x$ stays constant. In \autoref{fig:pt2_histogram_random} the starting points for the trajectories were randomised to investigate this. A time-resolved version of the same histogram is shown in \autoref{fig:pt2_histogram_time}. Here we can see that for short simulation times, where the particle has not yet been able to interact with the walls, it behaves like the free particle (consider \autoref{fig:pt1_msd}). After evolving for some time, the particle has had a chance to visit each spot, including near the walls and get blocked. With its movement inhibited, it may travel back through the potential, and after sufficiently long simulation time there is no longer any clear structure in the spacial distribution: it approaches a flat line across the entire space available.
+
+
+\begin{figure}
+ \label{fig:pt2_histogram}
 \includegraphics{figures/02 histogram.pdf}
+\end{figure}
+\begin{figure}
+ \label{fig:pt2_histogram_random}
 \includegraphics{figures/02 histogram random start.pdf}
+\end{figure}
+\begin{figure}
+ \label{fig:pt2_histogram_time}
 \includegraphics{figures/02 histogram evolution.pdf}
+\end{figure}
+
 
 \subsection{Harmonic Potential}
 
+The harmonic potential appears in many real world cases, and any analytic potential can at least be approximated (locally) quadratically. In our case, the idea is to simulate a particle trapped inside optical tweezers, the resulting potential is nearly harmonic as we learned from one of our previous experiments:
+\begin{equation}
+ V(x) = \frac{a}{2} x^2
+\end{equation}
+where $a$ is a constant parameter.\\
+Unlike in the previous sections, the particle can now explore areas but only if it gains enough energy. The resulting spacial distribution should be
+\begin{equation}
+\label{eq:canonical_dist}
+ P(x) \propto \exp\left(-\frac{V(x)}{k T}\right)
+\end{equation}
+where $k T$ is the thermal energy and $V(x)$ is the potential. In order to incorporate this into our simulation, we make use of the \textit{Metropolis Algorithm}: The step size $\Delta x$ stays the same, but the next step is only accepted with a probability of
+\begin{equation}
+ p(x_i \rightarrow x_{i+1}) = \text{min}\left[1,\exp\left(-\frac{V(x_{i+1})-V(x_i)}{k T}\right)\right]
+\end{equation}
+meaning that it gets increasingly unlikely that the particle climbs up higher in the potential. Our simulation was run for \SI{2000}{} timesteps and we simulated \SI{500}{} trajectories. All energies were considered relative to the thermal energy, i.e. $kT=1$ and the value of $V(x)$ is to be interpreted in units of $kT$. The results are shown in TODO:FIGURE-HISTOGRAM-HARMONIC in the form of a time-resolved histogram. The spacial distribution follows a normal Distribution as expected, since \autoref{eq:canonical_dist} becomes a Gaussian for $V(x)\propto x^2$.
+
+
 \subsection{Double Well}
 
+In the final part of the experiment we simulated a particle trapped inside a double-well potential given by
+\begin{equation}
+ V(x) = a\left(\left(\frac{x}{b}\right)^2-1\right)^2
+\end{equation}
+which is a fourth order polynomial with minima at $x=\pm b$ and a local maximum inbetween at $x=0$ and $V(x)=a$. Letting the particle evolve freely using the same Metropolis procedure as in the previous section, it delves inside one of the potential wells first, until after some time it manages to climb and surpass the barrier imposed by the local maximum at $x=0$. Our goal was to find out how the time it takes on average to complete one such jump after starting from the bottom of one potential well depends on the height of the barrier $a$. To do this, we simulated many trajectories for many values of $a$. The resulting mean jump times - that is the time between initialisation and the point where the particle reaches the maximum of the barrier - are plotted over the parameter $a$ in TODO:FIGURE-ARRHENIUS. They increase exponentially with $a$ according to TODO:WHATEVER-THE-RELATION-IS
 
 \pagebreak
 \section{Conclusion}
 
+The \textit{Monte Carlo Simulation} experiment is a small introduction into physical simulation of systems described by statistical physics. We demonstrated how such simulations are set up for different simulation scenarios. In the first part of the experiment, we simulated a freely moving particle and were able to confirm the viability of the law of free diffusion. When constraining the particle inside a potential well, we found the expected flat spacial distribution after sufficiently long simulation time - this is in line with the canonical distribution introduced in the following chapter, which states that the probability of a particle residing at some position should only depend on the potential energy at that position. The spacial distribution we computed for the harmonic potential using the Metropolis algorithm resembles the expected Gaussian distribution. In the final part we tried to find out how the average time to cross a potential barrier depends on the barrier height to obtain the Arrhenius law. Being fully virtual, all simulations yielded the expected results.
 
 \addcontentsline{toc}{section}{Literature}
 \nocite{*}
