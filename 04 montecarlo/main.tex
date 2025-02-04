@@ -67,11 +67,6 @@ Statistical physics deals with this issue by making assumptions based on the ide
 In this experiment, we simulate the one-dimensional trajectory of a particle inside different energy potential landscapes under the influence of random kicks. Our goal is to confirm the theoretical models derived in statistical mechanics.
 
 \section{Methods}
-To simulate the trajectory $x_t$ in a potential $V(x)$ the python function in \autoref{lst:step} is used.
-The position $x$ is updated at each timestep.
-A candidate with $\Delta x_n \in \{\pm \Delta x\}$ is randomly chosen and accepted with the probability $\exp((-V(x+\Delta x_n)+V(x))$.
-The speedup the simulation of large ensembles a vector of multiple particle positions can be used for $x$.
-
 \begin{lstlisting}[caption={Python function used for time evolution.},label={lst:step},captionpos=b]
 from numpy import exp
 from numpy.random import random, choice
@@ -82,7 +77,14 @@ def $x_{n+1}$($x_n$, $V$, $\Delta x$=0.01):
     random(len($x$)) < exp($-V(x+\Delta x_n)+V(x)$)
   )
 \end{lstlisting}
+To simulate the trajectory $x_t$ in a potential $V(x)$ the python function in \autoref{lst:step} is used.
+This implements the \textit{Metropolis–Hastings Algorithm} \cite{noauthor_metropolis-algorithmus_2024}.
+The position $x$ is updated at each timestep.
+A candidate with $\Delta x_n \in \{\pm \Delta x\}$ is randomly chosen and accepted with the probability
+$$ p(x_n \rightarrow x_{n+1}) = \text{min}\left[1,e^{-\frac{V(x_{n+1})-V(x_n)}{k_B T}}\right] \text{.}$$
+$k_B T = 1$ is chosen to set the energy scale of the simulation.
 
+To speedup the simulation of large ensembles a vector of multiple particle positions can be used for $x$.
 The full code is available under \url{https://github.com/leoole100/fp2}.
 
 \section{Results}
@@ -116,12 +118,12 @@ This is also shown in the \autoref{fig:pt1_trajectory}.
 \end{figure}
 Another way to describe the statistics of this process is the \textit{Mean Square Displacement} defined by $\langle x_n^2 \rangle$.
 Since the displacements for different timesteps $n$ are uncorrelated, we expect that
-\begin{align}
+\begin{align*}
     \langle x_n^2 \rangle 
     &= \left(\sum_{i=1}^n \Delta x_i\right)^2 \\
     &= 2 \cdot \underbrace{\sum_{i<j\leq n} \Delta x_i \Delta x_j}_{=0} + \sum_{i=1}^n \Delta x_i^2 \\ 
     &= n \cdot \Delta x^2
-\end{align}
+\end{align*}
 The Mean Square Displacement averaged over all \SI{50}{} trajectories is shown in \autoref{fig:pt1_msd} alongside the matching theoretical prediction.
 
 
@@ -138,10 +140,12 @@ The Mean Square Displacement averaged over all \SI{50}{} trajectories is shown i
 \begin{figure}
     \centering
     \includegraphics{figures/02 histogram.pdf}
-    \caption{Probability density $P(x)$ in units of $1/l$ in gray, expected probability density in blue, Potential $V(x)$ in orange}
+    \caption{
+        Histogram and potential over position of a particle in a potential well.
+        Probability density $P(x)$ in units of $1/l$ in gray, expected probability density in blue, Potential $V(x)$ in orange
+    }
     \label{fig:pt2_histogram}
 \end{figure}
-
 
 Next we looked at a particle trapped inside a potential well with infinitely high walls.
 This can be modelled with the potential
@@ -169,25 +173,37 @@ But as this happens in a finite time, the histogram does not change in the long 
 \begin{figure}
     \centering
     \includegraphics{figures/03 histogram.pdf}
-    \caption{todo}
+    \caption{
+        Histogram and potential over position of a particle in a harmonic potential.
+        Probability density $P(x)$ in units of $1/\sigma$ in gray, expected probability density in blue, Potential $V(x)$ in units of $k_B T$ in orange
+    }
+    \label{fig:pt3_histogram}
 \end{figure}
 
 The harmonic potential appears in many real world cases, and any analytic potential can at least be approximated (locally) quadratically. In our case, the idea is to simulate a particle trapped inside optical tweezers, the resulting potential is nearly harmonic as we learned from one of our previous experiments:
-\begin{equation}
- V(x) = \frac{a}{2} x^2
-\end{equation}
-where $a$ is a constant parameter.\\
-Unlike in the previous sections, the particle can now explore areas but only if it gains enough energy. The resulting spacial distribution should be
-\begin{equation}
+$$ V(x) = \frac{1}{2 \sigma^2} x^2$$
+where $\sigma = 1000 \Delta x$ is a characteristic length scale.\\
+Unlike in the previous sections, the particle can now explore areas but only if it gains enough energy. The resulting spacial distribution is
+$$
 \label{eq:canonical_dist}
- P(x) \propto \exp\left(-\frac{V(x)}{k T}\right)
-\end{equation}
-where $k T$ is the thermal energy and $V(x)$ is the potential. In order to incorporate this into our simulation, we make use of the \textit{Metropolis Algorithm}: The step size $\Delta x$ stays the same, but the next step is only accepted with a probability of
-\begin{equation}
- p(x_i \rightarrow x_{i+1}) = \text{min}\left[1,\exp\left(-\frac{V(x_{i+1})-V(x_i)}{k T}\right)\right]
-\end{equation}
-meaning that it gets increasingly unlikely that the particle climbs up higher in the potential. Our simulation was run for \SI{2000}{} timesteps and we simulated \SI{500}{} trajectories. All energies were considered relative to the thermal energy, i.e. $kT=1$ and the value of $V(x)$ is to be interpreted in units of $kT$. The results are shown in TODO:FIGURE-HISTOGRAM-HARMONIC in the form of a time-resolved histogram. The spacial distribution follows a normal Distribution as expected, since \autoref{eq:canonical_dist} becomes a Gaussian for $V(x)\propto x^2$.
+ P(x) \propto e^{-\frac{V(x)}{k T}} = e^{-\frac{x^2}{2 \sigma^2}}.
+$$
 
+Our simulation was run for $100000$ timesteps and we simulated $50$ trajectories. 
+The results are shown in \autoref{fig:pt3_histogram} in the form of a histogram.
+The spacial distribution follows a normal Distribution as expected.
+
+
+\begin{figure}
+    \centering
+    \includegraphics{figures/03 histogram evolution.pdf}
+    \caption{
+        Evolution of the probability density for the particles in a harmonic potential.
+    }
+    \label{fig:pt3_histogram_time}
+\end{figure}
+To see how the distribution evolves over time from the starting condition of $x_0=0$ to the derived normal distribution, it is shown over time in \autoref{fig:pt3_histogram_time}.
+The distribution stays normally distributed with a increasing standard deviation, until the derived limit of $\sigma$ is reached.
 
 \subsection{Double Well}
 
