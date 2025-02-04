@@ -88,10 +88,11 @@ The full code is available under \url{https://github.com/leoole100/fp2}.
 \section{Results}
 \subsection{Free Particle}
 \begin{figure}
+    \centering
     \includegraphics{figures/01 time trace.pdf}
     \caption{
         Time evolution of a free particle.
-        Multiple time traces $x_n$ in gray, Assemble averages of $\langle x_n\rangle, \sigma_n$ in black, expected traces in dashed blue.
+        Multiple time traces $x_n$ in gray, Assemble averages of $\langle x_n\rangle, \sigma_n$ in black, expected averages in dashed blue.
     }
     \label{fig:pt1_trajectory}
 \end{figure}
@@ -105,6 +106,7 @@ The expected ensemble mean is $\langle x_n\rangle = 0$ an the standard deviation
 This is also shown in the \autoref{fig:pt1_trajectory}.
 
 \begin{figure}
+    \centering
     \includegraphics{figures/01 msd.pdf}
     \caption{
         Mean Square Displacement of a ensemble 50 trajectories.
@@ -125,28 +127,50 @@ The Mean Square Displacement averaged over all \SI{50}{} trajectories is shown i
 
 \subsection{Potential Well}
 \begin{figure}
-\label{fig:pt2_trajectory}
- \includegraphics{figures/02 time evolution.pdf}
-\end{figure}
-
-Next we looked at a particle trapped inside a potential well with infinitely high walls. This was realised by not allowing displacement across the borders of the well so that the particle was effectively reflected. Inside the well, the potential is flat, resulting in dynamics similar to those of the free particle. \autoref{fig:pt2_trajectory} shows simulation data for \SI{1000}{} trajectories, each with initial position \SI{0.5}{} in the middle of the potential well with borders $0$ and $1$. As one would expect, the mean displacement stays exactly there as the particle cannot escape the potential. The histogram in \autoref{fig:pt2_histogram} shows the average spacial distribution of all trajectories. It is flat, meaning that on average, the particle is able to visit each position of the potential with equal probability. The dip at the starting position is likely a sampling artifact since the histogram grid might not line up with the grid imposed on the particle movement owing to the fact that $\Delta x$ stays constant. In \autoref{fig:pt2_histogram_random} the starting points for the trajectories were randomised to investigate this. A time-resolved version of the same histogram is shown in \autoref{fig:pt2_histogram_time}. Here we can see that for short simulation times, where the particle has not yet been able to interact with the walls, it behaves like the free particle (consider \autoref{fig:pt1_msd}). After evolving for some time, the particle has had a chance to visit each spot, including near the walls and get blocked. With its movement inhibited, it may travel back through the potential, and after sufficiently long simulation time there is no longer any clear structure in the spacial distribution: it approaches a flat line across the entire space available.
-
-
-\begin{figure}
- \label{fig:pt2_histogram}
-\includegraphics{figures/02 histogram.pdf}
+    \centering
+    \includegraphics{figures/02 time evolution.pdf}
+    \caption{
+        Time evolution of a particle in potential well.
+        Multiple time traces $x_n$ in gray, Assemble average of $\langle x_n\rangle$ in black, expected mean trace in dashed blue.
+    }
+    \label{fig:pt2_trajectory}
 \end{figure}
 \begin{figure}
- \label{fig:pt2_histogram_random}
-\includegraphics{figures/02 histogram random start.pdf}
+    \centering
+    \includegraphics{figures/02 histogram.pdf}
+    \caption{Probability density $P(x)$ in units of $1/l$ in gray, expected probability density in blue, Potential $V(x)$ in orange}
+    \label{fig:pt2_histogram}
 \end{figure}
-\begin{figure}
- \label{fig:pt2_histogram_time}
-\includegraphics{figures/02 histogram evolution.pdf}
-\end{figure}
+
+
+Next we looked at a particle trapped inside a potential well with infinitely high walls.
+This can be modelled with the potential
+$$
+V(x) = \begin{cases}
+    0, &\text{if } 0\leq x\leq l\\
+    \infty, &\text{otherwise}
+\end{cases}
+$$
+where $l=1=100\;\Delta x$ is a characteristic length scale.
+The potential is shown in \autoref{fig:pt2_histogram}.
+
+The particles are initialized at $0.5 l$ and the time evolution is shown in \autoref{fig:pt2_trajectory}.
+As one would expect, the trajectories begin like the the free timeevolution until it is stopped by the wall.
+
+The histogram in \autoref{fig:pt2_histogram} shows the average spacial distribution of all trajectories for a long evaluation time of $100000$ steps. 
+It is flat, meaning that on average, the particle is able to visit each position of the potential with equal probability.
+As the particle moves on the same grid $\{0, \Delta x, \cdots 1\}$ as is used for the histogram, the dip in the bin $0.48000000000000004$ to $0.49$ is presumably due to some numerical artefact.
+
+The distribution from a random starting point is equal to waiting for the particles to randomly distribute in the well and taking the timeevolution after that.
+But as this happens in a finite time, the histogram does not change in the long time limit.
 
 
 \subsection{Harmonic Potential}
+\begin{figure}
+    \centering
+    \includegraphics{figures/03 histogram.pdf}
+    \caption{todo}
+\end{figure}
 
 The harmonic potential appears in many real world cases, and any analytic potential can at least be approximated (locally) quadratically. In our case, the idea is to simulate a particle trapped inside optical tweezers, the resulting potential is nearly harmonic as we learned from one of our previous experiments:
 \begin{equation}
