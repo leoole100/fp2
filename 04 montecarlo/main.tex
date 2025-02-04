@@ -182,7 +182,9 @@ But as this happens in a finite time, the histogram does not change in the long 
 
 The harmonic potential appears in many real world cases, and any analytic potential can at least be approximated (locally) quadratically. In our case, the idea is to simulate a particle trapped inside optical tweezers, the resulting potential is nearly harmonic as we learned from one of our previous experiments:
 $$ V(x) = \frac{1}{2 \sigma^2} x^2$$
-where $\sigma = 1000 \Delta x$ is a characteristic length scale.\\
+where $\sigma = 1000 \Delta x$ is a characteristic length scale.
+The potential is shown in \autoref{fig:pt3_histogram}.
+\\
 Unlike in the previous sections, the particle can now explore areas but only if it gains enough energy. The resulting spacial distribution is
 $$
 \label{eq:canonical_dist}
@@ -206,17 +208,31 @@ To see how the distribution evolves over time from the starting condition of $x_
 The distribution stays normally distributed with a increasing standard deviation, until the derived limit of $\sigma$ is reached.
 
 \subsection{Double Well}
-
+\begin{figure}
+    \centering
+    \includegraphics{figures/04 potential.pdf}
+    \caption{Double well potential for different $a$.}
+    \label{fig:pt4_potential}
+\end{figure}
 In the final part of the experiment we simulated a particle trapped inside a double-well potential given by
-\begin{equation}
- V(x) = a\left(\left(\frac{x}{b}\right)^2-1\right)^2
-\end{equation}
-which is a fourth order polynomial with minima at $x=\pm b$ and a local maximum inbetween at $x=0$ and $V(x)=a$. Letting the particle evolve freely using the same Metropolis procedure as in the previous section, it delves inside one of the potential wells first, until after some time it manages to climb and surpass the barrier imposed by the local maximum at $x=0$. Our goal was to find out how the time it takes on average to complete one such jump after starting from the bottom of one potential well depends on the height of the barrier $a$. To do this, we simulated many trajectories for many values of $a$. The resulting mean jump times - that is the time between initialisation and the point where the particle reaches the maximum of the barrier - are plotted over the parameter $a$ in TODO:FIGURE-ARRHENIUS. They increase exponentially with $a$ according to the Arrhenius law
-\begin{equation}
- \frac{1}{\tau} = A \cdot \exp\left(-\frac{E_A}{R T}\right)
-\end{equation}
-where $\tau$ is the jump time, $A$ is a proportionality factor, $E_A$ is the activation energy and $R$ is the unversal gas constant.
+$$V(x) = a\left(\left(\frac{x}{b}\right)^2-1\right)^2$$
+which is a fourth order polynomial with minima at $x=\pm b$ and a local maximum inbetween at $V(x=0)=a$.
+As the $b$ only scales $x$ relative to $\Delta x$, this can be taken out into the length scale.
+Such a rescaling is not done with $a$ on the energy, as it changes the dynamics non trivially.
+The potential is shown in \autoref{fig:pt4_potential} for different $a$.
+Letting the particle evolve freely using the same Metropolis procedure as in the previous section, it delves inside one of the potential wells first, until after some time it manages to climb and surpass the barrier imposed by the local maximum at $x=0$. 
+Our goal was to find out how the time it takes on average to complete one such jump after starting from the bottom of one potential well depends on the height of the barrier $a$.
 
+\begin{figure}
+    \centering
+    \includegraphics{figures/04 chem.pdf}
+    \caption{
+        Mean time to jump from $x=b$ to $x=0$ for different $a$ in the double well potential.
+        With a exponential fit of $\langle n \rangle = 2400\pm 340 \exp\left(a\right)$.
+    }
+    \label{fig:pt4_arrhenius}
+\end{figure}
+To do this, we simulated many trajectories for different values of $a$. The resulting mean jump times - that is the time between initialisation and the point where the particle reaches the maximum of the barrier - are plotted over the parameter $a$ in \autoref{fig:pt4_arrhenius}. They increase exponentially with $a$ according to $\langle n \rangle = 2400\pm 340 \exp\left(a\right)$.
 
 \section{Conclusion}
 
