@@ -53,7 +53,7 @@
     \vfill
     {
         \normalfont\normalsize
-        TODO
+        In this experiment, we used Monte Carlo simulations to study the stochastic motion of a particle in various potential landscapes. We confirmed the expected diffusive behavior for a free particle, verified the equilibrium distributions for confined particles in potential wells and the normally distributed density in a harmonic potential. Additionally, we analyzed barrier crossing times in a double-well potential, demonstrating agreement with the Arrhenius law. The results validate the effectiveness of Monte Carlo methods in simulating statistical physics systems.
     }
     \vfill
     \begin{flushright}
@@ -94,7 +94,7 @@ The full code is available under \url{https://github.com/leoole100/fp2}.
     \includegraphics{figures/01 time trace.pdf}
     \caption{
         Time evolution of a free particle.
-        Multiple time traces $x_n$ in gray, Assemble averages of $\langle x_n\rangle, \sigma_n$ in black, expected averages in dashed blue.
+        Multiple time traces $x_n$ in gray, Assemble averages $\langle x_n\rangle, \sigma_n$ in black, expected averages in dashed blue.
     }
     \label{fig:pt1_trajectory}
 \end{figure}
@@ -103,15 +103,15 @@ The full code is available under \url{https://github.com/leoole100/fp2}.
 
 In the first part of this experiment, the simple goal was to get a simulation running with nothing more than a freely moving particle in one dimension. 
 The potential is chosen to be $V(x)=0$ and the particles are initialized at $x_0=0$.
-This results in Brownian Motion shown in \autoref{fig:pt1_trajectory}. Simulation data was generated for \SI{50} individual trajectories, each one being simulated for a total of $N=\SI{10000}{}$ timesteps. The expected result are freely diffusive dynamics, as shown in the plot.
-The expected ensemble mean is $\langle x_n\rangle = 0$ an the standard deviation is $\sigma_n = \sqrt{\langle x_n^2 \rangle} = \sqrt{n}$ \autocite{noauthor_wiener_2025}.
+This results in Brownian Motion shown in \autoref{fig:pt1_trajectory}. Simulation data was generated for \SI{50} individual trajectories, each one being simulated for a total of $N=\SI{100000}{}$ timesteps. The expected result are freely diffusive dynamics, as shown in the plot.
+The expected ensemble mean is $\langle x_n\rangle = 0$ and the standard deviation is $\sigma_n = \sqrt{\langle x_n^2 \rangle} = \sqrt{n}$ \autocite{noauthor_wiener_2025}.
 This is also shown in the \autoref{fig:pt1_trajectory}.
 
 \begin{figure}
     \centering
     \includegraphics{figures/01 msd.pdf}
     \caption{
-        Mean Square Displacement of a ensemble 50 trajectories.
+        Mean Square Displacement of a ensemble of 50 trajectories.
         Multiple time traces $x_n^2$ in gray, Assemble average in black, expected traces in dashed blue.
     }
     \label{fig:pt1_msd}
@@ -130,21 +130,21 @@ The Mean Square Displacement averaged over all \SI{50}{} trajectories is shown i
 \subsection{Potential Well}
 \begin{figure}
     \centering
-    \includegraphics{figures/02 time evolution.pdf}
-    \caption{
-        Time evolution of a particle in potential well.
-        Multiple time traces $x_n$ in gray, Assemble average of $\langle x_n\rangle$ in black, expected mean trace in dashed blue.
-    }
-    \label{fig:pt2_trajectory}
-\end{figure}
-\begin{figure}
-    \centering
     \includegraphics{figures/02 histogram.pdf}
     \caption{
         Histogram and potential over position of a particle in a potential well.
         Probability density $P(x)$ in units of $1/l$ in gray, expected probability density in blue, Potential $V(x)$ in orange
     }
     \label{fig:pt2_histogram}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics{figures/02 time evolution.pdf}
+    \caption{
+        Time evolution of a particle in potential well.
+        Multiple time traces $x_n$ in gray, Assemble average of $\langle x_n\rangle$ in black, expected mean trace in dashed blue.
+    }
+    \label{fig:pt2_trajectory}
 \end{figure}
 
 Next we looked at a particle trapped inside a potential well with infinitely high walls.
@@ -159,15 +159,15 @@ where $l=1=100\;\Delta x$ is a characteristic length scale.
 The potential is shown in \autoref{fig:pt2_histogram}.
 
 The particles are initialized at $0.5 l$ and the time evolution is shown in \autoref{fig:pt2_trajectory}.
-As one would expect, the trajectories begin like the the free timeevolution until it is stopped by the wall.
+As one would expect, the trajectories begin like the the free timeevolution until it is confined by the wall.
 
-The histogram in \autoref{fig:pt2_histogram} shows the average spacial distribution of all trajectories for a long evaluation time of $100000$ steps. 
+The histogram in \autoref{fig:pt2_histogram} shows the average spacial distribution of all trajectories for a long evaluation time of \SI{100000}{} steps. 
 It is flat, meaning that on average, the particle is able to visit each position of the potential with equal probability.
+This confirms the expectation.
 As the particle moves on the same grid $\{0, \Delta x, \cdots 1\}$ as is used for the histogram, the dip in the bin $0.48000000000000004$ to $0.49$ is presumably due to some numerical artefact.
 
 The distribution from a random starting point is equal to waiting for the particles to randomly distribute in the well and taking the timeevolution after that.
-But as this happens in a finite time, the histogram does not change in the long time limit.
-
+But as this happens in a finite time, the histogram is the same as the one in the long time limit.
 
 \subsection{Harmonic Potential}
 \begin{figure}
@@ -183,15 +183,15 @@ But as this happens in a finite time, the histogram does not change in the long 
 The harmonic potential appears in many real world cases, and any analytic potential can at least be approximated (locally) quadratically. In our case, the idea is to simulate a particle trapped inside optical tweezers, the resulting potential is nearly harmonic as we learned from one of our previous experiments:
 $$ V(x) = \frac{1}{2 \sigma^2} x^2$$
 where $\sigma = 1000 \Delta x$ is a characteristic length scale.
-The potential is shown in \autoref{fig:pt3_histogram}.
+This potential is shown in \autoref{fig:pt3_histogram}.
 \\
 Unlike in the previous sections, the particle can now explore areas but only if it gains enough energy. The resulting spacial distribution is
 $$
 \label{eq:canonical_dist}
- P(x) \propto e^{-\frac{V(x)}{k T}} = e^{-\frac{x^2}{2 \sigma^2}}.
+ P(x) \propto e^{-\frac{V(x)}{k_B T}} = e^{-\frac{x^2}{2 \sigma^2}}.
 $$
 
-Our simulation was run for $100000$ timesteps and we simulated $50$ trajectories. 
+Our simulation was run for \SI{100000}{} timesteps and we simulated $50$ trajectories. 
 The results are shown in \autoref{fig:pt3_histogram} in the form of a histogram.
 The spacial distribution follows a normal Distribution as expected.
 
@@ -220,8 +220,8 @@ which is a fourth order polynomial with minima at $x=\pm b$ and a local maximum 
 As the $b$ only scales $x$ relative to $\Delta x$, this can be taken out into the length scale.
 Such a rescaling is not done with $a$ on the energy, as it changes the dynamics non trivially.
 The potential is shown in \autoref{fig:pt4_potential} for different $a$.
-Letting the particle evolve freely using the same Metropolis procedure as in the previous section, it delves inside one of the potential wells first, until after some time it manages to climb and surpass the barrier imposed by the local maximum at $x=0$. 
-Our goal was to find out how the time it takes on average to complete one such jump after starting from the bottom of one potential well depends on the height of the barrier $a$.
+Letting the particle evolve, it delves inside one of the potential wells first, until after some time it manages to climb and surpass the barrier imposed by the local maximum at $x=0$. 
+Our goal was to find out how the time it takes on average $\langle n \rangle$ to complete one such jump depends on the height of the barrier $a$.
 
 \begin{figure}
     \centering
@@ -232,11 +232,16 @@ Our goal was to find out how the time it takes on average to complete one such j
     }
     \label{fig:pt4_arrhenius}
 \end{figure}
-To do this, we simulated many trajectories for different values of $a$. The resulting mean jump times - that is the time between initialisation and the point where the particle reaches the maximum of the barrier - are plotted over the parameter $a$ in \autoref{fig:pt4_arrhenius}. They increase exponentially with $a$ according to $\langle n \rangle = 2400\pm 340 \exp\left(a\right)$.
+To do this, we simulated many trajectories for different values of $a$. The resulting mean jump times -- that is the time between initialisation and the point where the particle reaches the maximum of the barrier -- are plotted over the parameter $a$ in \autoref{fig:pt4_arrhenius}. They increase exponentially with $a$ according to $\langle n \rangle = (2400\pm 340) \exp\left(a\right)$ like expected due to the \textit{Arrhenius law} \autocite{noauthor_arrhenius_2024}.
+Where the Escape Rate $2400\pm 340$ is in the units of the time between the steps.
 
+\pagebreak
 \section{Conclusion}
-
-The \textit{Monte Carlo Simulation} experiment is a small introduction into physical simulation of systems described by statistical physics. We demonstrated how such simulations are set up for different simulation scenarios. In the first part of the experiment, we simulated a freely moving particle and were able to confirm the viability of the law of free diffusion. When constraining the particle inside a potential well, we found the expected flat spacial distribution after sufficiently long simulation time - this is in line with the canonical distribution introduced in the following chapter, which states that the probability of a particle residing at some position should only depend on the potential energy at that position. The spacial distribution we computed for the harmonic potential using the Metropolis algorithm resembles the expected Gaussian distribution. In the final part we tried to find out how the average time to cross a potential barrier depends on the barrier height to obtain the Arrhenius law. Being fully virtual, all simulations yielded the expected results.
+The \textit{Monte Carlo Simulation} experiment is a small introduction into physical simulation of systems described by statistical physics. We demonstrated how such simulations are set up for different scenarios.\\
+In the first part of the experiment, we simulated a freely moving particle and were able to confirm the viability of the law of free diffusion. 
+When constraining the particle inside a potential well, we found the expected flat spacial distribution after sufficiently long simulation time -- this is in line with the canonical distribution introduced in the following chapter, which states that the probability of a particle residing at some position should only depend on the potential energy at that position.
+The spacial distribution we computed for the harmonic potential using the Metropolis algorithm resembles the expected Gaussian distribution.\\
+In the final part we tried to find out how the average time to cross a potential barrier depends on the barrier height to obtain the Arrhenius law. 
 
 \addcontentsline{toc}{section}{Literature}
 \nocite{*}
