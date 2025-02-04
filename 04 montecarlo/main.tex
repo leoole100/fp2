@@ -6,6 +6,21 @@
 ]{scrarticle}
 \input{../preamble.tex}
 \addbibresource{literature.bib}
+\usepackage{listings}
+
+\lstset{
+    language=Python,                 % Language
+    basicstyle=\ttfamily\small,       % Code font style
+    keywordstyle=\color{blue},        % Keywords in blue
+    stringstyle=\color{red},          % Strings in red
+    commentstyle=\color{gray},        % Comments in gray
+    % numbers=left,                     % Line numbers on the left
+    numberstyle=\tiny,                 % Small line numbers
+    stepnumber=1,                      % Show every line number
+    % breaklines=true,                   % Line breaking
+    mathescape=true
+}
+
 
 \begin{document}
 
@@ -51,28 +66,61 @@ In physics research we ususally try to rely on very simplified model systems. Th
 Statistical physics deals with this issue by making assumptions based on the idea that nature approaches thermodynamic equilibrium. This simplifies the dynamics of a single particle because one may assume the interactions with the rest of the system can be reduced to random interactions following a certain distribution. Computer-based methods making use of random numbers as means for simulation are generally called \textit{Monte-Carlo-Methods}.\\
 In this experiment, we simulate the one-dimensional trajectory of a particle inside different energy potential landscapes under the influence of random kicks. Our goal is to confirm the theoretical models derived in statistical mechanics.
 
+\section{Methods}
+To simulate the trajectory $x_t$ in a potential $V(x)$ the python function in \autoref{lst:step} is used.
+The position $x$ is updated at each timestep.
+A candidate with $\Delta x_n \in \{\pm \Delta x\}$ is randomly chosen and accepted with the probability $\exp((-V(x+\Delta x_n)+V(x))$.
+The speedup the simulation of large ensembles a vector of multiple particle positions can be used for $x$.
+
+\begin{lstlisting}[caption={Python function used for time evolution.},label={lst:step},captionpos=b]
+from numpy import exp
+from numpy.random import random, choice
+
+def $x_{n+1}$($x_n$, $V$, $\Delta x$=0.01):
+  $\Delta x_n$ = choice([-1,1],len($x$))*$\Delta x$
+  return $x$ + $\Delta x_n$*(
+    random(len($x$)) < exp($-V(x+\Delta x_n)+V(x)$)
+  )
+\end{lstlisting}
+
+The full code is available under \url{https://github.com/leoole100/fp2}.
+
 \section{Results}
 \subsection{Free Particle}
 \begin{figure}
-\label{fig:pt1_trajectory}
-\includegraphics{figures/01 time trace.pdf}
-\end{figure}
-\begin{figure}
-\label{fig:pt1_msd}
-\includegraphics{figures/01 msd.pdf}
+    \includegraphics{figures/01 time trace.pdf}
+    \caption{
+        Time evolution of a free particle.
+        Multiple time traces $x_n$ in gray, Assemble averages of $\langle x_n\rangle, \sigma_n$ in black, expected traces in dashed blue.
+    }
+    \label{fig:pt1_trajectory}
 \end{figure}
 
 % TODO: Diagramme: Trajektorien, Mean Trajectorien, MSQ mit theoretischer Kurve
 
-In the first part of this experiment, the simple goal was to get a simulation running with nothing more than a freely moving particle in one dimension. The code was written in python and vectorized using NumPy. The trajectory was initialised at position \SI{0}{}. For each timestep, a displacement of $\Delta x_n \in \{\pm \Delta x\}$ was applied in either the positive or negative direction, chosen randomly (at each timestep) with equal probability. This results in Brownian Motion shown in \autoref{fig:pt1_trajectory}. Simulation data was generated for \SI{50} individual trajectories, each one being simulated for a total of $N=\SI{10000}{}$ timesteps. The expected result are freely diffusive dynamics, as shown in the plot. The \textit{Mean Square Displacement} is defined by
-\begin{equation}
- MSQ(t_n) = x^2(t_n), \qquad t_n = n \cdot \Delta t
-\end{equation}
-Since the displacements for different timesteps $t_i\neq t_j$ are uncorrelated, we expect that
+In the first part of this experiment, the simple goal was to get a simulation running with nothing more than a freely moving particle in one dimension. 
+The potential is chosen to be $V(x)=0$ and the particles are initialized at $x_0=0$.
+This results in Brownian Motion shown in \autoref{fig:pt1_trajectory}. Simulation data was generated for \SI{50} individual trajectories, each one being simulated for a total of $N=\SI{10000}{}$ timesteps. The expected result are freely diffusive dynamics, as shown in the plot.
+The expected ensemble mean is $\langle x_n\rangle = 0$ an the standard deviation is $\sigma_n = \sqrt{\langle x_n^2 \rangle} = \sqrt{n}$ \autocite{noauthor_wiener_2025}.
+This is also shown in the \autoref{fig:pt1_trajectory}.
+
+\begin{figure}
+    \includegraphics{figures/01 msd.pdf}
+    \caption{
+        Mean Square Displacement of a ensemble 50 trajectories.
+        Multiple time traces $x_n^2$ in gray, Assemble average in black, expected traces in dashed blue.
+    }
+    \label{fig:pt1_msd}
+\end{figure}
+Another way to describe the statistics of this process is the \textit{Mean Square Displacement} defined by $\langle x_n^2 \rangle$.
+Since the displacements for different timesteps $n$ are uncorrelated, we expect that
 \begin{align}
- MSQ(t_n = n \Delta t) &= \left(\sum_{i=1}^n \Delta x_i\right)^2 \\&= 2 \cdot \underbrace{\sum_{i<j\leq n} \Delta x_i \Delta x_j}_{=0} + \sum_{i=1}^n \Delta x_i^2 \\ &= n \cdot \Delta x^2
+    \langle x_n^2 \rangle 
+    &= \left(\sum_{i=1}^n \Delta x_i\right)^2 \\
+    &= 2 \cdot \underbrace{\sum_{i<j\leq n} \Delta x_i \Delta x_j}_{=0} + \sum_{i=1}^n \Delta x_i^2 \\ 
+    &= n \cdot \Delta x^2
 \end{align}
-The MSQ averaged over all \SI{50}{} trajectories is shown in \autoref{fig:pt1_msd} alongside the theoretical prediction.
+The Mean Square Displacement averaged over all \SI{50}{} trajectories is shown in \autoref{fig:pt1_msd} alongside the matching theoretical prediction.
 
 
 \subsection{Potential Well}
@@ -125,7 +173,6 @@ In the final part of the experiment we simulated a particle trapped inside a dou
 \end{equation}
 which is a fourth order polynomial with minima at $x=\pm b$ and a local maximum inbetween at $x=0$ and $V(x)=a$. Letting the particle evolve freely using the same Metropolis procedure as in the previous section, it delves inside one of the potential wells first, until after some time it manages to climb and surpass the barrier imposed by the local maximum at $x=0$. Our goal was to find out how the time it takes on average to complete one such jump after starting from the bottom of one potential well depends on the height of the barrier $a$. To do this, we simulated many trajectories for many values of $a$. The resulting mean jump times - that is the time between initialisation and the point where the particle reaches the maximum of the barrier - are plotted over the parameter $a$ in TODO:FIGURE-ARRHENIUS. They increase exponentially with $a$ according to TODO:WHATEVER-THE-RELATION-IS
 
-\pagebreak
 \section{Conclusion}
 
 The \textit{Monte Carlo Simulation} experiment is a small introduction into physical simulation of systems described by statistical physics. We demonstrated how such simulations are set up for different simulation scenarios. In the first part of the experiment, we simulated a freely moving particle and were able to confirm the viability of the law of free diffusion. When constraining the particle inside a potential well, we found the expected flat spacial distribution after sufficiently long simulation time - this is in line with the canonical distribution introduced in the following chapter, which states that the probability of a particle residing at some position should only depend on the potential energy at that position. The spacial distribution we computed for the harmonic potential using the Metropolis algorithm resembles the expected Gaussian distribution. In the final part we tried to find out how the average time to cross a potential barrier depends on the barrier height to obtain the Arrhenius law. Being fully virtual, all simulations yielded the expected results.
